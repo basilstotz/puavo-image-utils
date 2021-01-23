@@ -1,0 +1,107 @@
+#!/bin/sh
+
+
+UMOUNT=false
+TEMPDIR="/images/mnt"
+
+while [ $# -gt 0 ]; do
+    case $1 in
+	-h|--help)
+	    shift
+	    echo "Usage: $(basename $0) [options] IMAGE"
+	    echo
+	    echo "Mount an image writeable."
+	    echo
+	    echo "Options:"
+	    echo "    -u, --umount                 do umount the image"
+	    echo "    -t, --tempdir DIR            set tempdir to DIR (default is /images/mnt/"
+	    echo "    -h, --help                   show this message"	    
+	    echo
+	    exit 0
+	    ;;
+	-u|--umount)
+	    shift
+	    UMOUNT=true
+	    ;;
+	-t|--tempdir)
+	    shift
+	    TEMPDIR=$1
+	    shift
+	    ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            usage_error "invalid argument '$1'"
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if [ $# -ne 1 ]; then
+    echo "error: exactly one argument expexted"
+    exit 1
+fi
+
+if ! test -d $TEMPDIR;then
+    echo "error: tempdir $TEMPDIR does not exist"
+    exit 1
+fi
+
+#echo $UMOUNT
+#echo $TEMPDIR
+
+#IMG=$(readlink -e $1)
+IMG=$1
+
+if  test -z "$IMG";then
+    echo "error: image $IMG not found"
+    exit 1
+fi
+
+#echo $IMG
+
+
+if ! modprobe overlay; then
+  echo "error: no overlay fs"
+  exit 1
+fi
+
+
+MNT=$(basename -s .img $IMG)
+
+
+#umount
+if mount|grep -q $TEMPDIR/${MNT}.rofs;then
+     umount $TEMPDIR/${MNT}.rofs    
+fi
+
+if mount|grep -q $TEMPDIR/${MNT}.work;then
+     umount ${MNT}
+fi
+
+#clean
+if  test -d ${MNT}; then rm -r ${MNT};fi
+if  test -d $TEMPDIR/${MNT}.work; then rm -r $TEMPDIR/${MNT}.work;fi
+if  test -d $TEMPDIR/${MNT}.rwfs; then rm -r $TEMPDIR/${MNT}.rwfs;fi
+if  test -d $TEMPDIR/${MNT}.rofs; then rm -r $TEMPDIR/${MNT}.rofs;fi
+
+if $UMOUNT;then
+    exit 0
+fi
+
+#make mountpounts
+if ! test -d ${MNT}; then mkdir ${MNT};fi
+if ! test -d $TEMPDIR/${MNT}.rofs; then mkdir -p $TEMPDIR/${MNT}.rofs;fi
+if ! test -d $TEMPDIR/${MNT}.rwfs; then mkdir -p $TEMPDIR/${MNT}.rwfs;fi
+if ! test -d $TEMPDIR/${MNT}.work; then mkdir -p $TEMPDIR/${MNT}.work;fi
+
+#mount imagey
+mount -r -o loop ${IMG} $TEMPDIR/${MNT}.rofs
+#make it writeable
+mount -t overlay  overlay -olowerdir=$TEMPDIR/${MNT}.rofs,upperdir=$TEMPDIR/${MNT}.rwfs,workdir=$TEMPDIR/${MNT}.work  ${MNT}
+
+exit

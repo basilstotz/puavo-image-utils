@@ -1,0 +1,1424 @@
+{
+  "programs": {
+    "nuudel": {
+      "name": "Nuudel - Termine und Umfragen",
+      "type": "custom",
+      "command": "webapps https://nuudel.digitalcourage.de/",
+      "icon": "/usr/share/pixmaps/nuudel-logo.png",
+      "tags": "default"
+    },
+    "remarkise": {
+      "name": "Remarkise - MD im Browser",
+      "type": "custom",
+      "command": "webapps https://tripu.github.io/remark/remarkise",
+      "icon": "/usr/share/pixmaps/remarkise.png",
+      "tags": "default"
+    },
+    "cafepitch": {
+      "tags": "default"
+    },    
+    "abricotine": {
+      "tags": "default"
+    },    
+    "mark-my-words": {
+      "tags": "default"
+    },    
+    "boostnote": {
+      "tags": "default"
+    },    
+    "formiko": {
+      "tags": "default"
+    },    
+    "ghostwriter": {
+      "tags": "default"
+    },    
+    "me.mitya57.ReText": {
+      "tags": "default"
+    },    
+    "net.poedit.Poedit": {
+      "tags": "default"
+    },    
+      "apostrophe": {
+	  "name": "Schreiben",
+      "tags": "default"
+    },    
+    "typora": {
+	"name": "Typora - Markdown",	  
+      "tags": "default"
+    },    
+    "com.teamviewer.TeamViewer": {
+      "tags": "default"
+    },    
+    "minetest-mumble": {
+      "tags": "default"
+    },    
+    "workadventure": {
+      "name": "WorkAdventure",
+      "type": "custom",
+      "command": "chromium https://workadventu.re/",
+      "icon": "/usr/share/pixmaps/workadventure.png",
+      "tags": "default"
+    },
+    "vorbild-schule": {
+      "name": "Kleines Mathespiel",
+      "type": "custom",
+      "command": "webapps https://mathe.vorbild-schule.de/gameMode",
+      "icon": "/usr/share/pixmaps/vorbild-schule.png",
+      "tags": "default"
+    },
+    "lumi": {
+      "name": "Lumi H5P Editor",
+      "type": "custom",
+      "command": "/opt/lumi/Lumi.AppImage",
+      "icon": "/usr/share/pixmaps/lumi.png",
+      "tags": "default"
+    },
+    "com.obsproject.Studio": {
+      "tags": "default"
+    },    
+    "syncthing-gtk": {
+      "tags": "default"
+    },    
+    "obs-tablet-remote": {
+      "name": "OBS Tablet Remote",
+      "type": "custom",
+      "command": "webapps http://t2t2.github.io/obs-tablet-remote",
+      "icon": "/usr/share/icons/Obsidian/apps/48/obs-studio.png",
+      "tags": "default"
+    },
+    "enigma": {
+      "tags": "default"
+    },    
+    "fillets-ng": {
+      "tags": "default"
+    },    
+    "org.mobsya.ThymioSuite": {
+      "tags": "default"
+    },    
+    "mathigon": {
+      "name": "Mathigon",
+      "type": "custom",
+      "command": "webapps https://de.mathigon.org",
+      "icon": "/usr/share/pixmaps/mathigon.png",
+      "tags": "default"
+    },
+    "virtscreen": {
+      "tags": "default"
+    },    
+    "org.gnome.Geary": {
+      "name": "Mail",
+      "tags": "default"
+    },    
+    "codimd": {
+      "name": "CodiMD (c3de.de)",
+      "type": "custom",
+      "command": "webapps https://codimd.c3d2.de/",
+      "icon": "/usr/share/pixmaps/meetzide_logo.png",
+      "tags": "default"
+    },
+    "presenta": {
+      "name": "Presenta",
+      "type": "custom",
+      "command": "webapps https://play.presenta.cc",
+      "icon": "/usr/share/pixmaps/meetzide_logo.png",
+      "tags": "default"
+    },
+    "sozi": {
+      "tags": "default"
+    },    
+    "meetzi": {
+      "name": "Meetzi Klassenzimmer",
+      "type": "custom",
+      "command": "chromium-browser https://klassenzimmer.meetzi.de",
+      "icon": "/usr/share/pixmaps/meetzide_logo.png",
+      "tags": "default"
+    },
+    "wbo": {
+      "name": "WB-Ophir - Whiteboard",
+      "type": "custom",
+      "command": "chomium-browser https://wbo.ophir.dev",
+      "icon": "/usr/share/pixmaps/wbo.jpeg",
+      "tags": "default"
+    },
+    "telegram": {
+      "tags": "default"
+    },    
+    "walc": {
+      "tags": "default"
+    },    
+    "profax": {
+      "name": "Profax Online",
+      "type": "custom",
+      "command": "webapps https://www.profaxonline.com",
+      "icon": "/usr/share/pixmaps/profax.png",
+      "tags": "default"
+    },
+    "Write": {
+      "tags": "default"
+    },    
+    "dis-donc-5": {
+      "name": "Dis Donc 5",
+      "type": "custom",
+      "command": "webapps https://002.lmvz.ch/dis-donc-5-lernplattform",
+      "icon": "/usr/share/pixmaps/dis-donc-5.png",
+      "tags": "default"
+    },
+    "xaos": { "tags": "default" },
+    "screenkey": { "tags": "default" },
+    "cryptpad": {
+      "name": "CryptPad - Online kollaborieren",
+      "type": "custom",
+      "command": "webapps https://cryptpad.fr",
+      "icon": "/usr/share/pixmaps/cryptpad.png",
+      "tags": "default"
+    },
+    "millefeuilles-online": {
+      "name": "MilleFeuilles-Online",
+      "type": "custom",
+      "command": "webapps https://serv88919410.secure-node.at/",
+      "icon": "/usr/share/pixmaps/mfo.png",
+      "tags": "default, languages, french"
+    },
+    "fichier-online": {
+      "name": "Fichier-Online",
+      "type": "custom",
+      "command": "webapps https://www.s-fichier.ch",
+      "icon": "/usr/share/pixmaps/fichier.png",
+      "tags": "default, languages, french"
+    },
+    "p5js": {
+      "name": "p5js - JavaScript-IDE",
+      "type": "custom",
+      "command": "webapps https://editor.p5js.org",
+      "icon": "/usr/share/icons/Faenza/categories/48/applications-accessories.png",
+      "tags": "default,programming"
+    },
+    "mindsteps": {
+      "name": "Mindsteps",
+      "type": "custom",
+      "command": "webapps https://user.mindsteps.ch",
+      "icon": "mindsteps.png",
+      "tags": "default"
+    },
+    "learning-view": {
+      "tags": "default"
+    },
+      "more": {
+	  "name": "more! - Cambridge English",
+	  "tags": "default",
+	  "type": "custom",
+	  "command": "webapps https://moreciip.cambridge.org",
+	  "icon": "/usr/share/pixmaps/more-app.png"
+    },
+      "mathetrainer" : {
+	  "name": "MatheTrainer",
+	  "type": "custom",
+	  "command":  "webapps https://003.lmvz.ch/matheprimar/sus/index.html",
+	  "icon": "/usr/share/pixmaps/mathetrainer.png",
+       "tags": "default"
+      },
+    "linphone": {
+      "icon": "/usr/share/pixmaps/phone-call-icon.png",
+      "name": "Telefon"
+    },
+    "discord": {
+      "tags": "default"
+    },
+    "mumble": {
+      "tags": "default"
+    },
+    "amxa-talk": {
+      "name": "Jitsi-Meet (cyon.ch)",
+      "type": "custom",
+      "icon": "/usr/share/pixmaps/jitsi.png",
+      "command": "chromium-browser https://meet.cyon.tools/",
+      "tags": "default"
+    },
+    "jitsi-meet": {
+      "name": "Jitsi-Meet (switch.ch)",
+      "type": "custom",
+      "icon": "/usr/share/pixmaps/jitsi.png",
+      "command": "chromium-browser  https://open.meet.switch.ch",
+      "tags": "default"
+    },
+    "matrix-riot": {
+      "name": "Matrix-Element",
+      "type": "custom",
+      "icon": "/usr/share/pixmaps/matrix-logo.png",
+      "command": "chromium-browser https://app.element.io",
+      "tags": "default"
+    },
+    "mornin": {
+      "name": "Mornin Audiokonferenz",
+      "type": "custom",
+      "icon": "/usr/share/pixmaps/mornin.jpg",
+      "command": "chromium-browser https://mornin.fm",
+      "tags": "default"
+    },
+    "mozilla-hubs": {
+      "name": "Mozilla Hubs",
+      "type": "custom",
+      "icon": "/usr/share/pixmaps/mozilla-hubs.png",
+      "command": "chromium-browser https://hubs.mozilla.com",
+      "tags": "default"
+    },
+    "bigbluebutton": {
+      "name": "BigBlueButton (ch-open.ch)",
+      "type": "custom",
+      "icon": "/usr/share/pixmaps/BigBlueButton.png",
+      "command": "chromium-browser  https://bbb.ch-open.ch",
+      "tags": "default"
+    },
+    "blink": {
+      "tags": "default"
+    },
+    "nheko": {
+      "tags": "default"
+    },
+    "org.gnome.Calendar": {
+      "tags": "default"
+    },
+    "org.gnome.clocks": {
+      "tags": "default"
+    },
+    "org.gnome.Contacts": {
+      "tags": "default"
+    },
+    "org.gnome.Maps": {
+      "tags": "default"
+    },
+    "org.gnome.SoundRecorder": {
+      "tags": "default"
+    },
+    "org.gnome.Totem": {
+      "tags": "default"
+    },
+    "org.gnome.Weather.Application": {
+      "tags": "default"
+    },
+    "org.gnome.Todo": {
+      "tags": "default"
+    },
+    "org.gnome.Cheese": {
+      "name": "Kamera",
+      "tags": "default"
+    },
+    "org.gnome.gThumb": {
+      "name": "Gallerie",
+      "tags": "default"
+    },
+    "gthumb": {
+      "name": "Gallerie",
+      "tags": "default"
+    },
+    "org.gnome.tweaks": {
+      "tags": "default"
+    },
+    "gnome-control-center": {
+      "name": "Einstellungen",
+      "type": "custom",
+      "icon": "/usr/share/icons/gnome/48x48/categories/preferences-desktop.png",
+      "command": "gnome-control-center",
+      "tags": "default"
+    },
+    "internet": {
+      "name": "Internet",
+      "type": "custom",
+      "command": "/usr/local/bin/firefox",
+      "icon": "/usr/share/icons/gnome/48x48/apps/web-browser.png",
+      "tags": "default"
+    },
+    "org.gnome.Calculator": {
+      "tags": "default"
+    },
+    "org.gnome.Screenshot": {
+      "tags": "default"
+    },
+    "anton": {
+      "tags": "default"
+    },
+    "audiyou": {
+      "tags": "default"
+    },
+    "againstallodds": {
+      "tags": "default"
+    },
+    "antolin": {
+      "tags": "default"
+    },
+    "blindekuh": {
+      "tags": "default"
+    },
+    "blockly": {
+      "tags": "default"
+    },
+    "bodenlift": {
+      "tags": "default"
+    },
+    "classroomscreen": {
+      "tags": "default"
+    },
+    "code.org": {
+      "tags": "default"
+    },
+    "cool-driving": {
+      "tags": "default"
+    },
+    "duden": {
+      "tags": "default"
+    },
+    "duolingo": {
+      "tags": "default"
+    },
+    "dybuster-calc": {
+      "tags": "default"
+    },
+    "dybuster-ortho": {
+      "tags": "default"
+    },
+    "flickr": {
+      "tags": "default"
+    },
+    "flubidux": {
+      "tags": "default"
+    },
+    "fragfinn": {
+      "tags": "default"
+    },
+    "google-translate": {
+      "tags": "default"
+    },
+    "helles-koepfchen": {
+      "tags": "default"
+    },
+    "impressive": {
+      "tags": "default"
+    },
+    "internet-abc": {
+      "tags": "default"
+    },
+    "kindersuchmaschine": {
+      "tags": "default"
+    },
+    "kinderwald": {
+      "tags": "default"
+    },
+    "kinderzeitmaschine": {
+      "tags": "default"
+    },
+    "leo": {
+      "tags": "default"
+    },
+    "lerntrix": {
+      "tags": "default"
+    },
+    "map-geo-admin": {
+      "tags": "default"
+    },
+    "mathe-aktiv-division": {
+      "tags": "default"
+    },
+    "mathe-aktiv-insaetze": {
+      "tags": "default"
+    },
+    "mathe-aktiv-multiplikation": {
+      "tags": "default"
+    },
+    "mathe-im-netz": {
+      "tags": "default"
+    },
+    "mathwelt": {
+      "tags": "default"
+    },
+    "minibooks": {
+      "tags": "default"
+    },
+    "minitube": {
+      "tags": "default"
+    },
+    "minipodium": {
+      "tags": "default"
+    },
+    "musikwissenschaften": {
+      "tags": "default"
+    },
+    "mymoment": {
+      "tags": "default"
+    },
+    "netcity": {
+      "tags": "default"
+    },
+    "netla": {
+      "tags": "default"
+    },
+    "nextcloud": {
+      "tags": "default"
+    },
+    "notenmax": {
+      "tags": "default"
+    },
+    "openstreetmap": {
+      "tags": "default"
+    },
+    "openthesaurus": {
+      "tags": "default"
+    },
+    "orthografietrainer": {
+      "tags": "default"
+    },
+    "onthesamepage": {
+      "tags": "default"
+    },
+    "phet": {
+      "tags": "default"
+    },
+    "schulkarte": {
+      "tags": "default"
+    },
+    "sikore": {
+      "tags": "default"
+    },
+    "snap": {
+      "tags": "default"
+    },
+    "toporopa": {
+      "tags": "default"
+    },
+    "unserkoerper": {
+      "tags": "default"
+    },
+    "umap": {
+      "tags": "default"
+    },
+    "zeitklicks": {
+      "tags": "default"
+    },
+    "leseschlau": {
+      "tags": "default"
+    },
+    "lesewerkstatt": {
+      "tags": "default"
+    },
+    "logisch1": {
+      "tags": "default"
+    },
+    "logisch2": {
+      "tags": "default"
+    },
+    "logisch3": {
+      "tags": "default"
+    },
+    "logisch4": {
+      "tags": "default"
+    },
+    "logisch5": {
+      "tags": "default"
+    },
+    "logisch6": {
+      "tags": "default"
+    },
+    "newworld1": {
+      "tags": "default"
+    },
+    "newworld2": {
+      "tags": "default"
+    },
+    "rechentraining": {
+      "tags": "default"
+    },
+    "rechentraining6": {
+      "tags": "default"
+    },
+    "blitzrechnen": {
+      "tags": "default"
+    },
+    "suchbuch": {
+      "tags": "default"
+    },
+    "sprachstarken": {
+      "tags": "default"
+    },
+    "activsoftware": {
+      "tags": "default"
+    },
+    "activsoftware-nc": {
+      "tags": "default"
+    },
+    "asebachallenge": {
+      "tags": "default"
+    },
+    "asebaonlinehelp": {
+      "tags": "default"
+    },
+    "asebaplayground": {
+      "tags": "default"
+    },
+    "asebastudio": {
+      "tags": "default"
+    },
+    "asebastudiothymio": { "tags": "default" },
+    "avidemux-gtk": { "tags": "default" },
+    "edulo": { "tags": "default" },
+    "dosemu": {
+      "tags": "default"
+    },
+    "dosbox": {
+      "tags": "default"
+    },
+    "fr.handbrake.ghb": {
+      "tags": "default"
+    },
+    "gummi": {
+      "tags": "default"
+    },
+    "gtk-recordmydesktop": {
+      "tags": "default"
+    },
+    "net.minetest.minetest": {
+      "tags": "default"
+    },
+    "moodledesktop": {
+      "tags": "default"
+    },
+    "onlyoffice-desktopeditors": {
+	"icon": "/opt/onlyoffice/desktopeditors/asc-de-48.png",
+	"tags": "default"
+    },
+    "kodi": {
+	"name": "Fernseher (Kodi)",
+	"tags": "default"
+    },
+    "kazam": {
+      "tags": "default"
+    },
+    "lehreroffice": {
+      "tags": "default"
+    },
+    "pdfarranger": {
+      "tags": "default"
+    },
+    "photocollage": {
+      "tags": "default"
+    },
+    "photofilmstripe": {
+      "tags": "default"
+    },
+    "primalogo": {
+      "tags": "default"
+    },
+    "texmaker": {
+      "tags": "default"
+    },
+    "tipp10": {
+      "tags": "default"
+    },
+    "thymioupgrader": {
+      "tags": "default"
+    },
+    "thymiovpl": {
+      "tags": "default"
+    },
+    "thymiownetconfig": {
+      "tags": "default"
+    },
+    "vokoscreen": {
+      "tags": "default"
+    },
+    "xmind": {
+      "tags": "default"
+    },
+    "xosview": {
+      "tags": "default"
+    },
+    "xlogo": {
+      "tags": "default"
+    },
+    "xlogo-online": {
+      "tags": "default"
+    },
+    "xournal": {
+      "tags": "default"
+    },
+    "com.github.xournalpp.xournalpp": {
+      "tags": "default"
+    }
+  },
+  "menus": {
+    "menu-gnome": {
+      "icon": "/usr/share/icons/gnome/48x48/places/gnome-foot.png",
+      "name": "Basis",
+      "programs": [
+        "org.gnome.Calendar",
+          "org.gnome.Contacts",
+	  "org.gnome.Geary",
+        "org.gnome.Todo",
+        "org.gnome.Maps",
+        "org.gnome.clocks",
+        "org.gnome.Weather.Application",
+        "org.gnome.Calculator",
+        "org.gnome.Cheese",
+        "org.gnome.SoundRecorder",
+        "org.gnome.Totem",
+        "org.gome.Screenshot",
+        "linphone",
+        "org.gnome.gThumb",
+        "gthumb",
+        "internet",
+          "org.gnome.Nautilus",
+	  "apostrophe",
+        "gnome-control-center"
+      ]
+    },
+    "menu-applications": {
+      "icon": "/usr/share/icons/Faenza/categories/48/applications-accessories.png",
+      "name": {
+        "en": "Applications",
+        "fi": "Apuohjelmat",
+        "sv": "Verktyg",
+        "de": "Werkzeuge"
+      },
+      "programs": [
+        "speedcrunch",
+          "org.gnome.gedit",
+	  "org.gnome.Screenshot",
+        "mousepad",
+        "gucharmap",
+        "onboard",
+        "brasero",
+          "sound-juicer",
+	  "lumi",
+        "org.gnome.FileRoller",
+          "org.gnome.Terminal",
+	  "org.gnome.Screenshot",
+        "seahorse",
+        "system-config-printer",
+          "pavucontrol",
+	  "syncthing-gtk",
+          "airtame",
+	  "screenkey",
+	  "virtscreen",
+        "novo-launcher",
+        "novo_desktop_streamer",
+        "nextcloud",
+        "xosview",
+        "lehreroffice",
+        "dosemu",
+          "dosbox",
+	  "net.poedit.Poedit",
+        "thymioupgrader",
+          "thymiownetconfig",
+	  "com.teamviewer.TeamViewer"
+      ]
+    },
+    "menu-graphics": {
+      "name": {
+        "en": "Graphics",
+        "fi": "Grafiikka",
+        "sv": "Grafik",
+        "de": "Grafik"
+      },
+      "description": {
+        "en": "Graphics applications",
+        "fi": "Piirto- ja kuvankäsittelyohjelmia",
+        "sv": "Ritprogram",
+        "de": "Grafikprogramme"
+      },
+      "icon": "/usr/share/icons/Faenza/categories/48/applications-painting.png",
+      "programs": [
+        "org.kde.kolourpaint",
+        "org.kde.krita",
+        "tuxpaint",
+        "mypaint",
+        "gimp",
+        "pinta",
+        "gthumb",
+        "eog",
+        "shotwell",
+        "inkscape",
+        "simple-scan",
+        "xsane",
+        "blender",
+        "cura-appimage",
+        "sketchup",
+        "freecad",
+        "openscad-nightly",
+        "FlashPrint",
+        "photocollage",
+        "photofilmstripe",
+        "xmind"
+      ]
+    },
+    "menu-internet": {
+      "icon": "/usr/share/icons/Faenza/categories/48/applications-internet.png",
+      "name": "Internet",
+      "description": {
+        "en": "Internet-applications",
+        "fi": "Internet-sovellukset",
+        "sv": "Internet-program",
+        "de": "Internet Programme"
+      },
+      "programs": [
+        "firefox",
+        "chromium",
+        "google-chrome",
+        "epiphany",
+        "thunderbird",
+        "org.gnome.Evolution",
+        "gftp",
+        "filezilla",
+        "net.sourceforge.liferea",
+        "vinagre",
+        "dropbox",
+        "nextcloud"
+      ]
+    },
+    "menu-programming": {
+      "name": {
+        "en": "Programming",
+        "fi": "Ohjelmointi",
+        "sv": "Programmering",
+        "de": "Programmierung"
+      },
+      "description": {
+        "en": "Programming environments",
+        "fi": "Ohjelmointiympäristöjä"
+      },
+      "icon": "/usr/share/icons/Faenza/categories/48/gnome-devel.png",
+	"programs": [
+	    "org.mobsya.ThymioSuite",
+        "asebastudio",
+        "asebaonlinehelp",
+        "asebaplayground",
+        "asebastudio",
+        "asebastudiothymio",
+        "thymiovpl",
+        "primalogo",
+        "xlogo",
+        "xlogo-online",
+        "p5js",
+        "arduino",
+        "fritzing",
+        "teddybear",
+        "drracket",
+        "enchanting",
+        "bluegriffon",
+        "eclipse",
+        "eric",
+        "pycharm",
+        "spe",
+        "idle-python2.7",
+        "idle-python3.5",
+        "geany",
+        "org.kde.kturtle",
+        "scratch",
+        "scratch3",
+        "bluefish",
+        "designer-qt4",
+        "processing",
+        "robboscratch2",
+        "appinventor",
+        "kojo",
+        "Nightcode"
+      ]
+    },
+    "menu-education": {
+      "name": {
+        "en": "Education",
+        "fi": "Opetusohjelmat",
+        "sv": "Undervisningsprogram",
+        "de": "Bildung"
+      },
+      "description": {
+        "en": "Educational applications",
+        "fi": "Sovelluksia oppimisen tueksi",
+        "sv": "Pedagogiska program",
+        "de": "Bildungs Programme"
+      },
+	"hidden_by_default": true, 
+	"icon": "/usr/share/icons/Faenza/categories/48/applications-games.png",
+      "programs": [
+        "moodledesktop",
+        "geogebra",
+        "geogebra6",
+        "org.kde.kmplot",
+        "org.kde.marble-qt",
+        "google-earth",
+        "umap",
+          "edulo",
+	  "profax",
+        "anton",
+        "celestia",
+        "stellarium",
+        "org.kde.kstars",
+        "org.kde.step",
+        "LoggerPro",
+        "GlobiLab",
+        "wxMaxima",
+        "ti_nspire_cx_cas_ss",
+        "avogadro",
+        "org.kde.kalzium",
+        "MarvinSketch",
+        "MarvinView",
+        "mandelbulber",
+        "qgis",
+        "anki"
+      ]
+    },
+    "menu-office": {
+      "name": {
+        "en": "Office",
+        "fi": "Toimisto",
+        "sv": "Kontor",
+        "de": "Büro"
+      },
+      "description": {
+        "en": "Office applications",
+        "fi": "Toimisto-ohjelmat",
+        "sv": "Kontorsprogram",
+        "de": "Büroprogramme"
+      },
+      "icon": "/usr/share/icons/Faenza/categories/48/applications-office.png",
+      "programs": [
+        "libreoffice-writer",
+        "libreoffice-calc",
+        "libreoffice-impress",
+        "libreoffice-draw",
+        "libreoffice-base",
+        "libreoffice-math",
+          "onlyoffice-desktopeditors",
+	  "apostrophe",
+	  "typora",
+          "cryptpad",
+	  "boostnote", "formiko", "ghostwriter", "me.mitya57.ReText", "mark-my-words", "abricotine",
+        "scribus",
+        "vym",
+        "com.github.xournalpp.xournalpp",
+        "cmaptools",
+        "acroread",
+        "okular",
+        "evince",
+        "calibre-gui",
+        "tellico",
+        "openboard",
+        "primusclient",
+        "dia",
+        "gummi",
+        "texmaker",
+        "pdfarranger",
+        "xmind",
+        "tipp10",
+        "impressive",
+        "onthesamepage"
+      ]
+    },
+    "menu-audio": {
+      "name": {
+        "en": "Audio and video",
+        "fi": "Ääni ja video",
+        "sv": "Ljud och Video",
+        "de": "Audio und Video"
+      },
+      "icon": "/usr/share/icons/Faenza/categories/48/applications-multimedia.png",
+      "programs": [
+        "fr.handbrake.ghb",
+        "audacity",
+        "goobox",
+        "vlc",
+        "org.kde.kaffeine",
+        "org.gnome.Cheese",
+        "openshot",
+        "shotcut",
+        "org.kde.kdenlive",
+        "kino",
+        "pitivi",
+        "qstopmotion",
+        "qjackctl",
+        "winff",
+        "avidemux-gtk",
+        "photofilstripe",
+        "kazam",
+        "org.gnome.SoundRecorder",
+        "gtk-recordmydesktop",
+        "vokoscreen",
+        "simplescreenrecorder",
+        "kenavision",
+        "kamerka",
+        "spotify"
+      ]
+    },
+    "menu-games": {
+      "name": {
+        "en": "Games",
+        "fi": "Pelit",
+        "sv": "Spel",
+        "de": "Spiele"
+      },
+      "icon": "/usr/share/icons/Faenza/categories/48/applications-cardgames.png",
+      "condition": "!personally_administered",
+      "programs": [
+          "gnome-klotski",
+	  "fillets-ng",
+        "gnome-mines",
+          "gnome-mahjongg",
+	  "xaos",
+        "sol",
+        "gnome-sudoku",
+        "luola",
+        "openttd",
+          "gnubg",
+	  "enigma",
+        "freeciv-gtk2",
+          "net.minetest.minetest",
+	  "minetest-mumble",
+        "extremetuxracer",
+        "supertuxcart"
+      ]
+    },
+    "menu-games-personal": {
+      "name": {
+        "en": "Games",
+        "fi": "Pelit",
+        "sv": "Spel",
+        "de": "Spiele"
+      },
+      "icon": "/usr/share/icons/Faenza/categories/48/applications-cardgames.png",
+      "condition": "personally_administered",
+      "programs": [
+        "gnome-klotski",
+        "gnome-mines",
+        "gnome-mahjongg",
+        "sol",
+        "gnome-sudoku",
+          "supertuxkart",
+	  "fillets-ng",
+	  "enigma",
+        "extremetuxracer",
+        "neverball",
+        "neverputt",
+        "luola",
+        "openttd",
+        "xmoto",
+        "steam",
+        "gnubg",
+        "freeciv-gtk2",
+          "net.minetest.minetest",
+	  "minetest-mumble"
+      ]
+    },
+    "menu-whiteboard": {
+      "name": {
+        "en": "Interactive whiteboards",
+        "fi": "Älytaulut",
+        "sv": "Interaktiva tavlor",
+        "de": "Whiteboard"
+      },
+      "icon": "/usr/share/icons/Faenza/categories/96/applications-science.png",
+      "programs": [
+        "openboard",
+        "xournal",
+        "com.github.xournalpp.xournalpp",
+        "activsoftware",
+        "activesoftware-nc",
+        "vmarkerutility",
+          "classroomscreen",
+	  "wbo",
+	  "cafepitch","remarkise",
+        "Write",
+          "onboard",
+          "screenkey",
+        "libreoffice-impress",
+          "impressive",
+	  "sozi",
+	  "presenta",
+	  "codimd",
+          "com.obsproject.Studio",
+	  "obs-tablet-remote",
+        "kodi",
+        "mimio-notebook",
+        "smarttech-notebook"
+      ]
+    },
+    "menu-online-comm": {
+      "name": "Online Verbinden",
+      "icon": "/usr/share/pixmaps/qbrowser.png",
+      "programs": [
+        "jitsi-meet",
+        "amxa-talk",
+        "bigbluebutton",
+        "mornin",
+          "mozilla-hubs",
+	  "workadventure",
+	  "meetzi",
+        "discord",
+        "matrix-riot",
+        "nheko",
+          "cryptpad",
+	  "codimd",
+        "linphone",
+          "pidgin",
+	  "nuudel",
+        "empathy",
+          "mumble",
+	  "mumble-server",
+        "skype",
+        "Zoom",
+          "teams",
+	  "Write",
+	  "telegram",
+	  "walc",
+	  "signal-desktop",
+      ]
+    },
+    "menu-touch": {
+      "name": "Stift & Touch",
+      "icon": "/usr/share/pixmaps/stylus.jpg",
+	"programs": [
+	    "gimp",
+	    "openboard",
+	    "xjournal",
+        "com.github.xournalpp.xournalpp",	    
+        "org.kde.krita",	    
+	    "Write"
+      ]
+    },
+    
+    "menu-google-apps": {
+      "name": "Google Apps",
+	"icon": "/usr/share/icons/hicolor/48x48/apps/chromium.png",
+        "hidden_by_default": true, 
+      "programs": [
+        "google-chrome",
+        "google-drive",
+        "google-classroom",
+        "google-calendar",
+        "gmail",
+        "google-sheets",
+        "google-docs",
+        "google-slides",
+        "google-forms",
+        "google-meet",
+        "google-keep",
+        "google-sites"
+      ]
+    },
+    "menu-deutsch": {
+      "name": {
+        "en": "German Language",
+        "de": "Deutsch"
+      },
+      "icon": "/usr/share/icons/Faenza/apps/64/gnome-dictionary.png",
+      "programs": [
+        "edulo",
+        "learning-view",
+        "mindsteps",
+        "antolin",
+        "duden",
+          "fragfinn",
+	  "profax",
+        "kindersuchmaschine",
+        "blindekuh",
+        "leseschlau",
+        "lesewerkstatt",
+        "suchbuch",
+        "sprachstarken",
+        "lerntrix",
+        "helles-koepfchen",
+        "pahvi",
+        "anton",
+        "tipp10",
+        "openthesaurus",
+        "minibooks",
+        "mymoment",
+        "dybuster-ortho",
+        "flickr",
+        "desktopeditors",
+        "libreoffice-writer",
+        "org.kde.gcompris",
+        "org.kde.khangman",
+        "org.kde.kwordquiz",
+        "org.kde.ktouch",
+        "youtube"
+      ]
+    },
+    "menu-mathematik": {
+      "name": {
+        "en": "Mathematics",
+        "fi": "Matematiikka",
+        "de": "Mathematik"
+      },
+      "icon": "/usr/share/icons/Faenza/categories/64/applications-interfacedesign.png",
+      "programs": [
+        "tuxmath",
+        "blitzrechnen",
+        "rechentraining",
+        "rechentraining6",
+        "mathetrainer",
+        "mathwelt",
+          "edulo",
+	  "profax",
+        "learning-view",
+        "mindsteps",
+        "logisch1",
+        "logisch2",
+        "logisch3",
+        "logisch4",
+        "logisch5",
+          "logisch6",
+	  "mathigon",
+	  "vorbild-schule",
+	  "xaos",
+        "sikore",
+        "mathe-im-netz",
+        "dybuster-calc",
+        "org.kde.kbruch",
+        "geogebra",
+        "geogebra6",
+        "org.kde.kmplot",
+        "org.gnome-Calculator",
+        "libreoffice-calc",
+        "libreoffice-math",
+        "youtube"
+      ]
+    },
+    "menu-franzoesisch": {
+      "name": {
+        "en": "French Language",
+        "de": "Französisch"
+      },
+      "icon": "/usr/share/icons/oxygen/base/64x64/categories/applications-education-language.png",
+      "programs": [
+        "millefeuilles-online",
+        "fichier-online",
+        "dis-donc-5",    
+        "edulo",
+        "duolingo",
+        "leo",
+        "google-translate",
+        "libreoffice-writer",
+        "org.kde.kwordquiz",
+        "org.kde.khangman",
+        "youtube"
+      ]
+    },
+    "menu-englisch": {
+      "name": {
+        "en": "English language",
+        "de": "Englisch"
+      },
+      "icon": "/usr/share/icons/Faenza/apps/64/config-language.png",
+      "programs": [
+        "newworld1",
+        "newworld2",
+	"more",
+        "edulo",
+        "duolingo",
+        "leo",
+        "libreoffice-writer",
+        "org.kde.kwordquiz",
+        "org.kde.khangman",
+        "youtube"
+      ]
+    },
+    "menu-naturundtechnik": {
+      "name": {
+        "en": "Environmental Science",
+        "de": "Natur und Technik"
+      },
+      "icon": "/usr/share/icons/Faenza/apps/64/tracker.png",
+      "programs": [
+        "edulo",
+        "bodenlift",
+        "kinderwald",
+        "fragfinn",
+        "kindersuchmaschine",
+        "blindekuh",
+        "cool-driving",
+        "unserkoerper",
+        "net.minetest.minetest",
+        "marble-qt",
+        "google-earth",
+        "umap",
+        "org.kde.kgeography",
+        "celestia",
+        "stellarium",
+        "org.kde.kstars",
+        "libreoffice-writer",
+        "youtube"
+      ]
+    },
+    "menu-medienundprogrammierung": {
+      "name": {
+        "en": "Media and Programming",
+        "de": "Medien und Programmierung"
+      },
+      "description": {
+        "en": "Programming an Media",
+        "de": "Medien und Programmierung"
+      },
+      "icon": "/usr/share/icons/Faenza/categories/48/gnome-devel.png",
+      "programs": [
+        "netla",
+        "netcity",
+        "code.org",
+        "primalogo",
+        "xlogo",
+        "xlogo-online",
+        "blockly",
+        "thymiovpl",
+        "asebastudio",
+        "asebaplayground",
+        "arduino",
+        "fritzing",
+        "teddybear",
+        "enchanting",
+        "bluegriffon",
+        "eric",
+        "pycharm",
+        "spe",
+        "idle-python2.7",
+        "idle-python3.5",
+        "geany",
+        "org.kde.kturtle",
+        "scratch",
+        "scratch3",
+        "bluefish",
+        "designer-qt4",
+        "processing",
+        "robboscratch2",
+        "appinventor",
+        "kojo",
+        "Nightcode",
+        "dosbox",
+        "dosemu",
+        "p5js"
+      ]
+    },
+    "menu-musik": {
+      "name": {
+        "en": "Music",
+        "fi": "Musiikki",
+        "de": "Musik"
+      },
+      "icon": "/usr/share/icons/Faenza/apps/64/gmusicbrowser.png",
+      "programs": [
+        "edulo",
+        "musikwissenschaften",
+        "notenmax",
+        "flubidux",
+        "audiyou",
+        "com.rosegardenmusic.rosegarden",
+        "qsynth",
+        "tuxguitar",
+        "fmit",
+        "sonic-pi",
+        "audacity",
+        "solfege",
+        "hydrogen",
+        "lmms",
+        "mscore",
+        "spotify",
+        "libreoffice-writer",
+        "youtube"
+      ]
+    },
+    "menu-raeumezeitengesellschaften": {
+      "name": {
+        "en": "Spaces, Times and Society",
+        "de": "Raeume, Zeiten und Gesellschaften"
+      },
+      "icon": "/usr/share/tuxpaint/stamps/space/planets/3_earth.png",
+      "programs": [
+        "edulo",
+        "learning-view",
+        "map-geo-admin",
+        "schulkarte",
+        "toporopa",
+        "zeitklicks",
+        "openstreetmap",
+        "marble-qt",
+        "google-earth",
+        "org.kde.kgeography",
+        "celestia",
+        "stellarium",
+        "org.kde.kstars",
+        "qgis",
+        "libreoffice-writer",
+        "youtube"
+      ]
+    },
+    "menu-gestalten": {
+      "name": {
+        "en": "Handicrafts",
+        "de": "Gestalten"
+      },
+      "icon": "/usr/share/icons/gnome/48x48/categories/gnome-util.png",
+      "programs": [
+        "tuxpaint",
+        "scribus",
+        "minitube",
+        "minibooks",
+        "audacity",
+        "audiyou",
+        "photofilmstrip",
+        "pitivi",
+        "openshot",
+        "flickr",
+        "qstopmotion",
+        "pinta",
+        "gimp",
+        "inkscape",
+        "fritzing",
+        "arduino",
+        "libreoffice-writer",
+        "youtube"
+      ]
+    }
+  },
+  "categories": {
+      "category-main": {
+        "name": {
+          "en": "All programs",
+          "fi": "Kaikki ohjelmat",
+          "sv": "Alla program",
+          "de": "Programme"
+        },
+        "position": 0,
+	"programs": [ "school-user-list" ],
+        "menus": [
+          "menu-gnome",
+          "menu-internet",
+          "menu-graphics",
+          "menu-office",
+          "menu-audio",
+          "menu-programming",
+          "menu-games",
+          "menu-games-personal",
+            "menu-online-comm",
+	    "menu-touch",
+          "menu-whiteboard",
+          "menu-applications",
+          "menu-google-apps"
+        ]
+    },
+    "category-subjects": {
+        "name": {
+          "en": "Subjects",
+          "fi": "Oppiaineet",
+          "sv": "Ämnen",
+          "de": "Fächer"
+        },
+        "position": 1,
+        "menus": [
+          "menu-deutsch",
+          "menu-mathematik",
+          "menu-franzoesisch",
+          "menu-englisch",
+          "menu-naturundtechnik",
+          "menu-medienundprogrammierung",
+          "menu-raeumezeitengesellschaften",
+          "menu-musik",
+          "menu-gestalten"
+        ]
+      }
+    }
+}
