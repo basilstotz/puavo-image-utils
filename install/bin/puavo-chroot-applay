@@ -1,0 +1,19 @@
+#!/bin/sh
+
+cp -r /install/files/* /
+
+apt-get -y install $(cat /install/lists/*list|xargs)
+
+
+for D in $(ls /install/debs/*.deb);do
+    dpkg -i /install/$D
+done
+apt-get -f install
+
+
+for P in $(ls /install/parts/*);do
+    if test -x /install/parts/$P/install.sh;then
+         /install/parts/$P/install.sh
+    fi
+done
+
