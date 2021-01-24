@@ -5,7 +5,7 @@ This a simple minimalistic "framework" aimed to patch PuavoOS images. It work in
 ## Quick Start
 
 - clone this repo 
-- copy a PuavoOs image to the directory **opinsys**
+- copy a PuavoOs image to the directory **opinsys**. (If there is more than one image, the newest is taken.)
 - as root type **make**
 - wait for patch process to be finished
 - install the new image on your Puavo latop (or put it in cloud image repository)
@@ -19,7 +19,10 @@ The patch process is controlled by the content of the directories inside the dir
 - installs all local debs in **install/debs/*.deb**. All dependencies are resolved at the end.
 - executes all snippets in **install/parts/\<partname\>/install.sh**. You can do anything here. Have a look at the example parts.
 
-The part **install/parts/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
+### Parts
+
+- The part **install/parts/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
+- On PuavoOs laptops you can test the part by executing (as root) the **install/parts/\<partname\>/install.sh** on your laptop.
 
 ## What could go wrong?
 
