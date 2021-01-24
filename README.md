@@ -43,6 +43,8 @@ In the directory **parts-stock** you find some examples for parts. Move items to
 - **sozi** is a cool zooming presentation editor and player. https://sozi.baierouge.fr/
 - **syncthing** is a continuous  peer-to-peer file synchronization program  https://syncthing.net/
 
+Note that hese example parts are just dirty hacks (,which work for me).
+
 
 #### Some hints for PuavoOS
 
