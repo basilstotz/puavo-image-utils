@@ -26,9 +26,11 @@ The patch process is controlled by the content of the directories inside the dir
 - installs all local debs in **install/debs/*.deb**. All dependencies are resolved at the end.
 - executes all snippets in **install/parts/\<partname\>/install.sh**.  
 
-### Parts
+### Parts?
 
 - You can do anything here. Have a look at the example parts.
+- The parts directories **must** contain an executeable **install.sh** (usualy bash), which does your config.
+- The individual directories can either download things (during install) or use ebedded content in the directory.
 - The part **install/parts/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
 - Hint: On PuavoOs laptops you can test the part by executing (as root) the **install/parts/\<partname\>/install.sh** on your laptop.
 
