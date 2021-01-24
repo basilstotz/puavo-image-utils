@@ -1,6 +1,6 @@
 # puavo-patch-generic
 
-This a simple minimalistic "framework" aimed to patch PuavoOS images. It work in (eternal) progress ...
+This a simple minimalistic "framework" aimed to easyly patch PuavoOS images. This is work in (eternal) progress ...
 
 ## Quick Start
 
