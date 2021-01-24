@@ -67,7 +67,7 @@ echo "$CLASS" > ./image/etc/puavo-image/class
 
 
 #make compressed image
-#$P/bin/puavo-dir-clone --dont-update-name --type squashfs ./image ./${IMAGE}.img
+$P/bin/puavo-dir-clone --dont-update-name --type squashfs ./image ./${IMAGE}.img
 
 #umount
 $P/bin/puavo-img-mount --umount image.img
