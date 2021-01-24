@@ -33,7 +33,7 @@ The patch process is controlled by the content of the directories inside the dir
 - The individual install.sh **can** either download things (during install in chroot) and/or **can** use content enbedded in the directory.
 
 #### Example Parts
-In the directory **parts-stock** you find some examples for parts. Move items to **install/parts/** in order to activate them.
+In the directory **partsonstock** you find some examples for parts. Move items to **install/parts/** in order to activate them.
 
 - **cafepitch** a Markdown-driven presentation tool built on Electron. https://github.com/joe-re/cafe-pitch
 - **geary** installs a newer geary - a Gnome3 integrated email client - from buster-packports debian repository
