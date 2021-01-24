@@ -1,25 +1,43 @@
 #!/bin/sh
 
+P=$(pwd)
+
+
 #link latest src image
 TMP=$(ls -t ./opinsys/*.img|head -n1)
 SRC=$(basename $TMP)
 if test -h ./images/image.img;then
     rm ./images/image.img
 fi
-ln -s $(readlink -e ./opinsys/$SRC) ./images/image.img
+
+if test -h ./opinsys/$SRC;then
+    ANS="$(readlink -e ./opinsys/$SRC)"
+    if test -n "$ANS";then
+        ln -s $ANS  ./images/image.img
+    else
+	echo "error: link not ok"
+	exit 1
+    fi
+else
+    if test -e ./opinsys/$SRC;then
+        ln -s ./opinsys/$SRC ./images/image.img
+    else
+	echo "error: file not ok"
+	exit 1
+    fi	
+fi
 
 cd ./images
 
 #mount image
-puavo-img-mount image.img
+$P/bin/puavo-img-mount image.img
 
 #copy data to image
 cp -r  ../cache   ./image/var/
 cp -r  ../install ./image/
 
-
 #patch!
-#echo "/install/bin/puavo-img-chroot-apply" | puavo-dir-chroot ./image
+echo "/install/bin/puavo-chroot-apply" | $P/bin/puavo-dir-chroot ./image
 
 #cache debs
 rsync -rav  --delete --size-only  ./image/var/cache/apt/archives/ ../cache/apt/archives/
@@ -38,9 +56,9 @@ echo "$( cat ./image/etc/puavo-image/release ) (${VERSION})">./image/etc/puavo-i
 echo "$CLASS" > ./image/etc/puavo-image/class
 
 #make compressed image
-puavo-dir-clone --dont-update-name --type squashfs ./image ${IMGAGE}.img
+$P/bin/puavo-dir-clone --dont-update-name --type squashfs ./image ./${IMAGE}.img
 
 #umount
-puavo-img-mount --umount image.img
+$P/bin/puavo-img-mount --umount image.img
 
 	
