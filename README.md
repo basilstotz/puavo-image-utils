@@ -28,12 +28,23 @@ The patch process is controlled by the content of the directories inside the dir
 
 ### Parts?
 
-- You can do anything here. Have a look at the example parts.
-- Parts are simple directories. 
-- They **must** contain an executeable **install.sh** in (ba)sh, which does your config.
+- Parts are simple directories, 
+- which **must** contain an executeable **install.sh** in (ba)sh. 
 - The individual install.sh **can** either download things (during install in chroot) and/or **can** use content enbedded in the directory.
 
-Some hints:
+#### Example Parts
+In the directory **parts-stock** you find some examples for parts. Move items to **install/parts/** in order to activate them.
+
+- **cafepitch** a Markdown-driven presentation tool built on Electron. https://github.com/joe-re/cafe-pitch
+- **geary** installs a newer geary - a Gnome3 integrated email client - from buster-packports debian repository
+- **gedit-markdown**  adds support for Markdown language in gedit https://github.com/jpfleury/gedit-markdown
+- **lumi**  is a desktop app that allows you to create, edit and view H5P (https://h5p.org) content. https://next.lumi.education/
+- **markdown-cli** a collection of markdown cli tools. See install.sh for detials
+- **sozi** is a cool zooming presentation editor and player. https://sozi.baierouge.fr/
+- **syncthing** is a continuous  peer-to-peer file synchronization program  https://syncthing.net/
+
+
+#### Some hints for PuavoOS
 
 - The part **install/parts/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
 - On PuavoOs laptops you can test the part by executing (as root) the **install/parts/\<partname\>/install.sh** on live your laptop.
