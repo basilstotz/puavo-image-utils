@@ -25,6 +25,15 @@ The patch process is controlled by the content of the directories inside the dir
 - The part **install/parts/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
 - Hint: On PuavoOs laptops you can test the part by executing (as root) the **install/parts/\<partname\>/install.sh** on your laptop.
 
+## How does it work?
+
+The patch process is done by the programm **bin/puavo-img-patch**, which uses some helper programms:  
+
+- The main is **bin/puavo-img-mount**. This programm mounts a (readonly) squashfs image in read/write mode! 
+- Then the programm **bin/puavo-dir-chroot** executs **install/bin/puavo-chroot-apply** in chroot. 
+- The patched image then will be compressed again as squashfs with **bin/puavo-dir-clone**. 
+- In order to speed up thing the downloaded debs are cached in the directory **cache**.
+
 ## What could go wrong?
 
 The patch process needs (up to 10 GBytes) temporary disk space in the partition **/images/**. Be shure there is enough space there or see **./bin/puavo-img-mount --help** and patch **bin/puavo-img-patch** accordingly
