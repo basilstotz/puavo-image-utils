@@ -2,6 +2,8 @@
 
 P=$(pwd)
 
+CLASS="extra"
+DIST="buster"
 
 #link latest src image
 TMP=$(ls -t ./opinsys/*.img|head -n1)
@@ -13,14 +15,14 @@ fi
 if test -h ./opinsys/$SRC;then
     ANS="$(readlink -e ./opinsys/$SRC)"
     if test -n "$ANS";then
-        ln -s $ANS  ./images/image.img
+        ln -s $P/$ANS  $P/images/image.img
     else
 	echo "error: link not ok"
 	exit 1
     fi
 else
     if test -e ./opinsys/$SRC;then
-        ln -s ./opinsys/$SRC ./images/image.img
+        ln -s $P/opinsys/$SRC $P/images/image.img
     else
 	echo "error: file not ok"
 	exit 1
@@ -28,6 +30,13 @@ else
 fi
 
 cd ./images
+
+if test -z "$(readlink -e ./image.img)" ;then
+    echo "error: no proper image.img"
+    exit 1
+fi
+
+
 
 #mount image
 $P/bin/puavo-img-mount image.img
@@ -47,7 +56,7 @@ rm -r ./image/install
 rm -r ./image/var/cache/apt/archives/*
 
 #compose new image name
-VERSION==$(date +%Y-%m-%d-%H%M%S)
+VERSION=$(date +%Y-%m-%d-%H%M%S)
 IMAGE="puavo-os-${CLASS}-${DIST}-${VERSION}-amd64"
 
 #save names in image
@@ -55,8 +64,10 @@ echo "${IMAGE}.img" > ./image/etc/puavo-image/name
 echo "$( cat ./image/etc/puavo-image/release ) (${VERSION})">./image/etc/puavo-image/release
 echo "$CLASS" > ./image/etc/puavo-image/class
 
+
+
 #make compressed image
-$P/bin/puavo-dir-clone --dont-update-name --type squashfs ./image ./${IMAGE}.img
+#$P/bin/puavo-dir-clone --dont-update-name --type squashfs ./image ./${IMAGE}.img
 
 #umount
 $P/bin/puavo-img-mount --umount image.img
