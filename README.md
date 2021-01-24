@@ -30,8 +30,8 @@ The patch process is controlled by the content of the directories inside the dir
 
 - You can do anything here. Have a look at the example parts.
 - Parts are simple directories. 
-- They **must** contain an executeable **install.sh** (usualy written in bash), which does your config.
-- The individual directories can either download things (during install in chroot) or use ebedded content in the directory.
+- They **must** contain an executeable **install.sh** in (ba)sh, which does your config.
+- The individual install.sh **can** either download things (during install in chroot) and/or **can** use content enbedded in the directory.
 
 Some hints:
 
