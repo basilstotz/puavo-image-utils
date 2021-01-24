@@ -17,12 +17,13 @@ The patch process is controlled by the content of the directories inside the dir
 - installs the file tree in **install/files/\*** to the root directory **/**
 - installs (with apt) all debs, which are contained in whitespace separated list files in **install/lists/*.list**
 - installs all local debs in **install/debs/*.deb**. All dependencies are resolved at the end.
-- executes all snippets in **install/parts/\<partname\>/install.sh**. You can do anything here. Have a look at the example parts.
+- executes all snippets in **install/parts/\<partname\>/install.sh**.  
 
 ### Parts
 
+- You can do anything here. Have a look at the example parts.
 - The part **install/parts/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
-- On PuavoOs laptops you can test the part by executing (as root) the **install/parts/\<partname\>/install.sh** on your laptop.
+- Hint: On PuavoOs laptops you can test the part by executing (as root) the **install/parts/\<partname\>/install.sh** on your laptop.
 
 ## What could go wrong?
 
