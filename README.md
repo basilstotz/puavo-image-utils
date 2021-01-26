@@ -50,7 +50,7 @@ When you exit the chroot with a zero exit code a new image build including the p
 - Exiting with non zero exit code skips the image generation.
 
 ```
-sudo puavo-img-tool --data /path/to/datadir puavo-os-extra-buster-2021-01-25-220739-amd64.img
+sudo puavo-img-tool --datadir /path/to/datadir puavo-os-extra-buster-2021-01-25-220739-amd64.img
 ```
 This command is similar to the above, but it copies the content of **/path/to/datadir/\*** to your chroot in **/install/** bevor entering the interactive shell.
 
