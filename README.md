@@ -1,6 +1,6 @@
 # puavo-img-tool
 
-This a very simple and minimalistic programm aimed to easyly patch PuavoOS images. 
+This a very simple and minimalistic programm to patch/inspect PuavoOS images easyly. It is not aimed  for production, it's rather used for hacking and testing. Use it at your own risk. 
 
 Some background knowledge about PuavoOS images:
 
