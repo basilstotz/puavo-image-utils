@@ -55,7 +55,7 @@ The **/install** directory (in chroot) will be removed bevor compressing the ima
 ```
 puavo-img-tool --osname amxa --class spezial puavo-os-extra-buster-2021-01-25-220739-amd64.img
 ```
-This command is similar to the first one, but it changes the name of the image. The output will be something like "**amxa**-os-**spezial**-buster-2021-01-25-220739-amd64.img".
+This command is similar to the first one, but it changes the name of the image. The output will be something like "**amxa**-os-**spezial**-buster-2021-XX-XX-XXXXXX-amd64.img".
 
 
 
