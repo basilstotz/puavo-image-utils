@@ -27,8 +27,9 @@ Inspect or modify a PuavoOS image and (optionaly) create a new puavo-os image
 Options:
     -c, --class  CLASS     set image class to CLASS (default ist the source class)
     -o, --osname OSNAME    set image osname to OSNAME (default ist the source osname)
+    -d, --datadir DATADIR  copies the content of datadir to /install/ in the chroot.
+    -f, --force            force image creation even with errors
     -i, --iteractive       force interactive shell
-    -d, --datadir          copies the content of datadir to /install/ in the chroot.
     -h, --help             show this help message
 ```
 (The Makefile here included is just a wrapper around **puavo-img-tool**)
