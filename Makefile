@@ -1,4 +1,6 @@
 .PHONY: all
 
 all:
-	@./bin/puavo-img-patch
+	@cp bin/* /usr/local/bin/.
+	@./puavo-img-patch.sh
+

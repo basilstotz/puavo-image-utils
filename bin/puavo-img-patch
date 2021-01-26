@@ -1,75 +1,13 @@
 #!/bin/sh
 
-P=$(pwd)
-
+OSNAME="puavo"
 CLASS="extra"
-DIST="buster"
 
-#link latest src image
-TMP=$(ls -t ./opinsys/*.img|head -n1)
-SRC=$(basename $TMP)
-if test -h ./images/image.img;then
-    rm ./images/image.img
-fi
+#install bins
+cp bin/* /usr/local/bin/.
 
-if test -h ./opinsys/$SRC;then
-    ANS="$(readlink -e ./opinsys/$SRC)"
-    if test -n "$ANS";then
-        ln -s $P/$ANS  $P/images/image.img
-    else
-	echo "error: link not ok"
-	exit 1
-    fi
-else
-    if test -e ./opinsys/$SRC;then
-        ln -s $P/opinsys/$SRC $P/images/image.img
-    else
-	echo "error: file not ok"
-	exit 1
-    fi	
-fi
-
-cd ./images
-
-if test -z "$(readlink -e ./image.img)" ;then
-    echo "error: no proper image.img"
-    exit 1
-fi
+#call image tool
+puavo-img-tool -o ${OSNAME} -c ${CLASS} puavo-os-extra-buster-2021-01-25-220739-amd64.img
 
 
 
-#mount image
-$P/bin/puavo-img-mount image.img
-
-#copy data to image
-cp -r  ../cache   ./image/var/
-cp -r  ../install ./image/
-
-#patch!
-echo "/install/bin/puavo-chroot-apply" | $P/bin/puavo-dir-chroot ./image
-
-#cache debs
-rsync -rav  --delete --size-only  ./image/var/cache/apt/archives/ ../cache/apt/archives/
-
-#clean image
-rm -r ./image/install
-rm -r ./image/var/cache/apt/archives/*
-
-#compose new image name
-VERSION=$(date +%Y-%m-%d-%H%M%S)
-IMAGE="puavo-os-${CLASS}-${DIST}-${VERSION}-amd64"
-
-#save names in image
-echo "${IMAGE}.img" > ./image/etc/puavo-image/name
-echo "$( cat ./image/etc/puavo-image/release ) (${VERSION})">./image/etc/puavo-image/release
-echo "$CLASS" > ./image/etc/puavo-image/class
-
-
-
-#make compressed image
-$P/bin/puavo-dir-clone --dont-update-name --type squashfs ./image ./${IMAGE}.img
-
-#umount
-$P/bin/puavo-img-mount --umount image.img
-
-	

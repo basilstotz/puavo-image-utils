@@ -1,2 +1,3 @@
-cache/apt/archives/*.deb
+cache/*
+mnt/*
 *.img

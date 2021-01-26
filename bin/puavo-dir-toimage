@@ -1,0 +1,84 @@
+#!/bin/sh
+
+P=$(pwd)
+
+OSNAME="puavo-os"
+CLASS="extra"
+DIST="buster"
+
+
+while [ $# -gt 0 ]; do
+    case $1 in
+	-h|--help)
+	    shift
+	    echo "Usage: $(basename $0) [options] CHROOT"
+	    echo
+	    echo "Make a PuavoOS image from a chroot directory."
+	    echo
+	    echo "Options:"
+	    echo "    -c, --class           set image class (default: $CLASS)"
+	    echo "    -d, --dist            set image dist (default: $DIST)"
+	    echo "    -o, --osname          set image osname (default: $OSNAME"
+	    echo
+	    exit 0
+	    ;;
+	-c|--class)
+	    shift
+	    CLASS=$1
+	    shift
+	    ;;
+	-d|--dist)
+	    shift
+	    DIST=$1
+	    shift
+	    ;;
+	-o|--osname)
+	    shift
+	    OSNAME=$1
+	    shift
+	    ;;
+	--)
+	    shift
+	    break
+	    ;;
+	-*)
+	    usage_error "invalid argument '$1'"
+	    ;;
+	*)
+	    break
+	    ;;
+    esac
+done
+
+if [ $# -ne 1 ]; then
+    echo  "invalid number of arguments ($#), expected 1"
+    exit 1
+fi
+
+CHROOT=$1
+
+
+if ! test -d $CHROOT;then
+    echo "error: chroot $CHROOT not found"
+#    exit 1
+fi
+
+#compose new image name
+VERSION=$(date +%Y-%m-%d-%H%M%S)
+IMAGE="${OSNAME}-${CLASS}-${DIST}-${VERSION}-amd64"
+
+#save names in image
+echo "${IMAGE}.img" > $CHROOT/etc/puavo-image/name
+echo "$( cat $CHROOT/etc/puavo-image/release ) (${VERSION})">$CHROOT/etc/puavo-image/release
+echo "$CLASS" > $CHROOT/etc/puavo-image/class
+
+echo
+pwd
+ls
+cd ..
+
+#make compressed image
+echo $P/bin/puavo-dir-clone --dont-update-name --type squashfs ./images/$CHROOT ./images/${IMAGE}.img
+
+exit $?
+

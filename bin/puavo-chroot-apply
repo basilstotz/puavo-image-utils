@@ -1,0 +1,107 @@
+#!/bin/sh
+
+
+echo "**************************************************************"
+echo "*                                                            *"
+echo "*                     Hello Chroot                           *"
+echo "*                                                            *"
+echo "**************************************************************"
+UPDATED=false
+BIN=false
+ERROR=false
+
+
+#bin
+if test -d /install/bin;then
+    if test -n "$(ls /install/bin)";then
+        echo "**************************************************************"
+        echo "                          bin                                *"
+        echo "**************************************************************"
+        for B in $(ls /install/bin);do
+	    if test -x /install/bin/$B;then
+		/install/bin/$B
+		BIN=true
+	    fi 
+        done
+	if $BIN; then
+	    exit 0
+	fi
+    fi
+fi
+
+#files
+if test -d /install/files;then
+    if test -n "$(ls /install/files/)";then
+	echo "**************************************************************"
+        echo "                         files                               *"
+        echo "**************************************************************"
+        cp -r /install/files/* /
+	if test $? = 1;then ERROR=true;fi
+    fi
+fi
+
+
+#lists
+if test -d /install/list;then
+    if test -n "$(ls /install/lists|grep .list)";then
+        echo "**************************************************************"
+        echo "                         lists                               *"
+        echo "**************************************************************"
+        apt-get update
+	if test $? = 1;then ERROR=true;fi
+	UPDATED=true
+        apt-get -y install $(cat /install/lists/*list|xargs)
+	if test $? = 1;then ERROR=true;fi
+    fi
+fi
+
+#debs
+if test -d /install/debs;then
+    if test -n "$(ls /install/debs|grep .deb)";then
+        echo "**************************************************************"
+        echo "                         debs                                *"
+        echo "**************************************************************"
+        for D in $(ls /install/debs/*.deb);do
+             dpkg -i $D
+             if test $? = 1;then ERROR=true;fi
+        done
+        if ! $UPDATED;then
+	    apt-get update
+    	    if test $? = 1;then ERROR=true;fi
+	    UPDATED=true
+	fi
+	apt-get -y -f install
+	if test $? = 1;then ERROR=true;fi
+    fi
+fi
+
+#parts
+if test -d /install/parts;then
+    if test -n "$(ls /install/parts/)";then
+        echo "**************************************************************"
+        echo "                         parts                               *"
+        echo "**************************************************************"
+	if ! $UPDATED;then
+	    apt-get update
+	fi
+        for P in $(ls /install/parts/);do
+            if test -x /install/parts/$P/install.sh;then
+                 /install/parts/$P/install.sh
+  	         if test $? = 1;then ERROR=true;fi
+            fi
+        done
+	apt-get -f install
+	if test $? = 1;then ERROR=true;fi
+    fi
+fi
+
+echo "**************************************************************"
+echo "*                                                            *"
+echo "*                     Goodbye Chroot                         *"
+echo "*                                                            *"
+echo "**************************************************************"
+exit $ERROR
+
+
+
+

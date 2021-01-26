@@ -1,0 +1,280 @@
+#!/bin/sh
+
+CLASS_O=""
+DIST_O=""
+OSNAME_O=""
+INTER_O="1"
+
+while [ $# -gt 0 ]; do
+    case $1 in
+	-h|--help)
+	    shift
+	    echo "Usage: $(basename $0) [options] IMAGE.mg"
+	    echo
+	    echo "Patch a PuavoOS image."
+	    echo
+	    echo "Options:"
+	    echo "    -c, --class           set image class"
+ 	    echo "    -o, --osname          set image osname"
+	    echo "    -i, --iteractive      force interactive shell"
+	    echo
+	    exit 0
+	    ;;
+	-c|--class)
+	    shift
+	    CLASS_O=$1
+	    shift
+	    ;;
+	-o|--osname)
+	    shift
+	    OSNAME_O=$1
+	    shift
+	    ;;
+	-i|--interactive)
+	    shift
+	    INTER_O="0"
+	    ;;
+	--)
+	    shift
+	    break
+	    ;;
+	-*)
+	    echo "error: invalid argument '$1'"
+	    exit 1
+	    ;;
+	*)
+	    break
+	    ;;
+    esac
+done
+
+if [ $# -ne 1 ]; then
+    echo  "invalid number of arguments ($#), expected 1"
+    exit 1
+fi
+
+
+SOURCE=$1
+
+#check source image
+if test -h $SOURCE;then
+    ANS="$(readlink -e $SOURCE)"
+    if ! test -n "$ANS";then
+	echo "error: link not ok"
+	exit 1
+    fi
+else
+    if ! test -e $SOURCE;then
+	echo "error: file not found"
+	exit 1
+    fi	
+fi
+
+#mount image
+puavo-img-mount $SOURCE
+
+
+CHROOT=$(basename -s .img $SOURCE)
+
+if test -e $CHROOT/etc/puavo-image/name;then
+    NAME=$(cat $CHROOT/etc/puavo-image/name)
+else
+    echo "error: $CHROOT does not seem to be a puavo-os image"
+    puavo-img-mount --umount $SOURCE
+    exit 1
+fi
+
+#calc parameters
+OSNAME_I=$(echo $NAME|cut -d- -f1)
+CLASS_I=$(echo $NAME|cut -d- -f3)
+DIST=$(echo $NAME|cut -d- -f4)
+
+if test -n "$OSNAME_O";then
+    OSNAME=$OSNAME_O
+else
+    OSNAME=$OSNAME_I
+fi
+
+if test -n "$SERIE_O";then
+    SERIE=$SERIE_O
+else
+    SERIE=$SERIE_I
+fi
+
+if test -n "$CLASS_O";then
+    CLASS=$CLASS_O
+else
+    CLASS=$CLASS_I
+fi
+
+if test -d install/bin/ -o -d install/files -o -d install/debs -o -d install/lists -o -d install/parts;then
+    INTERACTIVE=1
+else
+    INTERACTIVE=0
+fi
+if test "$INTER_O" = "0";then
+    INTERACTIVE=0
+fi
+
+
+#copy data to image
+#copy chroot binary to chroot
+cat << 'EOF' >$CHROOT/usr/local/bin/puavo-chroot-apply
+#!/bin/sh
+
+
+echo "**************************************************************"
+echo "*                                                            *"
+echo "*                     Hello Chroot                           *"
+echo "*                                                            *"
+echo "**************************************************************"
+UPDATED=1
+BIN=1
+ERROR=0
+
+#bin
+if test -d /install/bin;then
+    if test -n "$(ls /install/bin)";then
+        echo "**************************************************************"
+        echo "                          bin                                *"
+        echo "**************************************************************"
+        for B in $(ls /install/bin);do
+	    if test -x /install/bin/$B;then
+		/install/bin/$B
+		BIN=0
+	    fi 
+        done
+	if test "$BIN" = 0; then
+	    exit 0
+	fi
+    fi
+fi
+
+#files
+if test -d /install/files;then
+    if test -n "$(ls /install/files/)";then
+	echo "**************************************************************"
+        echo "                         files                               *"
+        echo "**************************************************************"
+        cp -r /install/files/* /
+	if test $? = 1;then ERROR=1;fi
+        echo "ok"
+    fi
+fi
+
+
+#lists
+if test -d /install/lists;then
+    if test -n "$(ls /install/lists|grep .list)";then
+        echo "**************************************************************"
+        echo "                         lists                               *"
+        echo "**************************************************************"
+        apt-get update
+	if test $? = 1;then ERROR=1;fi
+	UPDATED=0
+        apt-get -y install $(cat /install/lists/*list|xargs)
+	if test $? = 1;then ERROR=1;fi
+    fi
+fi
+
+#debs
+if test -d /install/debs;then
+    if test -n "$(ls /install/debs|grep .deb)";then
+        echo "**************************************************************"
+        echo "                         debs                                *"
+        echo "**************************************************************"
+        for D in $(ls /install/debs/*.deb);do
+             dpkg -i $D
+             #if test $? = 1;then ERROR=1;fi
+        done
+        if test $UPDATED = 1;then
+	    apt-get update
+    	    if test $? = 1;then ERROR=1;fi
+	    UPDATED=0
+	fi
+	apt-get -y -f install
+	if test $? = 1;then ERROR=1;fi
+    fi
+fi
+
+#parts
+if test -d /install/parts;then
+    if test -n "$(ls /install/parts/)";then
+        echo "**************************************************************"
+        echo "                         parts                               *"
+        echo "**************************************************************"
+	if test $UPDATED = 1;then
+	    apt-get update
+	fi
+        for P in $(ls /install/parts/);do
+            if test -x /install/parts/$P/install.sh;then
+                 /install/parts/$P/install.sh
+  	         if test $? = 1;then ERROR=1;fi
+            fi
+        done
+	apt-get -f install
+	if test $? = 1;then ERROR=1;fi
+    fi
+fi
+
+echo "**************************************************************"
+echo "*                                                            *"
+echo "*                     Goodbye Chroot                         *"
+echo "*                                                            *"
+echo "**************************************************************"
+echo "Status is $ERROR"
+exit $ERROR
+EOF
+
+chmod +x $CHROOT/usr/local/bin/puavo-chroot-apply
+
+#copy cached apt
+if ! test -d cache/apt/;then
+    mkdir -p cache/apt/
+    touch .t
+fi
+
+#copy install
+cp -r  install $CHROOT/
+
+#patch!
+if test $INTERACTIVE = 1;then
+    #echo "non interactive"
+    echo "/usr/local/bin/puavo-chroot-apply" | puavo-dir-chroot $CHROOT
+else
+    #echo "interactive"
+    puavo-dir-chroot $CHROOT
+fi
+
+
+if test $? = 0;then
+#    cache debs
+     rsync -rav  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
+
+#    clean image
+     rm -r $CHROOT/install
+     rm -r $CHROOT/var/cache/apt/archives/*
+
+#    compose new image name
+     VERSION=$(date +%Y-%m-%d-%H%M%S)
+     IMAGE="${OSNAME}-os-${CLASS}-${DIST}-${VERSION}-amd64"
+     #save names in image
+     echo "${IMAGE}.img" > $CHROOT/etc/puavo-image/name
+     echo "$( cat $CHROOT/etc/puavo-image/release ) (${VERSION})">$CHROOT/etc/puavo-image/release
+     echo "$CLASS" > $CHROOT/etc/puavo-image/class
+
+     echo $IMAGE.img
+     
+#    make compressed image
+     puavo-dir-clone --dont-update-name --type squashfs $CHROOT ${IMAGE}.img
+
+#    puavo-dir-image --class $CLASS --dist $DIST image.img
+else
+    echo "error: chroot did not exit with status 0. not bulding image"
+fi
+#umount
+puavo-img-mount --umount $SOURCE
+
+exit $?
+
+	
