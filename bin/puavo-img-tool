@@ -8,6 +8,8 @@ FORCE_O="1"
 
 DATAPATH=""
 
+echo $@
+
 while [ $# -gt 0 ]; do
     case $1 in
 	-h|--help)
@@ -36,7 +38,7 @@ while [ $# -gt 0 ]; do
 	    OSNAME_O=$1
 	    shift
 	    ;;
-	-d|--data)
+	-d|--datadir)
 	    shift
 	    DATAPATH=$1
 	    shift
@@ -63,8 +65,10 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+echo $@
+
 if [ $# -ne 1 ]; then
-    echo  "invalid number of arguments ($#), expected 1"
+    echo  "error: invalid number of arguments ($#), expected 1"
     exit 1
 fi
 
@@ -160,9 +164,9 @@ if test -d /install/bin.d;then
         echo "**************************************************************"
         echo "                          bin                                *"
         echo "**************************************************************"
-        for B in $(ls /install/bin);do
-	    if test -x /install/bin/$B;then
-		/install/bin/$B
+        for B in $(ls /install/bin.d);do
+	    if test -x /install/bin.d/$B;then
+		/install/bin.d/$B
 		if test $? = 1;then ERROR=1;fi
 	    fi 
         done
