@@ -25,10 +25,11 @@ Usage: sudo puavo-img-tool [options] [/path/to/]IMAGE.img
 Inspect or modify a PuavoOS image and (optionaly) create a new puavo-os image
 
 Options:
-    -c, --class  CLASS     set image class to CLASS (default ist the source class)
-    -o, --osname OSNAME    set image osname to OSNAME (default ist the source osname)
+    -c, --class  CLASS     set image class to CLASS (defaults to source class)
+    -o, --osname OSNAME    set image osname to OSNAME (defaults to source osname)
+    -d, --datadir DATADIR  copies the content of datadir to /install/ in the chroot.
+    -f, --force            force image creation even with errors
     -i, --iteractive       force interactive shell
-    -d, --datadir          copies the content of datadir to /install/ in the chroot.
     -h, --help             show this help message
 ```
 (The Makefile here included is just a wrapper around **puavo-img-tool**)
@@ -49,7 +50,7 @@ When you exit the chroot with a zero exit code a new image build including the p
 - Exiting with non zero exit code skips the image generation.
 
 ```
-sudo puavo-img-tool --data /path/to/datadir puavo-os-extra-buster-2021-01-25-220739-amd64.img
+sudo puavo-img-tool --datadir /path/to/datadir puavo-os-extra-buster-2021-01-25-220739-amd64.img
 ```
 This command is similar to the above, but it copies the content of **/path/to/datadir/\*** to your chroot in **/install/** bevor entering the interactive shell.
 
@@ -63,17 +64,19 @@ This command is similar to the first one, but it changes the name of the image. 
 
 ## Advanced Automated Usage
 
-When the datadir contains (at least one of) folder(s) whit names **bin**, **files**, **lists**, **parts** the programm switches to non interacitve mode. 
+When the datadir contains (at least one of) folder(s) whit names **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** the programm switches to non interacitve mode.
 
-The the non interactice process is controlled by the content of these directories:
+The the non interactice process in the chroot is controlled by the content of these directories:
 
-1. It runs all executeables in **bin/** in alphabetical order. 
-2. Installs the file tree in **files/\*** to the root directory **/**
-3. Installs (with apt) all debs, which are contained in whitespace separated list files in **lists/\*.list**
-4. Installs all local debs in **debs/\*.deb**. All dependencies are resolved at the end.
-5. Executes all parts (or snippets) in **parts/\<partname\>/install.sh**.  
+1. It runs all executeables in **bin.d/\*.sh** in alphabetical order. 
+2. Installs the file tree in **files.d/\*** to the root directory **/**
+3. Installs (with apt) all debs, which are contained in whitespace separated list files in **lists.d/\*.list**
+4. Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
+5. Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
 
-- If no errors are detected a new puavo-os will bei built.
+If no errors are detected a new puavo-os will bei built. 
+
+- Use option ---force to force image creation even with errors
 - Use the option --interactive to force an interactice shell
 
 ## More About Parts
@@ -100,8 +103,8 @@ Note that these examples are just dirty hacks (,which work for me).
 
 #### Some hints for PuavoOS
 
-- The part **install/parts/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
-- On PuavoOs laptops you can test the part by executing (as root) the **install/parts/\<partname\>/install.sh** on live your laptop.
+- The part **parts.d/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
+- On PuavoOs laptops you can test the part by executing (as root) the **parts.d/\<partname\>/install.sh** on live your laptop.
 
 
 ## About Puavo
