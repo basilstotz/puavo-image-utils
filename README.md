@@ -2,10 +2,6 @@
 
 This a very simple and minimalistic programm to patch/inspect PuavoOS images easyly. It is not aimed  for production, it's rather used for hacking and testing. Use it at your own risk. 
 
-Some background knowledge about PuavoOS images:
-
-- An introduction to image Puavo image building and patching in general (in german): https://hackmd.io/lliTWflmTiSJ3zmLddRCaA
-- Setup an Puavo image repostory (in german too):  https://hackmd.io/gdqd7gnpTSKORQEyW5y1EA
 
 This is work in (eternal) progress ...
 
@@ -102,14 +98,18 @@ In the directory **partsonstock** you find some examples for parts. Move items t
 Note that these examples are just dirty hacks (,which work for me).
 
 
-#### Some hints for PuavoOS
+#### Hints for PuavoOS
 
 - The part **parts.d/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
 - On PuavoOs laptops you can test the part by executing (as root) the **parts.d/\<partname\>/install.sh** on live your laptop.
 
 
-## About Puavo
+## Usefull Links
 
-- See https://puavo.org and https://github.com/puavo-org
+Background knowledge about PuavoOS and PuavoOS-images:
+
+- More information https://puavo.org and source code https://github.com/puavo-org
+- An introduction to image Puavo image building and patching in general (in german): https://hackmd.io/lliTWflmTiSJ3zmLddRCaA
+- Setup an Puavo image repostory (in german too):  https://hackmd.io/gdqd7gnpTSKORQEyW5y1EA
 - An general introduction to the Puavo ICT environment for schools (in german): https://hackmd.io/D1U0ywlLSva94FMxy3hGSg 
 - An introduction to PuavoOS, a Debian based OS for schools (in german): https://hackmd.io/519PnTRuSbaK-tCxs5eIrw
