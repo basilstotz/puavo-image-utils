@@ -75,8 +75,9 @@ The the non interactice process is controlled by the content of these directorie
 
 #### Parts?
 
-- Parts are simple directories, 
-- which **must** contain an executeable **install.sh** in (ba)sh. 
+Parts are mainly used to install/modify thing outside of Debian (repos)
+
+- Parts are simple directories, which **must** contain an executeable **install.sh** in (ba)sh. 
 - The individual install.sh **can** either download things (during install in chroot) and/or **can** use content enbedded in the directory.
 
 #### Example Parts
