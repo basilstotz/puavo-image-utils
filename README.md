@@ -68,7 +68,7 @@ When the datadir contains (at least one of) folder(s) whit names **bin**, **file
 
 The the non interactice process is controlled by the content of these directories:
 
-1. It runs all executeables in **bin/** in alphabetical order. 
+1. It runs all executeables in **bin/\*.sh** in alphabetical order. 
 2. Installs the file tree in **files/\*** to the root directory **/**
 3. Installs (with apt) all debs, which are contained in whitespace separated list files in **lists/\*.list**
 4. Installs all local debs in **debs/\*.deb**. All dependencies are resolved at the end.
