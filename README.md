@@ -21,7 +21,7 @@ This is work in (eternal) progress ...
 The Makefile is just a wrapper arounf the programm **puavo-img-tool**:
 
 ```
-Usage: puavo-img-tool [options] [/path/to/]IMAGE.img
+Usage: sudo puavo-img-tool [options] [/path/to/]IMAGE.img
 
 Inspect or modify a PuavoOS image and (optionaly) create a new puavo-os image
 
@@ -36,8 +36,10 @@ Options:
 
 ### Basic Interactive Usage
 
+Hint: Be shure to have sudo rights and run **sudo make install** to (temporaly ) install the puavo-img-tools on your system. (Not needed with **make**.)
+
 ```
-puavo-img-tool puavo-os-extra-buster-2021-01-25-220739-amd64.img
+sudo puavo-img-tool puavo-os-extra-buster-2021-01-25-220739-amd64.img
 ```
 This command opens an interactive shell session on *puavo-os-extra-buster-2021-01-25-220739-amd64.img* with full read/write access. 
 
@@ -47,14 +49,14 @@ When you exit the chroot with a zero exit code a new image build including the p
 - Exiting with non zero exit code skips the image generation.
 
 ```
-puavo-img-tool --data /path/to/datadir puavo-os-extra-buster-2021-01-25-220739-amd64.img
+sudo puavo-img-tool --data /path/to/datadir puavo-os-extra-buster-2021-01-25-220739-amd64.img
 ```
 This command is similar to the above, but it copies the content of **/path/to/datadir/\*** to your chroot in **/install/** bevor entering the interactive shell.
 
 The **/install** directory (in chroot) will be removed bevor compressing the image.
 
 ```
-puavo-img-tool --osname amxa --class spezial puavo-os-extra-buster-2021-01-25-220739-amd64.img
+sudo puavo-img-tool --osname amxa --class spezial puavo-os-extra-buster-2021-01-25-220739-amd64.img
 ```
 This command is similar to the first one, but it changes the name of the image. The output will be something like "**amxa**-os-**spezial**-buster-2021-XX-XX-XXXXXX-amd64.img".
 
