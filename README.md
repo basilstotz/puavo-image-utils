@@ -70,6 +70,8 @@ The the non interactice process in the chroot is controlled by the content of th
 4. Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
 5. Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
 
+In **example/example-install** you'll find a working example datadir.
+
 If no errors are detected a new puavo-os will bei built. 
 
 - Use option ---force to force image creation even with errors
@@ -84,7 +86,7 @@ Parts are mainly used to install/modify things "outside" of Debian.
 - The individual install.sh **can** either download things (during install in chroot) and/or **can** use content enbedded in the directory.
 
 #### Example Parts
-In the directory **partsonstock** you find some examples for parts. Move items to **install/parts/** in order to activate them.
+In the directory **example/more-parts** you find some examples for parts. Move items to **parts.d/** in order to activate them.
 
 - **cafepitch** a Markdown-driven presentation tool built on Electron. https://github.com/joe-re/cafe-pitch
 - **geary** installs a newer geary - a Gnome3 integrated email client - from buster-packports debian repository
@@ -96,9 +98,6 @@ In the directory **partsonstock** you find some examples for parts. Move items t
 - **syncthing** is a continuous  peer-to-peer file synchronization program  https://syncthing.net/
 
 Note that these examples are just dirty hacks (,which work for me).
-
-
-#### Hints for PuavoOS
 
 - The part **parts.d/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
 - On PuavoOs laptops you can test the part by executing (as root) the **parts.d/\<partname\>/install.sh** on live your laptop.
