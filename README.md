@@ -64,7 +64,7 @@ This command is similar to the first one, but it changes the name of the image. 
 
 ## Advanced Automated Usage
 
-When the datadir contains (at least one of) folder(s) whit names **bin.d**, **files.d**, **lists.d**, **parts.d** the programm switches to non interacitve mode. 
+When the datadir contains (at least one of) folder(s) whit names **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** the programm switches to non interacitve mode. 
 
 The the non interactice process is controlled by the content of these directories:
 
@@ -74,7 +74,9 @@ The the non interactice process is controlled by the content of these directorie
 4. Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
 5. Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
 
-- If no errors are detected a new puavo-os will bei built.
+If no errors are detected a new puavo-os will bei built. 
+
+- Use option ---force to force image creation even with errors
 - Use the option --interactive to force an interactice shell
 
 ## More About Parts
