@@ -25,18 +25,18 @@ The Makefile is just a wrapper arounf the programm **puavo-img-tool**:
 ```
 Usage: puavo-img-tool [options] [/path/to/]IMAGE.img
 
-Inspect or modify a PuavoOS image.
+Inspect or modify a PuavoOS image and (optionaly) create a new puavo-os image
 
 Options:
-    -c, --class           set image class
-    -o, --osname          set image osname
-    -i, --iteractive      force interactive shell
-    -d, --data            copies the content of data(dir) to the chroot.
-    -h, --help            show this help message
+    -c, --class  CLASS     set image class to CLASS (default ist the source class)
+    -o, --osname OSNAME    set image osname to OSNAME (default ist the source osname)
+    -i, --iteractive       force interactive shell
+    -d, --datadir          copies the content of datadir to /install/ in the chroot.
+    -h, --help             show this help message
 ```
 ## Some Examples
 
-### Basic Usage
+### Basic Interactive Usage
 
 ```
 puavo-img-tool puavo-os-extra-buster-2021-01-25-220739-amd64.img
@@ -61,21 +61,19 @@ puavo-img-tool --osname amxa --class spezial puavo-os-extra-buster-2021-01-25-22
 This command is similar to the first one, but it changes the name of the image. The output will be something like "**amxa**-os-**spezial**-buster-2021-XX-XX-XXXXXX-amd64.img".
 
 
+## Advanced non Interactive Usage
 
+When the datadir contains (at least one of) folder(s) whit names **bin**, **files**, **lists**, **parts** the programm switches to non interacitve mode. 
 
+The the non interactice process is controlled by the content of these directories:
 
+1. It runs all executeables in **/install/bin/** in alfabetical order. If the last programm exit with a non zero exit code, the other dirs are skipped. 
+2. Installs the file tree in **/installfiles/\*** to the root directory **/**
+3. Installs (with apt) all debs, which are contained in whitespace separated list files in **install/lists/*.list**
+4. Installs all local debs in **install/debs/\*.deb**. All dependencies are resolved at the end.
+5. Executes all snippets in **install/parts/\<partname\>/install.sh**.  
 
-
-## Add Your Own Things
-
-The patch process is controlled by the content of the directories inside the directory **install**. Modify them after your needs.
-
-- installs the file tree in **install/files/\*** to the root directory **/**
-- installs (with apt) all debs, which are contained in whitespace separated list files in **install/lists/*.list**
-- installs all local debs in **install/debs/*.deb**. All dependencies are resolved at the end.
-- executes all snippets in **install/parts/\<partname\>/install.sh**.  
-
-### Parts?
+#### Parts?
 
 - Parts are simple directories, 
 - which **must** contain an executeable **install.sh** in (ba)sh. 
