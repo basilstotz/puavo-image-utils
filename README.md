@@ -67,17 +67,18 @@ When the datadir contains (at least one of) folder(s) whit names **bin**, **file
 
 The the non interactice process is controlled by the content of these directories:
 
-1. It runs all executeables in **/install/bin/** in alfabetical order. If the last programm exit with a non zero exit code, the other dirs are skipped. 
-2. Installs the file tree in **/installfiles/\*** to the root directory **/**
-3. Installs (with apt) all debs, which are contained in whitespace separated list files in **install/lists/*.list**
+1. It runs all executeables in **/install/bin/** in alphabetical order. 
+2. Installs the file tree in **/install/files/\*** to the root directory **/**
+3. Installs (with apt) all debs, which are contained in whitespace separated list files in **install/lists/\*.list**
 4. Installs all local debs in **install/debs/\*.deb**. All dependencies are resolved at the end.
 5. Executes all snippets in **install/parts/\<partname\>/install.sh**.  
+6. If no errors are detected a new puavo-os will bei built.
 
 #### Parts?
 
 Parts are mainly used to install/modify thing outside of Debian (repos)
 
-- Parts are simple directories, which **must** contain an executeable **install.sh** in (ba)sh. 
+- Parts are simple directories, which just **must** contain an executeable **install.sh** in (ba)sh. 
 - The individual install.sh **can** either download things (during install in chroot) and/or **can** use content enbedded in the directory.
 
 #### Example Parts
