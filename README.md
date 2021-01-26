@@ -11,7 +11,7 @@ This is work in (eternal) progress ...
 
 ## Quick Start
 
-- clone this repo **git clone https://github.com/basilstotz/puavo-patch-generic.git**
+- clone this repo **git clone https://github.com/basilstotz/puavo-img-tool.git**
 - edit **puavo-img-patch.sh** to set source puavo-os-image. 
 - **sudo make**
 - wait for patch process to be finished
