@@ -72,7 +72,9 @@ The the non interactice process is controlled by the content of these directorie
 3. Installs (with apt) all debs, which are contained in whitespace separated list files in **install/lists/\*.list**
 4. Installs all local debs in **install/debs/\*.deb**. All dependencies are resolved at the end.
 5. Executes all snippets in **install/parts/\<partname\>/install.sh**.  
-6. If no errors are detected a new puavo-os will bei built.
+
+- If no errors are detected a new puavo-os will bei built.
+- Use the option --interactive to force an interactice shell
 
 ## More About Parts
 
