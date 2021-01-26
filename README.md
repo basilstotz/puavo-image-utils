@@ -64,9 +64,9 @@ This command is similar to the first one, but it changes the name of the image. 
 
 ## Advanced Automated Usage
 
-When the datadir contains (at least one of) folder(s) whit names **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** the programm switches to non interacitve mode. 
+When the datadir contains (at least one of) folder(s) whit names **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** the programm switches to non interacitve mode.
 
-The the non interactice process is controlled by the content of these directories:
+The the non interactice process in the chroot is controlled by the content of these directories:
 
 1. It runs all executeables in **bin.d/\*.sh** in alphabetical order. 
 2. Installs the file tree in **files.d/\*** to the root directory **/**
