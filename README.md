@@ -11,11 +11,13 @@ This is work in (eternal) progress ...
 
 ## Quick Start
 
-- clone this repo 
-- copy a PuavoOs image to the directory **opinsys**. (If there is more than one image, the newest is taken.)
-- as root type **make**
+- clone this repo **git clone https://github.com/basilstotz/puavo-patch-generic.git**
+- symlink example content **ln -s example/install-example install** 
+- edit **puavo-img-patch.sh** to set source puavo-os-image. 
+- **sudo make**
 - wait for patch process to be finished
-- install the new image on your Puavo latop (or put it in cloud image repository)
+- install the new image on your Puavo latop with **sudo puavo-install-and-update-image -f <newimagename.img>  <newimagename.img>**
+
 
 ## Add Your Own Things
 
