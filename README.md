@@ -72,10 +72,10 @@ The the non interactice process in the chroot is controlled by the content of th
 
 In **example/example-install** you'll find a working example datadir.
 
-- If no errors are detected a new puavo-os will bei built. 
+- If errors are detected during execution in chroot, the building of the new image will be skipped. 
 - Use option ---force to force image creation even with errors
 - Use the option --interactive to force an interactice shell
-- if you only use only the bin.d directory (and no debs.d, .., etc), you can put your own freestyle chroot script and use this ine instead of the builtin. 
+- Hint: If you only use only the bin.d directory (and no debs.d, .., etc), you can put your own freestyle chroot script and use this ine instead of the builtin. 
 
 ## More About Parts
 
