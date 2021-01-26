@@ -1,4 +1,4 @@
-# puavo-patch-generic
+# puavo-img-tool
 
 This a simple minimalistic "framework" aimed to easyly patch PuavoOS images. 
 
@@ -18,7 +18,6 @@ This is work in (eternal) progress ...
 - install the new image on your Puavo latop with **sudo puavo-install-and-update-image -f NEWIMAGENAME.img  NEWIMAGENAME.img**
 
 ## The puavo-img-tool
-The Makefile is just a wrapper arounf the programm **puavo-img-tool**:
 
 ```
 Usage: sudo puavo-img-tool [options] [/path/to/]IMAGE.img
@@ -32,9 +31,10 @@ Options:
     -d, --datadir          copies the content of datadir to /install/ in the chroot.
     -h, --help             show this help message
 ```
-## Some Examples
+(The Makefile here included is just a wrapper around **puavo-img-tool**)
 
-### Basic Interactive Usage
+
+## Basic Interactive Usage
 
 Hint: Be shure to have sudo rights and run **sudo make install** to (temporaly ) install the puavo-img-tools on your system. (Not needed with **make**.)
 
@@ -43,7 +43,7 @@ sudo puavo-img-tool puavo-os-extra-buster-2021-01-25-220739-amd64.img
 ```
 This command opens an interactive shell session on *puavo-os-extra-buster-2021-01-25-220739-amd64.img* with full read/write access. 
 
-When you exit the chroot with a zero exit code a new image build including the possible modifications you made in the chroot. 
+When you exit the chroot with a zero exit code a new image build including the possible modifications you made in the chroot. The puavo-on-imsge name will something like *puavo-os-extra-buster-2021-XX-XX-XXXXXX-amd64.img*.
 
 - The time field in of the output name will reflect the build date and time.
 - Exiting with non zero exit code skips the image generation.
@@ -61,23 +61,26 @@ sudo puavo-img-tool --osname amxa --class spezial puavo-os-extra-buster-2021-01-
 This command is similar to the first one, but it changes the name of the image. The output will be something like "**amxa**-os-**spezial**-buster-2021-XX-XX-XXXXXX-amd64.img".
 
 
-## Advanced non Interactive Usage
+## Advanced Automated Usage
 
 When the datadir contains (at least one of) folder(s) whit names **bin**, **files**, **lists**, **parts** the programm switches to non interacitve mode. 
 
 The the non interactice process is controlled by the content of these directories:
 
-1. It runs all executeables in **/install/bin/** in alfabetical order. If the last programm exit with a non zero exit code, the other dirs are skipped. 
-2. Installs the file tree in **/installfiles/\*** to the root directory **/**
-3. Installs (with apt) all debs, which are contained in whitespace separated list files in **install/lists/*.list**
-4. Installs all local debs in **install/debs/\*.deb**. All dependencies are resolved at the end.
-5. Executes all snippets in **install/parts/\<partname\>/install.sh**.  
+1. It runs all executeables in **bin/** in alphabetical order. 
+2. Installs the file tree in **files/\*** to the root directory **/**
+3. Installs (with apt) all debs, which are contained in whitespace separated list files in **lists/\*.list**
+4. Installs all local debs in **debs/\*.deb**. All dependencies are resolved at the end.
+5. Executes all parts (or snippets) in **parts/\<partname\>/install.sh**.  
 
-#### Parts?
+- If no errors are detected a new puavo-os will bei built.
+- Use the option --interactive to force an interactice shell
 
-Parts are mainly used to install/modify thing outside of Debian (repos)
+## More About Parts
 
-- Parts are simple directories, which **must** contain an executeable **install.sh** in (ba)sh. 
+Parts are mainly used to install/modify things "outside" of Debian.
+
+- Parts are simple directories, which just **must** contain an executeable **install.sh** in (ba)sh. 
 - The individual install.sh **can** either download things (during install in chroot) and/or **can** use content enbedded in the directory.
 
 #### Example Parts
@@ -100,18 +103,6 @@ Note that these examples are just dirty hacks (,which work for me).
 - The part **install/parts/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
 - On PuavoOs laptops you can test the part by executing (as root) the **install/parts/\<partname\>/install.sh** on live your laptop.
 
-## How does it work?
-
-The patch process is done by the programm **bin/puavo-img-patch**, which uses some helper programms:  
-
-- The main is **bin/puavo-img-mount**. This programm mounts a (readonly) squashfs image in read/write mode! 
-- Then the programm **bin/puavo-dir-chroot** executs **install/bin/puavo-chroot-apply** in chroot. 
-- The patched image then will be compressed again as squashfs with **bin/puavo-dir-clone**. 
-- In order to speed up thing the downloaded debs are cached in the directory **cache**.
-
-## What could go wrong?
-
-The patch process needs (up to 10 GBytes) temporary disk space in the partition **/images/**. Be shure there is enough space there or see **./bin/puavo-img-mount --help** and patch **bin/puavo-img-patch** accordingly
 
 ## About Puavo
 
