@@ -101,8 +101,8 @@ Note that these examples are just dirty hacks (,which work for me).
 
 #### Some hints for PuavoOS
 
-- The part **install/parts/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
-- On PuavoOs laptops you can test the part by executing (as root) the **install/parts/\<partname\>/install.sh** on live your laptop.
+- The part **parts.d/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
+- On PuavoOs laptops you can test the part by executing (as root) the **parts.d/\<partname\>/install.sh** on live your laptop.
 
 
 ## About Puavo
