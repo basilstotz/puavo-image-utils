@@ -4,6 +4,7 @@ CLASS_O=""
 DIST_O=""
 OSNAME_O=""
 INTER_O="1"
+DATAPATH=""
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -14,9 +15,10 @@ while [ $# -gt 0 ]; do
 	    echo "Patch a PuavoOS image."
 	    echo
 	    echo "Options:"
-	    echo "    -c, --class           set image class"
- 	    echo "    -o, --osname          set image osname"
-	    echo "    -i, --iteractive      force interactive shell"
+	    echo "    -c, --class  CLASS         set image class"
+ 	    echo "    -o, --osname OSNAME        set image osname"
+	    echo "    -d, --data   DATAPATH      copies data to chroot"
+ 	    echo "    -h, --help                 show this help"
 	    echo
 	    exit 0
 	    ;;
@@ -28,6 +30,11 @@ while [ $# -gt 0 ]; do
 	-o|--osname)
 	    shift
 	    OSNAME_O=$1
+	    shift
+	    ;;
+	-d|--data)
+	    shift
+	    DATAPATH=$1
 	    shift
 	    ;;
 	-i|--interactive)
@@ -107,7 +114,7 @@ else
     CLASS=$CLASS_I
 fi
 
-if test -d install/bin/ -o -d install/files -o -d install/debs -o -d install/lists -o -d install/parts;then
+if test -d $DATAPATH/bin/ -o -d $DATAPATH/files -o -d $DATAPATH/debs -o -d $DATAPATH/lists -o -d $DATAPATH/parts;then
     INTERACTIVE=1
 else
     INTERACTIVE=0
@@ -235,7 +242,10 @@ if ! test -d cache/apt/;then
 fi
 
 #copy install
-cp -r  install $CHROOT/
+if ! test -d $CHROOT/install/;then
+    mkdir -p $CHROOT/install/
+fi
+cp -r  $DATAPATH/* $CHROOT/install/
 
 #patch!
 if test $INTERACTIVE = 1;then
