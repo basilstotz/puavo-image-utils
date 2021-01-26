@@ -12,14 +12,12 @@ This is work in (eternal) progress ...
 ## Quick Start
 
 - clone this repo **git clone https://github.com/basilstotz/puavo-patch-generic.git**
-- symlink example content **ln -s example/install-example install** 
 - edit **puavo-img-patch.sh** to set source puavo-os-image. 
 - **sudo make**
 - wait for patch process to be finished
 - install the new image on your Puavo latop with **sudo puavo-install-and-update-image -f NEWIMAGENAME.img  NEWIMAGENAME.img**
 
 ## The puavo-img-tool
-
 The Makefile is just a wrapper arounf the programm **puavo-img-tool**:
 
 ```
