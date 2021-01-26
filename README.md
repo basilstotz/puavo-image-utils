@@ -25,8 +25,8 @@ Usage: sudo puavo-img-tool [options] [/path/to/]IMAGE.img
 Inspect or modify a PuavoOS image and (optionaly) create a new puavo-os image
 
 Options:
-    -c, --class  CLASS     set image class to CLASS (default ist the source class)
-    -o, --osname OSNAME    set image osname to OSNAME (default ist the source osname)
+    -c, --class  CLASS     set image class to CLASS (defaults to source class)
+    -o, --osname OSNAME    set image osname to OSNAME (defaults to source osname)
     -d, --datadir DATADIR  copies the content of datadir to /install/ in the chroot.
     -f, --force            force image creation even with errors
     -i, --iteractive       force interactive shell
