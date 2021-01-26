@@ -1,4 +1,4 @@
-# puavo-patch-generic
+# puavo-img-tool
 
 This a simple minimalistic "framework" aimed to easyly patch PuavoOS images. 
 
