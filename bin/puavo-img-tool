@@ -4,6 +4,8 @@ CLASS_O=""
 DIST_O=""
 OSNAME_O=""
 INTER_O="1"
+FORCE_O="1"
+
 DATAPATH=""
 
 while [ $# -gt 0 ]; do
@@ -12,12 +14,14 @@ while [ $# -gt 0 ]; do
 	    shift
 	    echo "Usage: $(basename $0) [options] IMAGE.mg"
 	    echo
-	    echo "Patch a PuavoOS image."
+	    echo "Patch a PuavoOS imagec and (eventualy) compress a new image." 
 	    echo
 	    echo "Options:"
-	    echo "    -c, --class  CLASS         set image class"
- 	    echo "    -o, --osname OSNAME        set image osname"
-	    echo "    -d, --data   DATAPATH      copies data to chroot"
+ 	    echo "    -o, --osname OSNAME        set image osname (defaults to source osname)"
+	    echo "    -c, --class CLASS          set image class (defaults to source class)"
+	    echo "    -d, --datadir DATAPATH     copies datadir to chroot"
+ 	    echo "    -i, --interactice          force interactive shell"
+ 	    echo "    -f, --force                force building image even with errors"
  	    echo "    -h, --help                 show this help"
 	    echo
 	    exit 0
@@ -40,6 +44,10 @@ while [ $# -gt 0 ]; do
 	-i|--interactive)
 	    shift
 	    INTER_O="0"
+	    ;;
+	-f|--force)
+	    shift
+	    FORCE_O="0"
 	    ;;
 	--)
 	    shift
@@ -75,6 +83,14 @@ else
 	echo "error: file not found"
 	exit 1
     fi	
+fi
+
+#check datadir
+if test -n "$DATAPATH";then
+    if ! test -d $DATAPATH;then
+        echo "error: datadir not found"
+        exit 1
+    fi
 fi
 
 #mount image
@@ -136,7 +152,6 @@ echo "*                     Hello Chroot                           *"
 echo "*                                                            *"
 echo "**************************************************************"
 UPDATED=1
-BIN=1
 ERROR=0
 
 #bin
@@ -148,12 +163,9 @@ if test -d /install/bin;then
         for B in $(ls /install/bin);do
 	    if test -x /install/bin/$B;then
 		/install/bin/$B
-		BIN=0
+		if test $? = 1;then ERROR=1;fi
 	    fi 
         done
-	if test "$BIN" = 0; then
-	    exit 0
-	fi
     fi
 fi
 
@@ -257,7 +269,7 @@ else
 fi
 
 
-if test $? = 0;then
+if test $? = 0 -o FORCE_O = 0;then
 #    cache debs
      rsync -rav  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
 
