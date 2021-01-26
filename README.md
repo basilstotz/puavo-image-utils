@@ -43,7 +43,7 @@ sudo puavo-img-tool puavo-os-extra-buster-2021-01-25-220739-amd64.img
 ```
 This command opens an interactive shell session on *puavo-os-extra-buster-2021-01-25-220739-amd64.img* with full read/write access. 
 
-When you exit the chroot with a zero exit code a new image build including the possible modifications you made in the chroot. 
+When you exit the chroot with a zero exit code a new image build including the possible modifications you made in the chroot. The puavo-on-imsge name will something like *puavo-os-extra-buster-2021-XX-XX-XXXXXX-amd64.img*.
 
 - The time field in of the output name will reflect the build date and time.
 - Exiting with non zero exit code skips the image generation.
