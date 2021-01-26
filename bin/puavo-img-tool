@@ -254,7 +254,7 @@ chmod +x $CHROOT/usr/local/bin/puavo-chroot-apply
 #copy cached apt
 if ! test -d cache/apt/;then
     mkdir -p cache/apt/
-    touch .t
+    touch    cache/apt/.t
 fi
 
 #copy install
