@@ -64,7 +64,7 @@ This command is similar to the first one, but it changes the name of the image. 
 
 ## Advanced Automated Usage
 
-When the datadir contains (at least one of) folder(s) whit names **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** the programm switches to non interacitve mode. All other dirs are just ignored.
+When the datadir contains (at least one of) folder(s) whit names **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** the programm switches to non interacitve mode. Other dirs can be here too, but are just ignored by the builtin chroot script.
 
 The the non interactice process in the chroot is controlled by the content of these directories:
 
@@ -78,7 +78,7 @@ If no errors are detected a new puavo-os will bei built.
 
 - Use option ---force to force image creation even with errors
 - Use the option --interactive to force an interactice shell
-- if you only use only the bin.d directory (and no debs.d, .., etc), you can put your own freestyle and use own chroot script instead of the builtin one. 
+- if you only use only the bin.d directory (and no debs.d, .., etc), you can put your own freestyle chroot script and use this ine instead of the builtin. 
 
 ## More About Parts
 
