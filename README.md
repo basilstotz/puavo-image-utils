@@ -16,22 +16,24 @@ This is work in (eternal) progress ...
 - edit **puavo-img-patch.sh** to set source puavo-os-image. 
 - **sudo make**
 - wait for patch process to be finished
-- install the new image on your Puavo latop with **sudo puavo-install-and-update-image -f <newimagename.img>  <newimagename.img>**
+- install the new image on your Puavo latop with **sudo puavo-install-and-update-image -f NEWIMAGENAME.img  NEWIMAGENAME.img**
 
 ## The puavo-img-tool
 
-The Makefile is just a wrapper arounf the programm **puavo-img-tool**
+The Makefile is just a wrapper arounf the programm **puavo-img-tool**:
 
 ```
-Usage: puavo-img-tool [options] IMAGE.mg
+Usage: puavo-img-tool [options] IMAGE.img
 
-Patch a PuavoOS image.
+Inspect or modify a PuavoOS image.
 
 Options:
     -c, --class           set image class
     -o, --osname          set image osname
     -i, --iteractive      force interactive shell
+    -h, --help            show this help message
 ```
+
 
 
 ## Add Your Own Things
