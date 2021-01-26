@@ -130,7 +130,7 @@ else
     CLASS=$CLASS_I
 fi
 
-if test -d $DATAPATH/bin/ -o -d $DATAPATH/files -o -d $DATAPATH/debs -o -d $DATAPATH/lists -o -d $DATAPATH/parts;then
+if test -d $DATAPATH/bin.d/ -o -d $DATAPATH/files.d -o -d $DATAPATH/debs.d -o -d $DATAPATH/lists.d -o -d $DATAPATH/parts.d;then
     INTERACTIVE=1
 else
     INTERACTIVE=0
@@ -155,8 +155,8 @@ UPDATED=1
 ERROR=0
 
 #bin
-if test -d /install/bin;then
-    if test -n "$(ls /install/bin)";then
+if test -d /install/bin.d;then
+    if test -n "$(ls /install/bin.d|grep .sh)";then
         echo "**************************************************************"
         echo "                          bin                                *"
         echo "**************************************************************"
@@ -170,12 +170,12 @@ if test -d /install/bin;then
 fi
 
 #files
-if test -d /install/files;then
-    if test -n "$(ls /install/files/)";then
+if test -d /install/files.d;then
+    if test -n "$(ls /install/files.d/)";then
 	echo "**************************************************************"
         echo "                         files                               *"
         echo "**************************************************************"
-        cp -r /install/files/* /
+        cp -r /install/files.d/* /
 	if test $? = 1;then ERROR=1;fi
         echo "ok"
     fi
@@ -183,15 +183,15 @@ fi
 
 
 #lists
-if test -d /install/lists;then
-    if test -n "$(ls /install/lists|grep .list)";then
+if test -d /install/lists.d;then
+    if test -n "$(ls /install/lists.d|grep .list)";then
         echo "**************************************************************"
         echo "                         lists                               *"
         echo "**************************************************************"
         apt-get update
 	if test $? = 1;then ERROR=1;fi
 	UPDATED=0
-        apt-get -y install $(cat /install/lists/*list|xargs)
+        apt-get -y install $(cat /install/lists.d/*list|xargs)
 	if test $? = 1;then ERROR=1;fi
     fi
 fi
@@ -217,17 +217,17 @@ if test -d /install/debs;then
 fi
 
 #parts
-if test -d /install/parts;then
-    if test -n "$(ls /install/parts/)";then
+if test -d /install/parts.d;then
+    if test -n "$(ls /install/parts.d/)";then
         echo "**************************************************************"
         echo "                         parts                               *"
         echo "**************************************************************"
 	if test $UPDATED = 1;then
 	    apt-get update
 	fi
-        for P in $(ls /install/parts/);do
-            if test -x /install/parts/$P/install.sh;then
-                 /install/parts/$P/install.sh
+        for P in $(ls /install/parts.d/);do
+            if test -x /install/parts.d/$P/install.sh;then
+                 /install/parts.d/$P/install.sh
   	         if test $? = 1;then ERROR=1;fi
             fi
         done
