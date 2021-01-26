@@ -94,7 +94,7 @@ In the directory **partsonstock** you find some examples for parts. Move items t
 - **gedit-markdown**  adds support for Markdown language in gedit https://github.com/jpfleury/gedit-markdown
 - **lumi**  is a desktop app that allows you to create, edit and view H5P (https://h5p.org) content. https://next.lumi.education/
 - **markdown-cli** a collection of markdown cli tools. See install.sh for detials
-- **obs-studio** updates to latest 26.01 version (self compiled) obs-studo and adds obs-rtspserver (https://github.com/iamscottxu/obs-rtspserver) and obs-websocket (https://github.com/Palakis/obs-websocket) plugins.
+- **obs-studio** updates to latest 26.01 version (self compiled) obs-studo (https://github.com/obsproject/obs-studio) and adds obs-rtspserver (https://github.com/iamscottxu/obs-rtspserver) and obs-websocket (https://github.com/Palakis/obs-websocket) plugins.
 - **sozi** is a cool zooming presentation editor and player. https://sozi.baierouge.fr/
 - **syncthing** is a continuous  peer-to-peer file synchronization program  https://syncthing.net/
 
