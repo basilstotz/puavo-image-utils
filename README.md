@@ -7,33 +7,43 @@ This is work in (eternal) progress ...
 
 ## Quick Start
 
-- clone this repo **git clone https://github.com/basilstotz/puavo-img-tool.git**
-- edit **puavo-img-patch.sh** to set source puavo-os-image. 
-- **sudo make**
-- wait for patch process to be finished
-- install the new image on your Puavo latop with **sudo puavo-install-and-update-image -f NEWIMAGENAME.img  NEWIMAGENAME.img**
+```
+$ git clone https://github.com/basilstotz/puavo-img-tool.git
+$ cd puavo-img-tool 
+$ sudo make install
+$ puavo-img-tool --sourceimage /path/to/source-image/*.img
+$ puavo-img-tool
+```
+
+Install your new image on your Puavo laptop with
+
+```
+sudo puavo-install-and-update-image -f NEWIMAGENAME.img  NEWIMAGENAME.img
+```
 
 ## The puavo-img-tool
 
 ```
-Usage: sudo puavo-img-tool [options] [/path/to/]IMAGE.img
+Usage: sudo puavo-img-tool [options]
 
 Inspect or modify a PuavoOS image and (optionaly) create a new puavo-os image
 
-Options:
+Config options
     -c, --class  CLASS     set image class to CLASS (defaults to source class)
     -o, --osname OSNAME    set image osname to OSNAME (defaults to source osname)
-    -d, --datadir DATADIR  copies the content of datadir to /install/ in the chroot.
+    -d, --datadir DATADIR  set datadir to DATADIR. (no default)
+    -s, --source SOURCE    set source image to SOURCE (no default)
+
+Runtime options
     -f, --force            force image creation even with errors
     -i, --iteractive       force interactive shell
     -h, --help             show this help message
 ```
-(The Makefile here included is just a wrapper around **puavo-img-tool**)
 
 
 ## Basic Interactive Usage
 
-Hint: Be shure to have sudo rights and run **sudo make install** to (temporaly ) install the puavo-img-tools on your system. (Not needed with **make**.)
+
 
 ```
 sudo puavo-img-tool puavo-os-extra-buster-2021-01-25-220739-amd64.img
