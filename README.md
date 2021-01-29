@@ -10,9 +10,9 @@ This is work in (eternal) progress ...
 ```
 $ git clone https://github.com/basilstotz/puavo-img-tool.git
 $ cd puavo-img-tool 
-$ sudo make install
-$ puavo-img-tool --sourceimage /path/to/source-image/*.img
-$ puavo-img-tool
+$ sudo make install       # to be removed soon
+$ puavo-img-tool --sourceimage [/][path/to/source-image/]sourceimage.img
+$ sudo puavo-img-tool
 ```
 
 Install your new image on your Puavo laptop with
@@ -28,11 +28,10 @@ Usage: sudo puavo-img-tool [options]
 
 Inspect or modify a PuavoOS image and (optionaly) create a new puavo-os image
 
-Config options
-    -c, --class  CLASS     set image class to CLASS (defaults to source class)
-    -o, --osname OSNAME    set image osname to OSNAME (defaults to source osname)
-    -d, --datadir DATADIR  set datadir to DATADIR. (no default)
     -s, --source SOURCE    set source image to SOURCE (no default)
+    -d, --datadir DATADIR  set datadir to DATADIR. (no default)
+    -c, --class  CLASS     set sink image class to CLASS (defaults to source class)
+    -o, --osname OSNAME    set sink image osname to OSNAME (defaults to source osname)
 
 Runtime options
     -f, --force            force image creation even with errors
