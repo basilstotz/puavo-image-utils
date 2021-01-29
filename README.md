@@ -28,12 +28,15 @@ Usage: sudo puavo-img-tool [options]
 
 Inspect or modify a PuavoOS image and (optionaly) create a new puavo-os image
 
+ Config options
+ 
     -s, --source SOURCE    set source image to SOURCE (no default)
     -d, --datadir DATADIR  set datadir to DATADIR. (no default)
     -c, --class  CLASS     set sink image class to CLASS (defaults to source class)
     -o, --osname OSNAME    set sink image osname to OSNAME (defaults to source osname)
 
 Runtime options
+
     -f, --force            force image creation even with errors
     -i, --iteractive       force interactive shell
     -h, --help             show this help message
