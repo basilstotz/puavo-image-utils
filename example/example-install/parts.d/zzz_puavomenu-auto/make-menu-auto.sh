@@ -2,7 +2,6 @@
 
 cd $(dirname $0)
 
-#ls /usr/share/applications/|head -n 538  >/tmp/applications.list
 
 if test -f /tmp/applications.list;then
     ALT=$(cat /tmp/applications.list|xargs)
@@ -47,7 +46,7 @@ echo "  \"categories\": {"
 echo "     \"category-devel\": {"
 echo "        \"name\":  \"Neue Programme\","
 echo "        \"position\": 10,"
-echo "        \"hidden_by_default\": true,"
+#echo "        \"hidden_by_default\": true,"
 
 #programm array start
 echo "        \"programs\": ["
