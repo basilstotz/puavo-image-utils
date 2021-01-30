@@ -4,10 +4,13 @@ cd $(dirname $0)
 
 #ls /usr/share/applications/|head -n 538  >/tmp/applications.list
 
-ALT=$(cat /tmp/applications.list|xargs)
+if test -f /tmp/applications.list;then
+    ALT=$(cat /tmp/applications.list|xargs)
+else
+    exit 0
+fi
 
 DIFF=""
-
 for A in $(ls /usr/share/applications/*.desktop);do
     A=$(basename -s .desktop $A)
     if echo $ALT|grep -q -v $A;then
