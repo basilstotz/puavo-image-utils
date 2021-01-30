@@ -21,7 +21,9 @@ while [ $# -gt 0 ]; do
     case $1 in
 	-h|--help)
 	    shift
-	    echo "Usage: $(basename $0) [options] IMAGE.mg"
+	    echo "Usage: $(basename $0) [config_opts]           (configure)"
+	    echo "       sudo $(basename $0) IMAGE.img          (interactive)"
+	    echo "       sudo $(basename $0) [runtime_opts]     (batch)"
 	    echo
 	    echo "Patch a PuavoOS imagec and (eventualy) compress a new image." 
 	    echo
