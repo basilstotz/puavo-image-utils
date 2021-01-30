@@ -1,8 +1,8 @@
 .PHONY: all
 all:
-	@cp bin/* /usr/local/bin/.
-	@./puavo-img-patch.sh
+	@cp bin/puavo-* /usr/local/bin/.
+	@./bin/puavo-img-tool
 
 .PHONY: install
 install:
-	@cp bin/* /usr/local/bin/.
+	@cp bin/puavo-* /usr/local/bin/.

@@ -10,5 +10,5 @@ cd $(dirname $0)
 # here this is done with bin.d/make-auto-menu-init.sh
 
 
-./make-auto-menu.sh > /etc/puavomenu/menudata/80-auto.json
+./make-menu-auto.sh > /etc/puavomenu/menudata/80-auto.json
 
