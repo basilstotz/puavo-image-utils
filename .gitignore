@@ -4,3 +4,5 @@ mnt
 config.*
 tmp.*
 *-os-*-amd64
+*.vdi
+*.log

@@ -297,6 +297,8 @@ if ! test -d cache/apt/;then
     mkdir -p cache/apt/
     touch    cache/apt/.t
 fi
+#copy var
+cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
 
 #copy install
 if ! test -d $CHROOT/install/;then
