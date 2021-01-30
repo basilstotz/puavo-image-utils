@@ -341,6 +341,10 @@ fi
 #umount
 puavo-img-mount --umount $SOURCE
 
+chown --reference Makefile $IMAGE.img
+chown -R --reference Makefile cache
+chown -R --reference Makefile bin
+
 exit $?
 
 	

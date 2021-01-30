@@ -2,3 +2,5 @@ cache
 mnt
 *.img
 config.*
+tmp.*
+*-os-*-amd64
