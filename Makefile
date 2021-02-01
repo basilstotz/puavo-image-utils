@@ -1,4 +1,4 @@
-TARGETS = init build clean publish
+TARGETS = init build clean package
 NAME = "puavo-image-utils"
 
 .PHONY: ${TARGETS}
@@ -17,6 +17,7 @@ clean:
 build:
 	@./bin/build.sh ${NAME}
 
-publish:
-	@./bin/publish.sh ${NAME}
+package:
+	@./bin/package.sh
+
 

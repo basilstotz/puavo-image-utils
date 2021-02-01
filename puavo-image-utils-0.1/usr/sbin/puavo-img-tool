@@ -336,17 +336,21 @@ fi
 echo "copy data to chroot"
 cp -r  $DATAPATH/* $CHROOT/install/
 
+#for logfiles
+test -d ./log || mkdir ./log
+
 #patch!
 if test $INTER_O = 1;then
     echo "non interactive"
-    echo "/usr/local/bin/puavo-chroot-apply" | puavo-dir-chroot $CHROOT
+    echo "/usr/local/bin/puavo-chroot-apply" | puavo-dir-chroot $CHROOT > ./log/last-build.log 
 else
     echo "interactive"
     puavo-dir-chroot $CHROOT
 fi
+RET=$?
 
 
-if test $? = 0 -o $FORCE_O = 0;then
+if test $RET = 0 -o $FORCE_O = 0;then
      echo
      echo "***************************************************************"
      echo "*                 ok, building image                           *"
@@ -378,6 +382,12 @@ else
     echo "*   error: an error occured in chrooot. not bulding image     *"
     echo "***************************************************************"
 fi
+
+#save logfile
+if test -f ./log/last-build.log;then
+    mv ./log/last-build.log ./log/$IMAGE.log
+fi
+
 
 #umount
 puavo-img-mount --umount $SOURCE

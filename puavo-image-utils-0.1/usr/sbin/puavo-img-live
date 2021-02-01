@@ -15,7 +15,7 @@ INSTALLER=$(basename -s .img $IMAGE)-inst.img
 
 
 if ! test -f $INSTALLER;then
-    puavo-image-installer $IMAGE $INSTALLER
+    puavo-img-installer $IMAGE $INSTALLER
 fi
 
 
