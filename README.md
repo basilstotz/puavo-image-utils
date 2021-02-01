@@ -35,7 +35,9 @@ $ puavo-img-repo ./
 
 cxyvxycvxycvyxcy  xcvxcv cxyv
 
-## The puavo-img-tool
+## A Closer Look at the Tools
+
+#### puavo-img-tool
 
 ```
 Usage: sudo puavo-img-tool [options]
@@ -57,9 +59,7 @@ Runtime options
 ```
 
 
-## Basic Interactive Usage
-
-
+###### Basic Interactive Usage
 
 ```
 sudo puavo-img-tool puavo-os-extra-buster-2021-01-25-220739-amd64.img
@@ -84,7 +84,7 @@ sudo puavo-img-tool --osname amxa --class spezial puavo-os-extra-buster-2021-01-
 This command is similar to the first one, but it changes the name of the image. The output will be something like "**amxa**-os-**spezial**-buster-2021-XX-XX-XXXXXX-amd64.img".
 
 
-## Advanced Automated Usage
+###### Advanced Automated Usage
 
 When the datadir contains (at least one of) folder(s) whit names **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** the programm switches to non interacitve mode. Other dirs can be here too, but are just ignored by the builtin chroot script.
 
@@ -103,7 +103,7 @@ In **example/example-install** you'll find a working example datadir.
 - Use the option --interactive to force an interactice shell
 - Hint: If you only use only the bin.d directory (and no debs.d, .., etc), you can put your own freestyle chroot script and use this ine instead of the builtin. 
 
-## More About Parts
+###### More About Parts
 
 Parts are mainly used to install/modify things "outside" of Debian.
 
@@ -126,6 +126,12 @@ Note that these examples are just dirty hacks (,which work for me).
 
 - The part **parts.d/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
 - On PuavoOs laptops you can test the part by executing (as root) the **parts.d/\<partname\>/install.sh** on live your laptop.
+
+#### puavo-img-live
+
+#### puavo-img-repo
+
+
 
 
 ## Usefull Links
