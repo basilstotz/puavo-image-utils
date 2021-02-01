@@ -37,7 +37,7 @@ cxyvxycvxycvyxcy  xcvxcv cxyv
 
 ## A Closer Look at the Tools
 
-#### puavo-img-tool
+### puavo-img-tool
 
 ```
 Usage: sudo puavo-img-tool [options]
@@ -127,9 +127,9 @@ Note that these examples are just dirty hacks (,which work for me).
 - The part **parts.d/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
 - On PuavoOs laptops you can test the part by executing (as root) the **parts.d/\<partname\>/install.sh** on live your laptop.
 
-#### puavo-img-live
+### puavo-img-live
 
-#### puavo-img-repo
+### puavo-img-repo
 
 
 
