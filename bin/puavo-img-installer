@@ -1,0 +1,26 @@
+#!/bin/sh
+
+
+if ! test $(id --user) = 0;then
+    echo "error: not root"
+    exit 1
+fi
+if test -z "$1";then
+    echo "error: usage puavo-img-installer IMG.img"
+    exit 1
+fi
+
+
+IMAGE=$1
+INSTALLER=$(basename -s .img).inst.img
+
+
+echo $IMAGE $INSTALLER
+
+
+if ! test -f $INSTALLER;then
+   sudo puavo-make-install-disk --source-image $IMAGE --target-image $INSTALLER || exit 1
+   sudo chown --reference .. $INSTALLER
+fi
+
+exit
