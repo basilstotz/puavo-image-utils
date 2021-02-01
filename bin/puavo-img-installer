@@ -2,20 +2,21 @@
 
 
 if test -z "$1";then
-    echo "error: usage puavo-img-installer IMG.img [installer.img]"
+    echo "error: usage puavo-img-installer IMG.img [INSTALLER.img]"
+    exit 1
+fi
+if ! test -f $1;then
+    echo "error: image $1 not found"
     exit 1
 fi
 
 
 IMAGE=$1
 if test -z "$2";then
-    INSTALLER=$(basename -s .img).inst.img
+    INSTALLER=$(basename -s .img $IMAGE)-inst.img
 else
     INSTALLER=$2
 fi
-
-
-echo $IMAGE $INSTALLER
 
 if ! test -f $INSTALLER;then
    sudo puavo-make-install-disk --source-image $IMAGE --target-image $INSTALLER || exit 1

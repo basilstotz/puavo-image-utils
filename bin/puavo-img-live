@@ -1,10 +1,18 @@
 #!/bin/sh
 
 
-test -n "$1" || exit 1
+if test -z "$1";then
+    echo "usage: puavo-img-live IMAGE.img"
+    exit 1
+fi
+if ! test -f $1;then
+    echo "error: image $1 not found"
+    exit 1
+fi
 
 IMAGE=$1
-INSTALLER=$(basename -s .img).inst.img
+INSTALLER=$(basename -s .img $IMAGE)-inst.img
+
 
 if ! test -f $INSTALLER;then
     puavo-image-installer $IMAGE $INSTALLER
