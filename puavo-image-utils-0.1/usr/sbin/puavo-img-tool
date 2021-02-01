@@ -19,7 +19,12 @@ QEMU_O="1"
 
 CONFIG_O="1"
 
-
+pint_params(){
+    echo "      source: $SOURCE_O"
+    echo "     datadir: $DATA_O"
+    echo "      osname: $OSNAME_O"
+    echo "       class: $CLASS_O"
+}
 
 #echo $@
 
@@ -34,11 +39,13 @@ while [ $# -gt 0 ]; do
 	    echo "Patch a PuavoOS imagec and (eventualy) compress a new image." 
 	    echo
 	    echo "Config options:"
-	    echo "    -s, --source SOURCE        set source to SOURCE ($SOURCE_O)"
-	    echo "    -d, --datadir DATADIR      set datadir to DATADIR ($DATA_O)"
- 	    echo "    -o, --osname OSNAME        set image osname ($OSNAME_O)"
-	    echo "    -c, --class CLASS          set image class ($CLASS_O)"
+	    echo "    -s, --source SOURCE        set source to SOURCE"
+	    echo "    -d, --datadir DATADIR      set datadir to DATADIR"
+ 	    echo "    -o, --osname OSNAME        set image osname to OSNAME"
+	    echo "    -c, --class CLASS          set image class to CLASS"
  	    echo "    -h, --help                 show this help"
+            echo
+	    print_params
             echo
 	    echo "Runtime options:"
  	    echo "    -i, --interactice          force interactive shell"
@@ -155,19 +162,12 @@ else
     exit 1
 fi
 
-
-
-echo "info: params ok"
-
 if test $INTER_O = 1 -a $YES_O = 1;then
     echo "do you want to build with the following params:"
     echo
-    echo "      source: $SOURCE_O"
-    echo "     datadir: $DATA_O"
-    echo "      osname: $OSNAME_O"
-    echo "       class: $CLASS_O"
+    print_params
     echo
-    echo "type [Y|n]: "
+    echo -n "type [Y|n]: "
     read ANS
     if ! test "$ANS" = "" -o "$ANS" = "y" -o "$ANS" = "Y" -o "$ANS" = "j" -o "$ANS" = "J";then 
         exit 0
@@ -402,7 +402,11 @@ if test $RET = 0 -o $FORCE_O = 0;then
 #    make compressed image
      puavo-dir-clone --dont-update-name --type squashfs $CHROOT ${IMAGE}.img
 
-#    puavo-dir-image --class $CLASS --dist $DIST image.img
+     #    puavo-dir-image --class $CLASS --dist $DIST image.img
+     if test $QEMU_O = 1;then
+          puavo-img-installer $IMAGE.img
+     fi
+
 else
     echo
     echo "***************************************************************"
@@ -418,11 +422,6 @@ fi
 
 #umount
 puavo-img-mount --umount $SOURCE
-
-if test $QEMU_O = 1;then
-    puavo-img-installer $IMAGE.img
-fi
-
 
 
 chown --reference .. $IMAGE.img

@@ -1,4 +1,4 @@
-puavo-image-utils (0.1-12) UNRELEASED; urgency=medium
+puavo-image-utils (0.1-14) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * initial 
@@ -13,8 +13,10 @@ puavo-image-utils (0.1-12) UNRELEASED; urgency=medium
   * fix puavo-img-live
   * install myself.deb in chroot 
   * fix installtion of debs
+  * add qemu option
+  * *
 
- -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Mon, 01 Feb 2021 20:57:04 +0100
+ -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Mon, 01 Feb 2021 21:50:46 +0100
 
 puavo-image-utils (0.1-1) unstable; urgency=medium
 
