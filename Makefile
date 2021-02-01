@@ -1,8 +1,22 @@
-.PHONY: all
-all:
-	@cp bin/puavo-* /usr/local/bin/.
-	@./bin/puavo-img-tool | tee build.log
+TARGETS = init build clean publish
+NAME = "puavo-image-utils"
 
-.PHONY: install
-install:
-	@cp bin/puavo-* /usr/local/bin/.
+.PHONY: ${TARGETS}
+.PHONY: help
+
+help:
+	@echo "Targets are:"
+	@echo "   ${TARGETS}" | fmt
+
+init:
+	@./bin/init.sh ${NAME}
+
+clean:
+	@./bin/clean.sh ${NAME}
+
+build:
+	@./bin/build.sh ${NAME}
+
+publish:
+	@./bin/publish.sh ${NAME}
+

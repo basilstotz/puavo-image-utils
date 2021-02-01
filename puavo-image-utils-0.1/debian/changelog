@@ -1,0 +1,12 @@
+puavo-image-utils (0.1-1.1) UNRELEASED; urgency=medium
+
+  * Non-maintainer upload.
+  * initial 
+
+ -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Mon, 01 Feb 2021 14:57:17 +0100
+
+puavo-image-utils (0.1-1) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Basil Stotz <stotz@amxa.ch>  Mon, 01 Feb 2021 14:44:02 +0100
