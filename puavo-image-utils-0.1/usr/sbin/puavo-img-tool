@@ -14,8 +14,11 @@ if test -f ./config/config.datadir;then DATA_O=$(cat ./config/config.datadir);el
 
 INTER_O="1"
 FORCE_O="1"
+YES_O="1"
+QEMU_O="1"
 
 CONFIG_O="1"
+
 
 
 #echo $@
@@ -35,11 +38,13 @@ while [ $# -gt 0 ]; do
 	    echo "    -d, --datadir DATADIR      set datadir to DATADIR ($DATA_O)"
  	    echo "    -o, --osname OSNAME        set image osname ($OSNAME_O)"
 	    echo "    -c, --class CLASS          set image class ($CLASS_O)"
+ 	    echo "    -h, --help                 show this help"
             echo
 	    echo "Runtime options:"
  	    echo "    -i, --interactice          force interactive shell"
  	    echo "    -f, --force                force building image even with errors"
- 	    echo "    -h, --help                 show this help"
+ 	    echo "    -y, --yes                  do not ask at start"
+ 	    echo "    -q, --qemu                 do also make a qemu image"
 	    echo
 	    exit 0
 	    ;;
@@ -79,9 +84,17 @@ while [ $# -gt 0 ]; do
 	    shift
 	    INTER_O="0"
 	    ;;
+	-y|--yes)
+	    shift
+	    YES_O="0"
+	    ;;
 	-f|--force)
 	    shift
 	    FORCE_O="0"
+	    ;;
+	-q|--qemu)
+	    shift
+	    QEMU_O="0"
 	    ;;
 	--)
 	    shift
@@ -98,7 +111,7 @@ while [ $# -gt 0 ]; do
 done
 
 if test $CONFIG_O = 0;then
-    echo "info: config set. exiting ..."
+    echo "info: new config set. exiting ..."
     exit 0
 fi
 
@@ -146,6 +159,20 @@ fi
 
 echo "info: params ok"
 
+if test $INTER_O = 1 -a $YES_O = 1;then
+    echo "do you want to build with the following params:"
+    echo
+    echo "      source: $SOURCE_O"
+    echo "     datadir: $DATA_O"
+    echo "      osname: $OSNAME_O"
+    echo "       class: $CLASS_O"
+    echo
+    echo "type [Y|n]: "
+    read ANS
+    if ! test "$ANS" = "" -o "$ANS" = "y" -o "$ANS" = "Y" -o "$ANS" = "j" -o "$ANS" = "J";then 
+        exit 0
+    fi
+fi
 
 #mount image
 SOURCE=$SOURCE_O
@@ -391,6 +418,12 @@ fi
 
 #umount
 puavo-img-mount --umount $SOURCE
+
+if test $QEMU_O = 1;then
+    puavo-img-installer $IMAGE.img
+fi
+
+
 
 chown --reference .. $IMAGE.img
 chown -R --reference .. cache
