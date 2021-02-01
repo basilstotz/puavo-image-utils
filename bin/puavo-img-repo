@@ -3,11 +3,6 @@
 IMAGE_DIR="$(pwd)"
 MIRROR_DIR="$IMAGE_DIR/mirror"
 
-if ! test $(id --user) = 0;then
-    echo "error: not root"
-    exit 1
-fi
-
 
 list_images(){
 if test -e $IMAGE_DIR/images.json;then
