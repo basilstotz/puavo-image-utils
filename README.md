@@ -1,4 +1,5 @@
-# puavo-img-tool
+# puavo-img-utils
+
 
 This a very simple and minimalistic programm to patch/inspect PuavoOS images easyly. It is not aimed  for production, it's rather used for hacking and testing. Use it at your own risk. 
 
@@ -7,19 +8,33 @@ This is work in (eternal) progress ...
 
 ## Quick Start
 
+Install the puavo-img-utils
+
 ```
-$ git clone https://github.com/basilstotz/puavo-img-tool.git
-$ cd puavo-img-tool 
-$ sudo make install       # to be removed soon
-$ puavo-img-tool --sourceimage [/][path/to/source-image/]sourceimage.img
+$ wget https://github.com/basilstotz/dfsadffsdfsadfasdf/dfsdasd.deb
+$ sudo dpkg -i sdfsdfsd.deb
+
+```
+Now you ....
+
+```
+$ mkdir MYIMAGES && cd MYIMAGES
+$ puavo-img-tool --sourceimage /images/ltsp.img --datadir /opt/puavo-img-utils/example/datadir
 $ sudo puavo-img-tool
 ```
-
-Install your new image on your Puavo laptop with
+sdfsdfsdaf sdfsd fsdf sdf f
 
 ```
-sudo puavo-install-and-update-image -f NEWIMAGENAME.img  NEWIMAGENAME.img
+$ puavo-image-live YOURNEIMAGE.img
 ```
+sd sadfasdf sdf
+
+```
+$ cd MYIMAGES
+$ puavo-img-repo ./
+```
+
+cxyvxycvxycvyxcy  xcvxcv cxyv
 
 ## The puavo-img-tool
 
