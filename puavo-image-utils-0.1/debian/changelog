@@ -1,4 +1,4 @@
-puavo-image-utils (0.1-7) UNRELEASED; urgency=medium
+puavo-image-utils (0.1-9) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * initial 
@@ -8,8 +8,10 @@ puavo-image-utils (0.1-7) UNRELEASED; urgency=medium
   * fixed paths
   * again
   * now!
+  * create config dir
+  * modified example datadir & fix in puavo-img-tool
 
- -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Mon, 01 Feb 2021 15:19:08 +0100
+ -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Mon, 01 Feb 2021 17:47:40 +0100
 
 puavo-image-utils (0.1-1) unstable; urgency=medium
 

@@ -347,6 +347,10 @@ fi
 
 
 if test $? = 0 -o $FORCE_O = 0;then
+     echo
+     echo "***************************************************************"
+     echo "*                 ok, building image                           *"
+     echo "***************************************************************"
 #    cache debs
      rsync -rav  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
 
@@ -369,14 +373,19 @@ if test $? = 0 -o $FORCE_O = 0;then
 
 #    puavo-dir-image --class $CLASS --dist $DIST image.img
 else
-    echo "error: chroot did not exit with status 0. not bulding image"
+    echo
+    echo "***************************************************************"
+    echo "*   error: an error occured in chrooot. not bulding image     *"
+    echo "***************************************************************"
 fi
+
 #umount
 puavo-img-mount --umount $SOURCE
 
-chown --reference Makefile $IMAGE.img
-chown -R --reference Makefile cache
-chown -R --reference Makefile bin
+chown --reference .. $IMAGE.img
+chown -R --reference .. cache
+chown -R --reference .. config
+
 
 exit $?
 
