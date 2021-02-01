@@ -1,4 +1,4 @@
-puavo-image-utils (0.1-11) UNRELEASED; urgency=medium
+puavo-image-utils (0.1-12) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * initial 
@@ -12,8 +12,9 @@ puavo-image-utils (0.1-11) UNRELEASED; urgency=medium
   * modified example datadir & fix in puavo-img-tool
   * fix puavo-img-live
   * install myself.deb in chroot 
+  * fix installtion of debs
 
- -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Mon, 01 Feb 2021 19:43:11 +0100
+ -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Mon, 01 Feb 2021 20:57:04 +0100
 
 puavo-image-utils (0.1-1) unstable; urgency=medium
 

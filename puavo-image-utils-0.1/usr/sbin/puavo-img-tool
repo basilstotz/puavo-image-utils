@@ -269,12 +269,12 @@ if test -d /install/lists.d;then
 fi
 
 #debs
-if test -d /install/debs;then
-    if test -n "$(ls /install/debs|grep .deb)";then
+if test -d /install/debs.d;then
+    if test -n "$(ls /install/debs.d|grep .deb)";then
         echo "**************************************************************"
         echo "                         debs                                *"
         echo "**************************************************************"
-        for D in $(ls /install/debs/*.deb);do
+        for D in $(ls /install/debs.d/*.deb);do
              echo $D
              dpkg -i $D
              #if test $? = 1;then ERROR=1;fi
@@ -333,7 +333,7 @@ cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
 if ! test -d $CHROOT/install/;then
     mkdir -p $CHROOT/install/
 fi
-echo "copy data to chroot"
+#echo "copy data to chroot"
 cp -r  $DATAPATH/* $CHROOT/install/
 
 #for logfiles
@@ -341,10 +341,10 @@ test -d ./log || mkdir ./log
 
 #patch!
 if test $INTER_O = 1;then
-    echo "non interactive"
+    echo "info: non interactive"
     echo "/usr/local/bin/puavo-chroot-apply" | puavo-dir-chroot $CHROOT > ./log/last-build.log 
 else
-    echo "interactive"
+    echo "info: interactive"
     puavo-dir-chroot $CHROOT
 fi
 RET=$?
