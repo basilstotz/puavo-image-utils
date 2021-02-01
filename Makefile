@@ -1,7 +1,7 @@
 .PHONY: all
 all:
 	@cp bin/puavo-* /usr/local/bin/.
-	@./bin/puavo-img-tool
+	@./bin/puavo-img-tool | tee build.log
 
 .PHONY: install
 install:
