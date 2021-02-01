@@ -1,5 +1,7 @@
 cache
 mnt
+mirror
+.puavo-os
 *.img
 config.*
 tmp.*
