@@ -2,6 +2,11 @@
 
 #pwd
 
+if ! test $(id --user) = 0;then
+    echo "error: not root"
+    exit 1
+fi
+
 if test -f ./bin/config.class;then CLASS_O=$(cat ./bin/config.class);else CLASS_O="";fi
 if test -f ./bin/config.dist;then DIST_O=$(cat ./bin/config.dist);else DIST_O="";fi
 if test -f ./bin/config.osname;then OSNAME_O=$(cat ./bin/config.osname);else OSNAME_O="";fi
