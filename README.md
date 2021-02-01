@@ -13,7 +13,6 @@ Install the puavo-img-utils
 ```
 $ wget https://github.com/basilstotz/dfsadffsdfsadfasdf/dfsdasd.deb
 $ sudo dpkg -i sdfsdfsd.deb
-
 ```
 Now you ....
 
