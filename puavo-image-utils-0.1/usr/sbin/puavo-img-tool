@@ -1,9 +1,7 @@
 #!/bin/sh
 
-#pwd
-
 test -d ./config || mkdir -p ./config
-
+test -d ./log || mkdir ./log
 
 if test -f ./config/config.class;then CLASS_O=$(cat ./config/config.class);else CLASS_O="";fi
 if test -f ./config/config.dist;then DIST_O=$(cat ./config/config.dist);else DIST_O="";fi
@@ -11,12 +9,10 @@ if test -f ./config/config.osname;then OSNAME_O=$(cat ./config/config.osname);el
 if test -f ./config/config.source;then SOURCE_O=$(cat ./config/config.source);else SOURCE_O="";fi
 if test -f ./config/config.datadir;then DATA_O=$(cat ./config/config.datadir);else DATA_O="";fi
 					  
-
 INTER_O="1"
 FORCE_O="1"
 YES_O="1"
 QEMU_O="1"
-
 CONFIG_O="1"
 
 print_params(){
@@ -131,8 +127,6 @@ if [ $# -eq 1 ]; then
     INTER_O=0
 fi
 
-
-
 #check source image
 if test -z "$SOURCE_O";then
     echo "error: source param not set"
@@ -162,6 +156,7 @@ else
     exit 1
 fi
 
+# ask at start
 if test $INTER_O = 1 -a $YES_O = 1;then
     echo "do you want to build with the following params:"
     echo
@@ -174,7 +169,10 @@ if test $INTER_O = 1 -a $YES_O = 1;then
     fi
 fi
 
-#mount image
+###################################################################################
+#                     ready now. mount the source image                           #
+###################################################################################
+
 SOURCE=$SOURCE_O
 DATAPATH=$DATA_O
 
@@ -207,6 +205,24 @@ if test -n "$CLASS_O";then
 else
     CLASS=$CLASS_I
 fi
+
+###################################################################################
+#                 the image is mounted now. we prepare chroot                     #
+###################################################################################
+
+#copy cached apt
+if ! test -d cache/apt/;then
+    mkdir -p cache/apt/
+    touch    cache/apt/.t
+fi
+cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
+
+#copy install
+if ! test -d $CHROOT/install/;then
+    mkdir -p $CHROOT/install/
+fi
+cp -r  $DATAPATH/* $CHROOT/install/
+
 
 #call pre-chroot-hooks
 if test -d $DATAPATH/pre.d;then
@@ -330,36 +346,26 @@ echo "**************************************************************"
 echo "Status is $ERROR"
 exit $ERROR
 EOF
-
 chmod +x $CHROOT/usr/local/bin/puavo-chroot-apply
 
-#copy cached apt
-if ! test -d cache/apt/;then
-    mkdir -p cache/apt/
-    touch    cache/apt/.t
-fi
-#copy var
-cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
+###################################################################################
+#             the chroot is set up. chroot starts now                             #
+###################################################################################
 
-#copy install
-if ! test -d $CHROOT/install/;then
-    mkdir -p $CHROOT/install/
-fi
-#echo "copy data to chroot"
-cp -r  $DATAPATH/* $CHROOT/install/
-
-#for logfiles
-test -d ./log || mkdir ./log
 
 #patch!
 if test $INTER_O = 1;then
-    echo "info: non interactive"
+#    echo "info: non interactive"
     echo "/usr/local/bin/puavo-chroot-apply" | puavo-dir-chroot $CHROOT > ./log/last-build.log 
 else
-    echo "info: interactive"
+#    echo "info: interactive"
     puavo-dir-chroot $CHROOT
 fi
 RET=$?
+
+###################################################################################
+#                   chroot ends. we start making the image                        #
+###################################################################################
 
 
 if test $RET = 0 -o $FORCE_O = 0;then
@@ -399,20 +405,20 @@ else
     echo "***************************************************************"
 fi
 
+###################################################################################
+#          image is (maybe) build. clean up                                        #
+###################################################################################
+
 #save logfile
 if test -f ./log/last-build.log;then
     mv ./log/last-build.log ./log/$IMAGE.log
 fi
 
-
-#umount
 puavo-img-mount --umount $SOURCE
-
 
 chown --reference .. $IMAGE.img
 chown -R --reference .. cache
 chown -R --reference .. config
-
 
 exit $?
 
