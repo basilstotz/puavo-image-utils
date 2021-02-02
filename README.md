@@ -1,7 +1,64 @@
 # puavo-image-utils
 
 
-This a very simple and minimalistic programm to patch/inspect PuavoOS images easyly. It is not aimed  for production, it's rather used for hacking and testing. Use it at your own risk. 
+This is collection of very simple and minimalistic tool  to modify/inspect/serve PuavoOS images easyly.
+
+ 
+ #### puavo-img-tool
+
+```
+Usage: puavo-img-tool [config_opts]      (configure)
+       puavo-img-tool IMAGE.img          (interactive)
+       puavo-img-tool [runtime_opts]     (batch)
+
+       Patch a PuavoOS image and (eventualy) compress a new image.
+
+Config options:
+    -s, --source SOURCE        set source to SOURCE
+    -d, --datadir DATADIR      set datadir to DATADIR
+    -o, --osname OSNAME        set image osname to OSNAME
+    -c, --class CLASS          set image class to CLASS
+    -h, --help                 show this help
+
+ Stored params are:
+      source: 
+     datadir: 
+      osname: 
+       class: 
+
+Runtime options:
+    -i, --interactice          force interactive shell
+    -f, --force                force building image even with errors
+    -n, --noimage              do not build image even without errors
+    -y, --yes                  do not ask at start
+    -q, --qemu                 do also make a qemu image
+
+```
+
+ 
+ #### puavo-img-live
+
+```
+usage: puavo-img-live IMAGE.img
+
+       Opens IMAGE.img in qemu for inspection.
+       When the qemu image does not exist, it
+       will be build as IMAGE-inst.img .
+```
+
+
+#### puavo-img-repo
+
+```
+usage: puavo-img-repo IMAGE_DIR [MIRROR_DIR]
+
+       Maintains a repository of all images from IMAGE_DIR
+       in MIRROR_DIR. When MIRROR_DIR is not set it defaults to
+       IMAGE_DIR/mirror .
+```
+
+
+It is not aimed  for production, it's rather used for hacking and testing. Use it at your own risk. 
 
 
 This is work in (eternal) progress ...
@@ -37,36 +94,6 @@ cxyvxycvxycvyxcy  xcvxcv cxyv
 
 ## A Closer Look at the Tools
 
-### puavo-img-tool
-
-```
-Usage: puavo-img-tool [config_opts]      (configure)
-       puavo-img-tool IMAGE.img          (interactive)
-       puavo-img-tool [runtime_opts]     (batch)
-
-Patch a PuavoOS image and (eventualy) compress a new image.
-
-Config options:
-    -s, --source SOURCE        set source to SOURCE
-    -d, --datadir DATADIR      set datadir to DATADIR
-    -o, --osname OSNAME        set image osname to OSNAME
-    -c, --class CLASS          set image class to CLASS
-    -h, --help                 show this help
-
- Stored params are:
-      source: 
-     datadir: 
-      osname: 
-       class: 
-
-Runtime options:
-    -i, --interactice          force interactive shell
-    -f, --force                force building image even with errors
-    -n, --noimage              do not build image even without errors
-    -y, --yes                  do not ask at start
-    -q, --qemu                 do also make a qemu image
-
-```
 
 
 ###### Basic Interactive Usage
@@ -137,26 +164,6 @@ Note that these examples are just dirty hacks (,which work for me).
 - The part **parts.d/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
 - On PuavoOs laptops you can test the part by executing (as root) the **parts.d/\<partname\>/install.sh** on live your laptop.
 
-### puavo-img-live
-
-```
-usage: puavo-img-live IMAGE.img
-
-       Opens IMAGE.img in qemu for inspection.
-       When the qemu image does not exist, it
-       will be build as IMAGE-inst.img .
-```
-
-
-### puavo-img-repo
-
-```
-usage: puavo-img-repo IMAGE_DIR [MIRROR_DIR]
-
-       Maintains a repository of all images from IMAGE_DIR
-       in MIRROR_DIR. When MIRROR_DIR is not set it defaults to
-       IMAGE_DIR/mirror .
-```
 
 
 
