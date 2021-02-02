@@ -1,4 +1,4 @@
-puavo-image-utils (0.1-28) UNRELEASED; urgency=medium
+puavo-image-utils (0.1-35) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * initial 
@@ -29,8 +29,15 @@ puavo-image-utils (0.1-28) UNRELEASED; urgency=medium
   * removed minetest form example
   * better infos text
   * test yes_o
+  * again
+  * agian
+  * finaly ....
+  * put sudo at the bginning
+  * *
+  * finally again
+  * *
 
- -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Tue, 02 Feb 2021 11:48:36 +0100
+ -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Tue, 02 Feb 2021 15:26:40 +0100
 
 puavo-image-utils (0.1-1) unstable; urgency=medium
 

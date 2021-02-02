@@ -1,7 +1,38 @@
 #!/bin/sh
 
-IMAGE_DIR="$(pwd)"
-MIRROR_DIR="$IMAGE_DIR/mirror"
+if test -z "$1" -o "$1" = "-h" -o "$1" = "--help";then
+    echo "usage: puavo-img-repo  IMAGE_DIR [MIRROR_DIR]"
+    echo
+    echo "       Maintains an image repository of all images from IMAGE_DIR"
+    echo "       in MIRROR_DIR. When MIRROR_DIR is not set it defaults to"
+    echo "       IMAGE_DIR/mirror ."
+    exit 0
+fi
+
+
+IMAGE_DIR="$1"
+if ! test -d $IMAGE_DIR;then
+    echo "error: IMAGEDIR \"$IMAGE_DIR\" not found"
+    exit 1
+fi
+if echo $IMAGE_DIR|grep -vq "^/.*";then
+    IMAGE_DIR="$(pwd)/$IMAGE_DIR"
+fi
+
+#echo $IMAGE_DIR
+
+if test -z "$2";then
+    MIRROR_DIR="$IMAGE_DIR/mirror"
+else
+    MIRROR_DIR=$2
+fi
+if echo $MIRROR_DIR|grep -vq "^/.*";then
+    MIRROR_DIR="$(pwd)/$MIRROR_DIR"
+fi
+
+
+#echo $MIRROR_DIR
+
 
 
 list_images(){
@@ -57,15 +88,18 @@ test -d $MIRROR_DIR/meta || mkdir -p $MIRROR_DIR/meta
 test -d $MIRROR_DIR/rdiffs || mkdir -p $MIRROR_DIR/rdiffs
 cd ${IMAGE_DIR}/.puavo-os
 
+
+#needs absolute paths!!!!!!!!!!!!
 sudo /puavo-os/.aux/make-rdiffs \
         image_dir="${IMAGE_DIR}" \
 	images_urlbase="https://cdn.puavo.org" \
 	mirror_dir="${MIRROR_DIR}" \
 	mode="production" 
 
+
 # fix permissions
-sudo chown --recursive --reference ${IMAGE_DIR} ${IMAGE_DIR}/.puavo-os
-sudo chown --recursive --reference ${IMAGE_DIR} ${MIRROR_DIR}
+sudo chown --recursive --reference ${IMAGE_DIR}  ${IMAGE_DIR}/.puavo-os
+sudo chown --recursive --reference ${IMAGE_DIR}  ${MIRROR_DIR}
 
 exit
 

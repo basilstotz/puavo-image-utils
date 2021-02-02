@@ -1,5 +1,12 @@
 #!/bin/sh
 
+
+if ! test $(id --user) = 0;then
+#    echo "exec sudo $0 $@"		
+    exec sudo $0 $@
+fi
+
+
 test -d ./config || mkdir -p ./config
 test -d ./log || mkdir ./log
 
@@ -94,7 +101,7 @@ while [ $# -gt 0 ]; do
 	-y|--yes)
 	    shift
 	    YES_O="0"
-	    echo "option --yes $YES_O"
+#	    echo "option --yes $YES_O"
 	    ;;
 	-f|--force)
 	    shift
@@ -128,12 +135,9 @@ if test $CONFIG_O = 0;then
     exit 0
 fi
 
-	    echo "option --yes $YES_O"
+#	    echo "option --yes $YES_O"
 
 
-if ! test $(id --user) = 0;then
-    exec sudo $0 $@
-fi
 
 if [ $# -eq 1 ]; then
     SOURCE_O=$1
@@ -169,7 +173,7 @@ else
     exit 1
 fi
 
-echo "debug: INTER_O = $INTER_O YES_O = $YES_O" 
+#echo "debug: INTER_O = $INTER_O YES_O = $YES_O" 
 # ask at start
 if test $INTER_O = 1 -a $YES_O = 1;then
     echo "do you want to build with the following params:"
@@ -181,6 +185,10 @@ if test $INTER_O = 1 -a $YES_O = 1;then
     if ! test "$ANS" = "" -o "$ANS" = "y" -o "$ANS" = "Y" -o "$ANS" = "j" -o "$ANS" = "J";then 
         exit 0
     fi
+else
+    echo "building image with:"
+    print_params
+    echo
 fi
 
 ###################################################################################
@@ -390,9 +398,10 @@ rsync -ra  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
 #                                we start making the image                        #
 ###################################################################################
 
-$IMAGE=""
+IMAGE=""
+#echo "debug $NO_O $RET $FORCE_O" 
 
-if test $NO_O = 0; then 
+if test $NO_O = 1; then 
 if test $RET = 0 -o $FORCE_O = 0;then
      echo
      echo "***************************************************************"

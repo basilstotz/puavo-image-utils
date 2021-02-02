@@ -2,21 +2,26 @@
 
 
 UMOUNT=false
-TEMPDIR="/images/mnt"
+TEMPDIR="./mnt"
 
-while [ $# -gt 0 ]; do
-    case $1 in
-	-h|--help)
-	    shift
-	    echo "Usage: $(basename $0) [options] IMAGE"
+
+print_help(){
+	    echo "Usage: $(basename $0) [options] IMAGE.img"
 	    echo
 	    echo "Mount an image writeable."
 	    echo
 	    echo "Options:"
 	    echo "    -u, --umount                 do umount the image"
-	    echo "    -t, --tempdir DIR            set tempdir to DIR (default is /images/mnt/"
+	    echo "    -t, --tempdir DIR            set tempdir to DIR (default is \"$TEMPDIR/\""
 	    echo "    -h, --help                   show this message"	    
 	    echo
+}    
+
+while [ $# -gt 0 ]; do
+    case $1 in
+	-h|--help)
+	    shift
+	    print_help
 	    exit 0
 	    ;;
 	-u|--umount)
@@ -42,12 +47,12 @@ while [ $# -gt 0 ]; do
 done
 
 if [ $# -ne 1 ]; then
-    echo "error: exactly one argument expexted"
+    print_help
     exit 1
 fi
 
 if ! test -d $TEMPDIR;then
-    echo "error: tempdir $TEMPDIR does not exist"
+    mkdir -p $TEMPDIR
     exit 1
 fi
 
@@ -76,11 +81,11 @@ MNT=$(basename -s .img $IMG)
 
 #umount
 if mount|grep -q $TEMPDIR/${MNT}.rofs;then
-     umount $TEMPDIR/${MNT}.rofs    
+     sudo umount $TEMPDIR/${MNT}.rofs    
 fi
 
 if mount|grep -q $TEMPDIR/${MNT}.work;then
-     umount ${MNT}
+     sudo umount ${MNT}
 fi
 
 #clean
@@ -100,8 +105,8 @@ if ! test -d $TEMPDIR/${MNT}.rwfs; then mkdir -p $TEMPDIR/${MNT}.rwfs;fi
 if ! test -d $TEMPDIR/${MNT}.work; then mkdir -p $TEMPDIR/${MNT}.work;fi
 
 #mount imagey
-mount -r -o loop ${IMG} $TEMPDIR/${MNT}.rofs
+sudo mount -r -o loop ${IMG} $TEMPDIR/${MNT}.rofs
 #make it writeable
-mount -t overlay  overlay -olowerdir=$TEMPDIR/${MNT}.rofs,upperdir=$TEMPDIR/${MNT}.rwfs,workdir=$TEMPDIR/${MNT}.work  ${MNT}
+sudo mount -t overlay  overlay -olowerdir=$TEMPDIR/${MNT}.rofs,upperdir=$TEMPDIR/${MNT}.rwfs,workdir=$TEMPDIR/${MNT}.work  ${MNT}
 
 exit

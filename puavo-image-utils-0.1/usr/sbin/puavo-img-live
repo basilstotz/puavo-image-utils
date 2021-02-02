@@ -1,22 +1,25 @@
 #!/bin/sh
 
+if test -z "$1" -o "$1" = "-h" -o "$1" = "--help";then
+    echo "usage: puavo-img-live  IMAGE.img"
+    echo
+    echo "       Opens IMAGE.img in qemu for inspection."
+    echo "       When the qemu image does not exist, it"
+    echo "       will be build."
+    exit 0
+fi
 
-if test -z "$1";then
-    echo "usage: puavo-img-live IMAGE.img"
+
+IMAGE="$1"
+if ! test -f $IMAGE;then
+    echo "error: IMAGE \"$IMAGE\" not found"
     exit 1
 fi
-if ! test -f $1;then
-    echo "error: image $1 not found"
-    exit 1
-fi
 
-IMAGE=$1
 INSTALLER=$(basename -s .img $IMAGE)-inst.img
-
 
 if ! test -f $INSTALLER;then
     puavo-img-installer $IMAGE $INSTALLER
 fi
-
 
 qemu-system-x86_64  -enable-kvm -m 2G -hda $INSTALLER
