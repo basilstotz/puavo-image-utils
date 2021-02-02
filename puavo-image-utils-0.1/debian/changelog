@@ -1,4 +1,4 @@
-puavo-image-utils (0.1-19) UNRELEASED; urgency=medium
+puavo-image-utils (0.1-28) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * initial 
@@ -20,8 +20,17 @@ puavo-image-utils (0.1-19) UNRELEASED; urgency=medium
   * fix datapath in pre-chroot-hook
   * code cleanup and comments
   * test 1>&2 output
+  * add --noimage option
+  * lists with better putput
+  * fix switch for creation of qemu images
+  * fix syntax error
+  * better output
+  * fix --noimage option
+  * removed minetest form example
+  * better infos text
+  * test yes_o
 
- -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Tue, 02 Feb 2021 09:55:15 +0100
+ -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Tue, 02 Feb 2021 11:48:36 +0100
 
 puavo-image-utils (0.1-1) unstable; urgency=medium
 

@@ -94,6 +94,7 @@ while [ $# -gt 0 ]; do
 	-y|--yes)
 	    shift
 	    YES_O="0"
+	    echo "option --yes $YES_O"
 	    ;;
 	-f|--force)
 	    shift
@@ -121,10 +122,14 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+
 if test $CONFIG_O = 0;then
     echo "info: new config set. exiting ..."
     exit 0
 fi
+
+	    echo "option --yes $YES_O"
+
 
 if ! test $(id --user) = 0;then
     exec sudo $0 $@
@@ -164,6 +169,7 @@ else
     exit 1
 fi
 
+echo "debug: INTER_O = $INTER_O YES_O = $YES_O" 
 # ask at start
 if test $INTER_O = 1 -a $YES_O = 1;then
     echo "do you want to build with the following params:"
@@ -238,7 +244,7 @@ if test -d $DATAPATH/pre.d;then
         echo "**************************************************************"
         for B in $(ls $DATAPATH/pre.d);do
 	    if test -x $DATAPATH/pre.d/$B;then
-                echo "pre-chroot: $B $CHROOT $(pwd)"
+                echo "$B"
 		$DATAPATH/pre.d/$B $CHROOT $(pwd)
 		#if test $? = 1;then ERROR=1;fi
 	    fi 
@@ -281,6 +287,7 @@ if test -d /install/files.d;then
         echo "                         files                               *" 1>&2
         echo "**************************************************************" 1>&2
         cp -r /install/files.d/* /
+        echo "ok"                                                             1>&2
 	if test $? = 1;then ERROR=1;fi
         echo "done"
     fi
@@ -289,16 +296,18 @@ fi
 
 #lists
 if test -d /install/lists.d;then
-    LISTS="$(ls /install/lists.d|grep .list)"
+    LISTS="$(ls /install/lists.d|grep .list|grep -v off|xargs)"
     if test -n "$LISTS";then
         echo "**************************************************************" 1>&2
         echo "                         lists                               *" 1>&2
         echo "**************************************************************" 1>&2
-        echo $LISTS							      1>&2
+        echo "$LISTS :"							      1>&2
         apt-get update
 	if test $? = 1;then ERROR=1;fi
 	UPDATED=0
-        apt-get -y install $(cat /install/lists.d/*list|xargs)
+        PAKS=$(cat /install/lists.d/*list|xargs)
+        echo $PAKS | fmt                                                      1>&2
+        apt-get -y install $PAKS
 	if test $? = 1;then ERROR=1;fi
     fi
     echo "done"
@@ -311,7 +320,7 @@ if test -d /install/debs.d;then
         echo "                         debs                                *" 1>&2
         echo "**************************************************************" 1>&2
         for D in $(ls /install/debs.d/*.deb);do
-             echo $D                                                          1>&2
+             echo $(basename $D)                                              1>&2
              dpkg -i $D
              #if test $? = 1;then ERROR=1;fi
         done
@@ -381,8 +390,9 @@ rsync -ra  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
 #                                we start making the image                        #
 ###################################################################################
 
+$IMAGE=""
 
-if test $NO_O = 1; then 
+if test $NO_O = 0; then 
 if test $RET = 0 -o $FORCE_O = 0;then
      echo
      echo "***************************************************************"
@@ -408,33 +418,34 @@ if test $RET = 0 -o $FORCE_O = 0;then
      puavo-dir-clone --dont-update-name --type squashfs $CHROOT ${IMAGE}.img
 
 #    maybe make qemu image too
-     if test $QEMU_O = 1;then
-          puavo-img-installer $IMAGE.img
+     if test $QEMU_O = 0;then
+	  echo "building qemu image"
+          puavo-img-installer $IMAGE.img  > ./log/last-build.log 
      fi
 
 else
     echo
-    echo "***************************************************************"
-    echo "*   error: an error occured in chrooot. not bulding image     *"
-    echo "***************************************************************"
+    echo "**************************************************************"
+    echo "*   error: an error occured in chrooot. not bulding image    *"
+    echo "**************************************************************"
 fi
 else
     echo
-    echo "***************************************************************"
-    echo "*   info: switch --noimage set. not bulding image     *"
-    echo "***************************************************************"
+    echo "**************************************************************"
+    echo "*      info: switch --noimage set. not bulding image         *"
+    echo "**************************************************************"
 fi    
 ###################################################################################
 #          image is (maybe) build. clean up                                        #
 ###################################################################################
 
-if test -f ./log/last-build.log;then
+if test -f ./log/last-build.log -a -n "$IMAGE";then
     mv ./log/last-build.log ./log/$IMAGE.log
 fi
 
 puavo-img-mount --umount $SOURCE
 
-chown --reference .. $IMAGE.img
+test -f $IMAGE.img && chown    --reference .. $IMAGE.img
 chown -R --reference .. cache
 chown -R --reference .. config
 chown -R --reference .. log
