@@ -13,6 +13,8 @@ INTER_O="1"
 FORCE_O="1"
 YES_O="1"
 QEMU_O="1"
+NO_O="1"
+
 CONFIG_O="1"
 
 print_params(){
@@ -41,11 +43,13 @@ while [ $# -gt 0 ]; do
 	    echo "    -c, --class CLASS          set image class to CLASS"
  	    echo "    -h, --help                 show this help"
             echo
+            echo " Stored params are:"
 	    print_params
             echo
 	    echo "Runtime options:"
  	    echo "    -i, --interactice          force interactive shell"
  	    echo "    -f, --force                force building image even with errors"
+	    echo "    -n, --noimage              do not build image even without errors"
  	    echo "    -y, --yes                  do not ask at start"
  	    echo "    -q, --qemu                 do also make a qemu image"
 	    echo
@@ -98,6 +102,10 @@ while [ $# -gt 0 ]; do
 	-q|--qemu)
 	    shift
 	    QEMU_O="0"
+	    ;;
+	-n|--noimage)
+	    shift
+	    NO_O="0"
 	    ;;
 	--)
 	    shift
@@ -242,23 +250,23 @@ fi
 cat << 'EOF'  > $CHROOT/usr/local/bin/puavo-chroot-apply
 #!/bin/sh
 
-echo "**************************************************************"
-echo "*                                                            *"
-echo "*                     Hello Chroot                           *"
-echo "*                                                            *"
-echo "**************************************************************"
+echo "**************************************************************" 1>&2
+echo "*                                                            *" 1>&2
+echo "*                     Hello Chroot                           *" 1>&2
+echo "*                                                            *" 1>&2
+echo "**************************************************************" 1>&2
 UPDATED=1
 ERROR=0
 
 #bin
 if test -d /install/bin.d;then
     if test -n "$(ls /install/bin.d|grep .sh)";then
-        echo "**************************************************************"
-        echo "                          bin                                *"
-        echo "**************************************************************"
+        echo "**************************************************************" 1>&2
+        echo "                          bin                                *" 1>&2
+        echo "**************************************************************" 1>&2
         for B in $(ls /install/bin.d);do
 	    if test -x /install/bin.d/$B;then
-                echo $B
+                echo $B                                                       1>&2
 		/install/bin.d/$B
 		if test $? = 1;then ERROR=1;fi
 	    fi 
@@ -269,9 +277,9 @@ fi
 #files
 if test -d /install/files.d;then
     if test -n "$(ls /install/files.d/)";then
-	echo "**************************************************************"
-        echo "                         files                               *"
-        echo "**************************************************************"
+	echo "**************************************************************" 1>&2
+        echo "                         files                               *" 1>&2
+        echo "**************************************************************" 1>&2
         cp -r /install/files.d/* /
 	if test $? = 1;then ERROR=1;fi
         echo "done"
@@ -281,10 +289,12 @@ fi
 
 #lists
 if test -d /install/lists.d;then
-    if test -n "$(ls /install/lists.d|grep .list)";then
-        echo "**************************************************************"
-        echo "                         lists                               *"
-        echo "**************************************************************"
+    LISTS="$(ls /install/lists.d|grep .list)"
+    if test -n "$LISTS";then
+        echo "**************************************************************" 1>&2
+        echo "                         lists                               *" 1>&2
+        echo "**************************************************************" 1>&2
+        echo $LISTS							      1>&2
         apt-get update
 	if test $? = 1;then ERROR=1;fi
 	UPDATED=0
@@ -297,11 +307,11 @@ fi
 #debs
 if test -d /install/debs.d;then
     if test -n "$(ls /install/debs.d|grep .deb)";then
-        echo "**************************************************************"
-        echo "                         debs                                *"
-        echo "**************************************************************"
+        echo "**************************************************************" 1>&2
+        echo "                         debs                                *" 1>&2
+        echo "**************************************************************" 1>&2
         for D in $(ls /install/debs.d/*.deb);do
-             echo $D
+             echo $D                                                          1>&2
              dpkg -i $D
              #if test $? = 1;then ERROR=1;fi
         done
@@ -318,15 +328,15 @@ fi
 #parts
 if test -d /install/parts.d;then
     if test -n "$(ls /install/parts.d/)";then
-        echo "**************************************************************"
-        echo "                         parts                               *"
-        echo "**************************************************************"
+        echo "**************************************************************" 1>&2
+        echo "                         parts                               *" 1>&2
+        echo "**************************************************************" 1>&2
 	if test $UPDATED = 1;then
 	    apt-get update
 	fi
         for P in $(ls /install/parts.d/);do
             if test -x /install/parts.d/$P/install.sh;then
-                 echo $P
+                 echo $P                                                       1>&2
                  /install/parts.d/$P/install.sh
   	         if test $? = 1;then ERROR=1;fi
             fi
@@ -336,11 +346,11 @@ if test -d /install/parts.d;then
     fi
 fi
 
-echo "**************************************************************"
-echo "*                                                            *"
-echo "*                     Goodbye Chroot                         *"
-echo "*                                                            *"
-echo "**************************************************************"
+echo "**************************************************************" 1>&2
+echo "*                                                            *" 1>&2
+echo "*                     Goodbye Chroot                         *" 1>&2
+echo "*                                                            *" 1>&2
+echo "**************************************************************" 1>&2
 echo "Status is $ERROR"
 exit $ERROR
 EOF
@@ -365,14 +375,14 @@ if ! test -d cache/apt/;then
     mkdir -p cache/apt/
 #    touch    cache/apt/.t
 fi
-rsync -rav  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
+rsync -ra  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
 
 ###################################################################################
 #                                we start making the image                        #
 ###################################################################################
 
 
-
+if test $NO_O = 1; then 
 if test $RET = 0 -o $FORCE_O = 0;then
      echo
      echo "***************************************************************"
@@ -408,7 +418,12 @@ else
     echo "*   error: an error occured in chrooot. not bulding image     *"
     echo "***************************************************************"
 fi
-
+else
+    echo
+    echo "***************************************************************"
+    echo "*   info: switch --noimage set. not bulding image     *"
+    echo "***************************************************************"
+fi    
 ###################################################################################
 #          image is (maybe) build. clean up                                        #
 ###################################################################################
@@ -422,6 +437,7 @@ puavo-img-mount --umount $SOURCE
 chown --reference .. $IMAGE.img
 chown -R --reference .. cache
 chown -R --reference .. config
+chown -R --reference .. log
 
 exit $?
 
