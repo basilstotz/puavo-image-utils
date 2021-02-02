@@ -137,6 +137,33 @@ In **/opt/puavo-image-utils/example/datadir** you'll find a working example data
 - install `gnome-maps` with `apt-get`
 - make a new category `Meine Programme` in the puavo menu, containing all newly installed gui apps. 
 
+This is the content of `/opt/puavo-image-utils/datadir`:
+
+```
+/opt/puavo-image-utils/example/datadir/
+├── bin.d
+│   └── puavomenu-auto-init.sh
+├── debs.d
+│   └── puavo-image-utils_0.1-33_all.deb
+├── files.d
+│   └── usr
+│       └── local
+│           └── bin
+│               └── puavo-hello-world
+├── lists.d
+│   ├── debs.list.off
+│   ├── devel.list.off
+│   ├── gnome-maps.list
+│   ├── minetest.list.off
+│   └── system-tools.list.off
+├── parts.d
+│   └── zzz_puavomenu-auto
+│       ├── install.sh
+│       └── make-menu-auto.sh
+└── pre.d
+    └── patch-image-conf.sh
+```
+
 #### More About Parts
 
 Parts are mainly used to install/modify things "outside" of Debian.
