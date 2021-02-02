@@ -128,6 +128,8 @@ When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bi
 8. Exits chroot
 9. Builds new PuavoOS image
 
+#### Example Datadir
+
 In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir. I does (among other things):
 
 - install  the local package `puavo-image-utils_0.1-XX_all.deb'
@@ -135,14 +137,14 @@ In **/opt/puavo-image-utils/example/datadir** you'll find a working example data
 - install `gnome-maps` with `apt-get`
 - make a new category `Meine Programme` in the puavo menu, containing all newly installed gui apps. 
 
-###### More About Parts
+#### More About Parts
 
 Parts are mainly used to install/modify things "outside" of Debian.
 
 - Parts are simple directories, which just **must** contain an executeable **install.sh** in (ba)sh. 
 - The individual install.sh **can** either download things (during install in chroot) and/or **can** use content enbedded in the directory.
 
-#### Example Parts
+##### Example Parts
 In the directory **/opt/puavo-image-utils/example/more-parts** you find some examples for parts. Move items to **parts.d/** in order to activate them.
 
 - **cafepitch** a Markdown-driven presentation tool built on Electron. https://github.com/joe-re/cafe-pitch
