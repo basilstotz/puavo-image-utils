@@ -139,17 +139,19 @@ Note that these examples are just dirty hacks (,which work for me).
 
 ### puavo-img-live
 
-```usage: puavo-img-live IMAGE.img
+```
+usage: puavo-img-live IMAGE.img
 
        Opens IMAGE.img in qemu for inspection.
        When the qemu image does not exist, it
-       will be build.
+       will be build as IMAGE-inst.img .
 ```
 
 
 ### puavo-img-repo
 
-```usage: puavo-img-repo IMAGE_DIR [MIRROR_DIR]
+```
+usage: puavo-img-repo IMAGE_DIR [MIRROR_DIR]
 
        Maintains a repository of all images from IMAGE_DIR
        in MIRROR_DIR. When MIRROR_DIR is not set it defaults to
