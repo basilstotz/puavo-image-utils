@@ -111,37 +111,24 @@ When you exit the chroot with a zero exit code a new image build including the p
 - The time field in of the output name will reflect the build date and time.
 - Exiting with non zero exit code skips the image generation.
 
-```
-sudo puavo-img-tool --datadir /path/to/datadir puavo-os-extra-buster-2021-01-25-220739-amd64.img
-```
-This command is similar to the above, but it copies the content of **/path/to/datadir/\*** to your chroot in **/install/** bevor entering the interactive shell.
-
-The **/install** directory (in chroot) will be removed bevor compressing the image.
-
-```
-sudo puavo-img-tool --osname amxa --class spezial puavo-os-extra-buster-2021-01-25-220739-amd64.img
-```
-This command is similar to the first one, but it changes the name of the image. The output will be something like "**amxa**-os-**spezial**-buster-2021-XX-XX-XXXXXX-amd64.img".
 
 
 ###### Advanced Automated Usage
 
-When the datadir contains (at least one of) folder(s) whit names **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** the programm switches to non interacitve mode. Other dirs can be here too, but are just ignored by the builtin chroot script.
+When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** they are automatacilly handeld bythe builtin chroot script. The non interactice process in the chroot is controlled by the content of these directories:
 
-The the non interactice process in the chroot is controlled by the content of these directories:
+1. It runs all executeables in **pre.d/\*.sh** , just before entering the chroot, in alphabetical order.
+2. Enters chroot
+3. It runs all executeables in **bin.d/\*.sh** in alphabetical order. 
+4. Installs the file tree in **files.d/\*** to the root directory **/**
+5. Installs (with apt) all debs, which are contained in whitespace separated list files in **lists.d/\*.list**
+6. Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
+7. Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
+8. Exits chroot
+9. Builds new PuavoOS image
 
-1. It runs all executeables in **bin.d/\*.sh** in alphabetical order. 
-2. Installs the file tree in **files.d/\*** to the root directory **/**
-3. Installs (with apt) all debs, which are contained in whitespace separated list files in **lists.d/\*.list**
-4. Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
-5. Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
+In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir.
 
-In **example/example-install** you'll find a working example datadir.
-
-- If errors are detected during execution in chroot, the building of the new image will be skipped. 
-- Use option ---force to force image creation even with errors
-- Use the option --interactive to force an interactice shell
-- Hint: If you only use only the bin.d directory (and no debs.d, .., etc), you can put your own freestyle chroot script and use this ine instead of the builtin. 
 
 ###### More About Parts
 
@@ -151,7 +138,7 @@ Parts are mainly used to install/modify things "outside" of Debian.
 - The individual install.sh **can** either download things (during install in chroot) and/or **can** use content enbedded in the directory.
 
 #### Example Parts
-In the directory **example/more-parts** you find some examples for parts. Move items to **parts.d/** in order to activate them.
+In the directory **/opt/puavo-image-utils/example/more-parts** you find some examples for parts. Move items to **parts.d/** in order to activate them.
 
 - **cafepitch** a Markdown-driven presentation tool built on Electron. https://github.com/joe-re/cafe-pitch
 - **geary** installs a newer geary - a Gnome3 integrated email client - from buster-packports debian repository
@@ -163,14 +150,6 @@ In the directory **example/more-parts** you find some examples for parts. Move i
 - **syncthing** is a continuous  peer-to-peer file synchronization program  https://syncthing.net/
 
 Note that these examples are just dirty hacks (,which work for me).
-
-- The part **parts.d/puavo-menu** must always reflect the changes/additions you made to the image in order to be accessible on the Puavo desktop. 
-- On PuavoOs laptops you can test the part by executing (as root) the **parts.d/\<partname\>/install.sh** on live your laptop.
-
-
-
-
-
 
 
 ## Usefull Links
