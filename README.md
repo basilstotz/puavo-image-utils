@@ -99,7 +99,7 @@ You just can add or remove images. Run `puavo-img-repo` again, and your mirror w
 
 
 
-###### Basic Interactive Usage
+### Basic Interactive Usage
 
 ```
 sudo puavo-img-tool puavo-os-extra-buster-2021-01-25-220739-amd64.img
@@ -113,22 +113,27 @@ When you exit the chroot with a zero exit code a new image build including the p
 
 
 
-###### Advanced Automated Usage
+### Advanced Automated Usage
 
-When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** they are automatacilly handeld bythe builtin chroot script. The non interactice process in the chroot is controlled by the content of these directories:
+When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** they are automatacilly handeld by the builtin chroot script. 
 
-1. It runs all executeables in **pre.d/\*.sh** , just before entering the chroot, in alphabetical order.
-2. Enters chroot
-3. It runs all executeables in **bin.d/\*.sh** in alphabetical order. 
-4. Installs the file tree in **files.d/\*** to the root directory **/**
-5. Installs (with apt) all debs, which are contained in whitespace separated list files in **lists.d/\*.list**
-6. Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
-7. Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
+1. Copies the content of DATADIR to the chroot
+2. Runs all executeables in **pre.d/\*.sh** , just before entering the chroot, in alphabetical order.
+3. Enters chroot
+4.    Runs all executeables in **bin.d/\*.sh** in alphabetical order. 
+5.    Installs the file tree in **files.d/\*** to the root directory **/**
+6.    Installs (with apt) all debs, which are contained in whitespace separated list files in **lists.d/\*.list**
+7.    Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
+8.    Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
 8. Exits chroot
 9. Builds new PuavoOS image
 
-In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir.
+In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir. I does (among other things):
 
+- install  the local package `puavo-image-utils_0.1-XX_all.deb'
+- install the file `puavo-hello-world` in `/usr/sbin/puavo-hello-world`
+- install `gnome-maps` with `apt-get`
+- make a new category `Meine Programme` in the puavo menu, containing all newly installed gui apps. 
 
 ###### More About Parts
 
