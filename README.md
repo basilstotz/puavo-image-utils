@@ -1,4 +1,4 @@
-# puavo-img-utils
+# puavo-image-utils
 
 
 This a very simple and minimalistic programm to patch/inspect PuavoOS images easyly. It is not aimed  for production, it's rather used for hacking and testing. Use it at your own risk. 
@@ -40,22 +40,32 @@ cxyvxycvxycvyxcy  xcvxcv cxyv
 ### puavo-img-tool
 
 ```
-Usage: sudo puavo-img-tool [options]
+Usage: puavo-img-tool [config_opts]      (configure)
+       puavo-img-tool IMAGE.img          (interactive)
+       puavo-img-tool [runtime_opts]     (batch)
 
-Inspect or modify a PuavoOS image and (optionaly) create a new puavo-os image
+Patch a PuavoOS image and (eventualy) compress a new image.
 
- Config options
- 
-    -s, --source SOURCE    set source image to SOURCE (no default)
-    -d, --datadir DATADIR  set datadir to DATADIR. (no default)
-    -c, --class  CLASS     set sink image class to CLASS (defaults to source class)
-    -o, --osname OSNAME    set sink image osname to OSNAME (defaults to source osname)
+Config options:
+    -s, --source SOURCE        set source to SOURCE
+    -d, --datadir DATADIR      set datadir to DATADIR
+    -o, --osname OSNAME        set image osname to OSNAME
+    -c, --class CLASS          set image class to CLASS
+    -h, --help                 show this help
 
-Runtime options
+ Stored params are:
+      source: 
+     datadir: 
+      osname: 
+       class: 
 
-    -f, --force            force image creation even with errors
-    -i, --iteractive       force interactive shell
-    -h, --help             show this help message
+Runtime options:
+    -i, --interactice          force interactive shell
+    -f, --force                force building image even with errors
+    -n, --noimage              do not build image even without errors
+    -y, --yes                  do not ask at start
+    -q, --qemu                 do also make a qemu image
+
 ```
 
 
