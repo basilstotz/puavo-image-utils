@@ -32,11 +32,11 @@ while [ $# -gt 0 ]; do
     case $1 in
 	-h|--help)
 	    shift
-	    echo "Usage: $(basename $0) [config_opts]           (configure)"
-	    echo "       sudo $(basename $0) IMAGE.img          (interactive)"
-	    echo "       sudo $(basename $0) [runtime_opts]     (batch)"
+	    echo "Usage: $(basename $0) [config_opts]      (configure)"
+	    echo "       $(basename $0) IMAGE.img          (interactive)"
+	    echo "       $(basename $0) [runtime_opts]     (batch)"
 	    echo
-	    echo "Patch a PuavoOS imagec and (eventualy) compress a new image." 
+	    echo "Patch a PuavoOS image and (eventualy) compress a new image." 
 	    echo
 	    echo "Config options:"
 	    echo "    -s, --source SOURCE        set source to SOURCE"
@@ -210,31 +210,21 @@ fi
 
 #patch $CHROOT/etc/puavo-conf/image.json
 
-patch_image_conf(){
-echo "{"
-for K in $LIST;do
-        echo "\"$K\": \"$(puavo-conf $K)\","
-done
-while IFS= read -r line;do
-    #echo "--->$line"
-    FOUND=1
-    for L in $LIST;do
-        if echo $line|grep $L -q;then 
-	   FOUND=0
-        fi
-    done
-    if test $FOUND = 1;then
-	if echo $line|grep -qv "{";then echo $line;fi
-    fi    
-done 
-}
-
-LIST="puavo.support.new_bugreport_url puavo.support.image_changelog_url puavo.boot.plymouth.theme puavo.greeter.logo puavo.desktop.vendor.logo puavo.desktop.keyboard.layout puavo.time.timezone puavo.desktop.keyboard.variant puavo.l10n.locale"
-
-if ! test -e $CHROOT/etc/puavo-conf/image.json.ori;then
-    cp $CHROOT/etc/puavo-conf/image.json $CHROOT/etc/puavo-conf/image.json.ori
+if test -d /install/pre.d;then
+    if test -n "$(ls /install/pre.d|grep .sh)";then
+        echo "**************************************************************"
+        echo "                      pre-chroot                             *"
+        echo "**************************************************************"
+        for B in $(ls /install/pre.d);do
+	    if test -x /install/pre.d/$B;then
+                echo "pre-chroot: $B $CHROOT $(pwd)"
+		/install/pre.d/$B $CHROOT $(pwd)
+		#if test $? = 1;then ERROR=1;fi
+	    fi 
+        done
+    fi
 fi
-patch_image_conf < $CHROOT/etc/puavo-conf/image.json.ori > $CHROOT/etc/puavo-conf/image.json
+
 
 #copy data to image
 
