@@ -65,32 +65,35 @@ This is work in (eternal) progress ...
 
 ## Quick Start
 
-Install the puavo-img-utils
+Install the puavo-img-utils:
 
 ```
-$ wget https://github.com/basilstotz/dfsadffsdfsadfasdf/dfsdasd.deb
-$ sudo dpkg -i sdfsdfsd.deb
+$ wget https://github.com/basilstotz/puavo-image-utils/releases/download/v0.1-beta.35/puavo-image-utils_0.1-35_all.deb
+$ sudo dpkg -i puavo-image-utils_0.1-35_all.deb
 ```
-Now you ....
+
+Run run the example patch with the image on your Puavo laptop do:
 
 ```
 $ mkdir MYIMAGES && cd MYIMAGES
 $ puavo-img-tool --sourceimage /images/ltsp.img --datadir /opt/puavo-img-utils/example/datadir
-$ sudo puavo-img-tool
+$ puavo-img-tool
 ```
-sdfsdfsdaf sdfsd fsdf sdf f
+
+To run your new image on a virtualized computer do:
 
 ```
 $ puavo-image-live YOURNEIMAGE.img
 ```
-sd sadfasdf sdf
+And finally, this command take all the images in in MYIMAGES and builds a mirror, suitable to serve your images over the internet.
 
 ```
 $ cd MYIMAGES
 $ puavo-img-repo ./
 ```
+You just can add or remove images. Run `puavo-img-repo` again, and your mirror will be updated.
 
-cxyvxycvxycvyxcy  xcvxcv cxyv
+
 
 ## A Closer Look at the Tools
 
