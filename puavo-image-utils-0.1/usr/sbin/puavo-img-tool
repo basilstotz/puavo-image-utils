@@ -19,7 +19,7 @@ QEMU_O="1"
 
 CONFIG_O="1"
 
-pint_params(){
+print_params(){
     echo "      source: $SOURCE_O"
     echo "     datadir: $DATA_O"
     echo "      osname: $OSNAME_O"
@@ -208,30 +208,25 @@ else
     CLASS=$CLASS_I
 fi
 
-#patch $CHROOT/etc/puavo-conf/image.json
-
-if test -d /install/pre.d;then
-    if test -n "$(ls /install/pre.d|grep .sh)";then
+#call pre-chroot-hooks
+if test -d $DATAPATH/pre.d;then
+    if test -n "$(ls $DATAPATH/pre.d|grep .sh)";then
         echo "**************************************************************"
         echo "                      pre-chroot                             *"
         echo "**************************************************************"
-        for B in $(ls /install/pre.d);do
-	    if test -x /install/pre.d/$B;then
+        for B in $(ls $DATAPATH/pre.d);do
+	    if test -x $DATAPATH/pre.d/$B;then
                 echo "pre-chroot: $B $CHROOT $(pwd)"
-		/install/pre.d/$B $CHROOT $(pwd)
+		$DATAPATH/pre.d/$B $CHROOT $(pwd)
 		#if test $? = 1;then ERROR=1;fi
 	    fi 
         done
     fi
 fi
 
-
-#copy data to image
-
 #copy chroot binary to chroot
 cat << 'EOF'  > $CHROOT/usr/local/bin/puavo-chroot-apply
 #!/bin/sh
-
 
 echo "**************************************************************"
 echo "*                                                            *"

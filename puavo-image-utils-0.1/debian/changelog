@@ -1,4 +1,4 @@
-puavo-image-utils (0.1-14) UNRELEASED; urgency=medium
+puavo-image-utils (0.1-17) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * initial 
@@ -15,8 +15,11 @@ puavo-image-utils (0.1-14) UNRELEASED; urgency=medium
   * fix installtion of debs
   * add qemu option
   * *
+  * add pre-choot hook and pre.d/patch-image-conf.sh
+  * fix typo 
+  * fix datapath in pre-chroot-hook
 
- -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Mon, 01 Feb 2021 21:50:46 +0100
+ -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Tue, 02 Feb 2021 07:19:46 +0100
 
 puavo-image-utils (0.1-1) unstable; urgency=medium
 
