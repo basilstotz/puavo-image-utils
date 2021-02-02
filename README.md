@@ -95,7 +95,7 @@ You just can add or remove images. Run `puavo-img-repo` again, and your mirror w
 
 
 
-## A Closer Look at the Tools
+## A Closer Look at **puavo-img-tool**
 
 
 
