@@ -211,11 +211,9 @@ fi
 ###################################################################################
 
 #copy cached apt
-if ! test -d cache/apt/;then
-    mkdir -p cache/apt/
-    touch    cache/apt/.t
+if  test -d cache/apt/;then
+    cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
 fi
-cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
 
 #copy install
 if ! test -d $CHROOT/install/;then
@@ -352,20 +350,27 @@ chmod +x $CHROOT/usr/local/bin/puavo-chroot-apply
 #             the chroot is set up. chroot starts now                             #
 ###################################################################################
 
-
-#patch!
 if test $INTER_O = 1;then
-#    echo "info: non interactive"
     echo "/usr/local/bin/puavo-chroot-apply" | puavo-dir-chroot $CHROOT > ./log/last-build.log 
 else
-#    echo "info: interactive"
     puavo-dir-chroot $CHROOT
 fi
 RET=$?
 
 ###################################################################################
-#                   chroot ends. we start making the image                        #
+#                   chroot ends. cache apt                                        #
 ###################################################################################
+
+if ! test -d cache/apt/;then
+    mkdir -p cache/apt/
+#    touch    cache/apt/.t
+fi
+rsync -rav  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
+
+###################################################################################
+#                                we start making the image                        #
+###################################################################################
+
 
 
 if test $RET = 0 -o $FORCE_O = 0;then
@@ -373,17 +378,16 @@ if test $RET = 0 -o $FORCE_O = 0;then
      echo "***************************************************************"
      echo "*                 ok, building image                           *"
      echo "***************************************************************"
-#    cache debs
-     rsync -rav  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
 
-#    clean image
+#    clean chroot
      rm -r $CHROOT/install
      rm -r $CHROOT/var/cache/apt/archives/*
 
 #    compose new image name
      VERSION=$(date +%Y-%m-%d-%H%M%S)
      IMAGE="${OSNAME}-os-${CLASS}-${DIST}-${VERSION}-amd64"
-     #save names in image
+
+#    save names in image
      echo "${IMAGE}.img" > $CHROOT/etc/puavo-image/name
      echo "$( cat $CHROOT/etc/puavo-image/release ) (${VERSION})">$CHROOT/etc/puavo-image/release
      echo "$CLASS" > $CHROOT/etc/puavo-image/class
@@ -393,7 +397,7 @@ if test $RET = 0 -o $FORCE_O = 0;then
 #    make compressed image
      puavo-dir-clone --dont-update-name --type squashfs $CHROOT ${IMAGE}.img
 
-     #    puavo-dir-image --class $CLASS --dist $DIST image.img
+#    maybe make qemu image too
      if test $QEMU_O = 1;then
           puavo-img-installer $IMAGE.img
      fi
@@ -409,7 +413,6 @@ fi
 #          image is (maybe) build. clean up                                        #
 ###################################################################################
 
-#save logfile
 if test -f ./log/last-build.log;then
     mv ./log/last-build.log ./log/$IMAGE.log
 fi
