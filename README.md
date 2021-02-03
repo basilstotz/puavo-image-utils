@@ -108,6 +108,14 @@ $ cp -r /opt/puavo-image-utils/example/datadir ./
 ```
 
 ```
+$ echo "         " > ./datadir/list.d/mylist.list
+```
+
+```
+$ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
+```
+
+```
 $ puavo-img-tool --datadir ./datadir
 ```
 
