@@ -1,8 +1,8 @@
 # puavo-image-utils
 
-
 This is collection of very simple and minimalistic tool  to modify/inspect/serve PuavoOS images easyly.
 
+## Overview
  
  #### puavo-img-tool
 
@@ -34,6 +34,14 @@ Runtime options:
     -q, --qemu                 do also make a qemu image
 
 ```
+#### puavo-img-install
+
+```
+usage: puavo-img-install  IMAGE.img
+
+       Installs IMAGE.img on your laptop.
+```
+
 
  
  #### puavo-img-live
@@ -65,26 +73,94 @@ This is work in (eternal) progress ...
 
 ## Quick Start
 
-Install the puavo-img-utils:
+#### Install the puavo-img-utils Package
 
 ```
 $ wget https://github.com/basilstotz/puavo-image-utils/releases/download/v0.1-beta.35/puavo-image-utils_0.1-35_all.deb
 $ sudo dpkg -i puavo-image-utils_0.1-35_all.deb
 ```
+(Probably the version noted here is outdated, see https://github.com/basilstotz/puavo-image-utils/releases for the latest release)
 
-Run run the example patch with the image on your Puavo laptop do:
+
+#### Compile the Example
 
 ```
 $ mkdir MYIMAGES && cd MYIMAGES
 $ puavo-img-tool --sourceimage /images/ltsp.img --datadir /opt/puavo-img-utils/example/datadir
 $ puavo-img-tool
 ```
+This might take a while. Expect something like half an hour.
 
-To run your new image on a virtualized computer do:
+#### Test Your New Image
+
+In order to test your new image, you can open it on a virtualized machine
+```
+$ puavo-img-live YOURNEIMAGE.img
+```
+or you can install it on your laptop
+```
+$ puavo-img-install YOURNEIMAGE.img
+```
+
+#### Compile Your own Image
+
+In a first step we (only) add packages (from a Debian repository) and  add local packages. This is done by modifying the content of `datatadir/lists.d` and `datadir/debs.d`. (Leave the other dirs in `datadir`alone, unless you know what you do.)
+
+###### Prepare Your Own Datadir 
+
+First copy the example datadir to your imagedir
 
 ```
-$ puavo-image-live YOURNEIMAGE.img
+$ cd MYIMAGES
+$ cp -r /opt/puavo-image-utils/example/datadir ./
 ```
+
+Then have to tell `puavo-ing-tool` the location of our modified `datadir`
+
+```
+$ puavo-img-tool --datadir ./datadir
+```
+###### Add Debian Standard Packages
+
+We want to remove the `example.list` and  install some the gnome apps
+```
+$ rm ./datadir/list.d/example.list 
+$ echo "gnome-sound-recorder gnome-maps gnome-calendar gnome-todo gnome-weather geary" > ./datadir/list.d/gnome-basis.list
+```
+- A list is a file named `whateveryouwant.list`. 
+- It contains a whitespace separated list von installable Debian packages.
+- You can have any number of list files.
+- All packages **must** be installable from a Debian repository.
+
+###### Add Local Debian Packages
+
+And now we want to install `puavo-image-utils_0.1-XXX_all.deb` in the new image
+```
+$ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
+```
+- You can put a many debian packages as you like.
+- Be shure the are actually working on a debian system.
+
+###### Optionally Adapt Image Name
+
+If you like, you can change the name of the image
+
+```
+$ puavo-img-tool --osname puavo --class extra
+```
+
+so the name of the image will be someting like `puavo-os-extra-buster-XXXX-XX-XX-XXXXX-amd64.img`.
+
+###### Build the Image
+
+Now, you can build your first own image with 
+```
+$ puavo-img-tool
+```
+
+
+#### Build a Mirror
+
 And finally, this command take all the images in in MYIMAGES and builds a mirror, suitable to serve your images over the internet.
 
 ```
@@ -98,25 +174,11 @@ You just can add or remove images. Run `puavo-img-repo` again, and your mirror w
 ## A Closer Look at **puavo-img-tool**
 
 
-
-### Basic Interactive Usage
-
-```
-sudo puavo-img-tool puavo-os-extra-buster-2021-01-25-220739-amd64.img
-```
-This command opens an interactive shell session on *puavo-os-extra-buster-2021-01-25-220739-amd64.img* with full read/write access. 
-
-When you exit the chroot with a zero exit code a new image build including the possible modifications you made in the chroot. The puavo-on-imsge name will something like *puavo-os-extra-buster-2021-XX-XX-XXXXXX-amd64.img*.
-
-- The time field in of the output name will reflect the build date and time.
-- Exiting with non zero exit code skips the image generation.
-
-
-
-### Advanced Automated Usage
+### How it works
 
 When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** they are automatacilly handeld by the builtin chroot script. 
 
+0. Mounts SOURCE.img as a wrteable chroot
 1. Copies the content of DATADIR to the chroot
 2. Runs all executeables in **pre.d/\*.sh** , just before entering the chroot, in alphabetical order.
 3. Enters chroot
@@ -126,16 +188,14 @@ When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bi
 7.    Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
 8.    Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
 8. Exits chroot
-9. Builds new PuavoOS image
+9. Builds new PuavoOS image from the modified chroot.
 
 #### Example Datadir
 
 In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir. I does (among other things):
 
-- install  the local package `puavo-image-utils_0.1-XX_all.deb'
-- install the file `puavo-hello-world` in `/usr/sbin/puavo-hello-world`
 - install `gnome-maps` with `apt-get`
-- make a new category `Meine Programme` in the puavo menu, containing all newly installed gui apps. 
+- make a new category `Meine Programme` in the puavo menu, containing the newly installed `gnome-maps`. 
 
 This is the content of `/opt/puavo-image-utils/datadir`:
 
@@ -144,18 +204,9 @@ This is the content of `/opt/puavo-image-utils/datadir`:
 ├── bin.d
 │   └── puavomenu-auto-init.sh
 ├── debs.d
-│   └── puavo-image-utils_0.1-33_all.deb
 ├── files.d
-│   └── usr
-│       └── local
-│           └── bin
-│               └── puavo-hello-world
 ├── lists.d
-│   ├── debs.list.off
-│   ├── devel.list.off
-│   ├── gnome-maps.list
-│   ├── minetest.list.off
-│   └── system-tools.list.off
+│   ├── example.list
 ├── parts.d
 │   └── zzz_puavomenu-auto
 │       ├── install.sh
