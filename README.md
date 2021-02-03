@@ -170,6 +170,7 @@ You just can add or remove images. Run `puavo-img-repo` again, and your mirror w
 
 When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** they are automatacilly handeld by the builtin chroot script. 
 
+0. Mounts SOURCE.img as a wrteable chroot
 1. Copies the content of DATADIR to the chroot
 2. Runs all executeables in **pre.d/\*.sh** , just before entering the chroot, in alphabetical order.
 3. Enters chroot
@@ -179,13 +180,12 @@ When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bi
 7.    Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
 8.    Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
 8. Exits chroot
-9. Builds new PuavoOS image
+9. Builds new PuavoOS image from the modified chroot.
 
 #### Example Datadir
 
 In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir. I does (among other things):
 
-- install  the local package `puavo-image-utils_0.1-XX_all.deb'
 - install the file `puavo-hello-world` in `/usr/sbin/puavo-hello-world`
 - install `gnome-maps` with `apt-get`
 - make a new category `Meine Programme` in the puavo menu, containing all newly installed gui apps. 
