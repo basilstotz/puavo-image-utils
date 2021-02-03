@@ -15,25 +15,13 @@ if ! test -d $IMAGE_DIR;then
     echo "error: IMAGEDIR \"$IMAGE_DIR\" not found"
     exit 1
 fi
-if echo $IMAGE_DIR|grep -vq "^/.*";then
-    IMAGE_DIR="$(pwd)/$IMAGE_DIR"
-fi
-
-#echo $IMAGE_DIR
+IMAGE_DIR=$(realpath $IMAGE_DIR)
 
 if test -z "$2";then
     MIRROR_DIR="$IMAGE_DIR/mirror"
 else
-    MIRROR_DIR=$2
+    MIRROR_DIR=$(realpath $2)
 fi
-if echo $MIRROR_DIR|grep -vq "^/.*";then
-    MIRROR_DIR="$(pwd)/$MIRROR_DIR"
-fi
-
-
-#echo $MIRROR_DIR
-
-
 
 list_images(){
 if test -e $IMAGE_DIR/images.json;then

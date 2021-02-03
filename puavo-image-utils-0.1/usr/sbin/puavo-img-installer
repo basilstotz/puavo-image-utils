@@ -19,7 +19,7 @@ else
 fi
 
 if ! test -f $INSTALLER;then
-   sudo puavo-make-install-disk --source-image $IMAGE --target-image $INSTALLER || exit 1
+   sudo puavo-make-install-disk --source-image $IMAGE --target-image $INSTALLER >/dev/null || exit 1
    sudo chown --reference .. $INSTALLER
 fi
 
