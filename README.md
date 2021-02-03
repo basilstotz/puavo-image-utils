@@ -34,6 +34,13 @@ Runtime options:
     -q, --qemu                 do also make a qemu image
 
 ```
+#### puavo-img-install
+
+```usage: puavo-img-install  IMAGE.img
+
+       Installs IMAGE.img on your laptop.
+```
+
 
  
  #### puavo-img-live
