@@ -73,12 +73,13 @@ This is work in (eternal) progress ...
 
 ## Quick Start
 
-Install the puavo-img-utils:
+### Install puavo-img-utils
 
 ```
 $ wget https://github.com/basilstotz/puavo-image-utils/releases/download/v0.1-beta.35/puavo-image-utils_0.1-35_all.deb
 $ sudo dpkg -i puavo-image-utils_0.1-35_all.deb
 ```
+(Probably the version noted here is outdated, see 
 
 Run run the example patch with the image on your Puavo laptop do:
 
