@@ -104,7 +104,7 @@ $ puavo-img-install YOURNEIMAGE.img
 
 #### Compile Your own Image
 
-In a first step we (only) add packages (from a Debian repository) and  add local packages. This is done by modifying the content of `datatadir/lists.d` and `datadir/debs.d`. (Leave the other dirs in `datadir`alone, unless you know what you do.)
+In a first step we (only) add packages from a Debian repository and local packages. This is done by modifying the content of `datatadir/lists.d` and `datadir/debs.d`. (Leave the other dirs in `datadir`alone, unless you know what you do.)
 
 ###### Prepare Your Own Datadir 
 
@@ -180,15 +180,15 @@ When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bi
 
 0. Mounts SOURCE.img as a wrteable chroot
 1. Copies the content of DATADIR to the chroot
-2. Runs all executeables in **pre.d/\*.sh** , just before entering the chroot, in alphabetical order.
+2. Runs all executeables in DATADIR/**pre.d/\*.sh** , just before entering the chroot.
 3. Enters chroot
-4.    Runs all executeables in **bin.d/\*.sh** in alphabetical order. 
-5.    Installs the file tree in **files.d/\*** to the root directory **/**
-6.    Installs (with apt) all debs, which are contained in whitespace separated list files in **lists.d/\*.list**
-7.    Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
-8.    Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
+4.    Runs all executeables in DATADIR/**bin.d/\*.sh**. 
+5.    Installs the file tree in DATADIR/**files.d/\*** to the root directory **/**
+6.    Installs (with apt) all debs, which are contained in whitespace separated list files in DATADIR/**lists.d/\*.list**
+7.    Installs all local debs in DATADIR/**debs.d/\*.deb**. All dependencies are (hopefully) resolved at the end.
+8.    Executes all parts (or snippets) in DATADIR/**parts.d/\PARTNAME/install.sh**.  
 8. Exits chroot
-9. Builds new PuavoOS image from the modified chroot.
+9. Builds new image from the modified chroot.
 
 #### Example Datadir
 
