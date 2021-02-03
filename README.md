@@ -90,26 +90,37 @@ $ puavo-img-tool --sourceimage /images/ltsp.img --datadir /opt/puavo-img-utils/e
 $ puavo-img-tool
 ```
 
-#### Try Your New Image
+#### Test Your New Image
 
+In order to test your new image, you can open it on virtaluized machine
 ```
 $ puavo-img-live YOURNEIMAGE.img
 ```
-
+or you can instaal it on your laptop
 ```
 $ puavo-img-install YOURNEIMAGE.img
 ```
 
 #### Compile Your own Image
 
+In a first step we (only) add some packages (from a Debian repository) and a local package. This is done by modifying the content of `datatadir/lists.d` and `datadir/debs.d`. (Leave the other dirs in `datadir`alone, unless you know what you do.)
+
+First copy the example datadir to your imagedir
+
 ```
 $ cd MYIMAGES
 $ cp -r /opt/puavo-image-utils/example/datadir ./
 ```
 
+
+In this example we want to remove the `example.list` and  install some the gnome apps
 ```
-$ echo "         " > ./datadir/list.d/mylist.list
+$ rm ./datadir/list.d/example.list 
+$ echo "gnome-sound-recorder gnome-maps gnome-calendar gnome-todo gnome-weather geary" > ./datadir/list.d/gnome-basis.list
 ```
+- A list is a file named `whateveryouwant.list` it contains a whitespace separated list von installable Debian packages.
+- You can have any number of list files.
+- All packages **must** be installable from a Debian repository.
 
 ```
 $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
