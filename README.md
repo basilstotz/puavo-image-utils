@@ -240,7 +240,9 @@ In the directory **/opt/puavo-image-utils/example/more-parts** you find some exa
 
 Note that these examples are just dirty hacks (,which work for me).
 
-## Running Your Own Puavo Image Repository
+## Using Your Own Puavo Image Repository
+
+#### Expose Mirror to the Internet
 
 To serve your mirror in the internet any hosted web service with enough space (~300 GBytes) will be fine.  Just move ( with `rscnc` or friends) your mirror to the root of your web space, in order to be accessible directly at `https://your.domain.tld/` .
 
