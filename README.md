@@ -166,7 +166,7 @@ You just can add or remove images. Run `puavo-img-repo` again, and your mirror w
 ## A Closer Look at **puavo-img-tool**
 
 
-### Automated Usage
+### How it works
 
 When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** they are automatacilly handeld by the builtin chroot script. 
 
@@ -197,18 +197,13 @@ This is the content of `/opt/puavo-image-utils/datadir`:
 ├── bin.d
 │   └── puavomenu-auto-init.sh
 ├── debs.d
-│   └── puavo-image-utils_0.1-33_all.deb
 ├── files.d
 │   └── usr
 │       └── local
 │           └── bin
 │               └── puavo-hello-world
 ├── lists.d
-│   ├── debs.list.off
-│   ├── devel.list.off
-│   ├── gnome-maps.list
-│   ├── minetest.list.off
-│   └── system-tools.list.off
+│   ├── example.list
 ├── parts.d
 │   └── zzz_puavomenu-auto
 │       ├── install.sh
