@@ -291,7 +291,8 @@ $ chmod +x ./datadir/bin.d/bootserver-cert-patch.sh
 
 ```bash
 $ git clone https://github.com/basilstotz/puavo-image-utils.git
-$ # sudo make prerequisites                                        # maybe you have to install the build dependencies
+$ cd puavo-image-utils
+$ # sudo make prerequisites # maybe you have to install the build dependencies
 $ make build
 ```
 
