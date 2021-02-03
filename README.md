@@ -266,12 +266,14 @@ Your find the correct names of the series in `IMAGEDIR/meta/`.
 
 ###### Fix the Certificate Problem
 
-PuavoBoxes need a certificate issued by Opinsys in order to download sonething from a image repository. As you (and me) dont have this certificate, we have to apply patch to the image.
+PuavoBoxes need a certificate issued by Opinsys in order to download sonething from a image repository. As you (and me) dont have this certificate, we have to apply patch to the image:
 
+
+```bash
+$ echo "sed -i /usr/sbin/puavo-bootserver-sync-images -e's/VERIFY_PEER/VERIFY_NONE/g'" > ./datadir/bin.d/bootserver-cert-patch.sh
+$ chmod +x ./datadir/bin.d/bootserver-cert-patch.sh
 ```
-$ echo "" > ./datadir/bin.d/cert-patch.sh
-$ chmod +x ./datadir/bin.d/cert-patch.sh
-```
+**Caution: This might be security issue!**
 
 ## Usefull Links
 
