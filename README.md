@@ -113,23 +113,27 @@ $ cp -r /opt/puavo-image-utils/example/datadir ./
 ```
 
 
-In this example we want to remove the `example.list` and  install some the gnome apps
+We want to remove the `example.list` and  install some the gnome apps
 ```
 $ rm ./datadir/list.d/example.list 
 $ echo "gnome-sound-recorder gnome-maps gnome-calendar gnome-todo gnome-weather geary" > ./datadir/list.d/gnome-basis.list
 ```
-- A list is a file named `whateveryouwant.list` it contains a whitespace separated list von installable Debian packages.
+- A list is a file named `whateveryouwant.list`. 
+- It contains a whitespace separated list von installable Debian packages.
 - You can have any number of list files.
 - All packages **must** be installable from a Debian repository.
-
+ 
+And now we want to install `puavo-image-utils_0.1-XXX_all.deb` in the new image
 ```
 $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
 ```
+- You can put a many debian packages as you like.
+- Be shure the are actually working on a debian system.
 
-```
-$ puavo-img-tool --datadir ./datadir
-```
+And now we have to tell `puavo-ing-tool` the location of our modified `datadir`
 
+
+Now, you can build your fist own image with 
 ```
 $ puavo-img-tool
 ```
