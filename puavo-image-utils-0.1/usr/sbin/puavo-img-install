@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if test -z "$1" -o "$1" = "-h" -o "$1" = "--help";then
+    echo "usage: puavo-img-install  IMAGE.img"
+    echo
+    echo "       Installs IMAGE.img on your laptop."
+    exit 0
+fi
+
+
+IMAGE="$1"
+if ! test -f $IMAGE;then
+    echo "error: image \"$IMAGE\" not found"
+    exit 1
+fi
+
+puavo-install-and-update-ltspimages -f $IMAGE $(basename $IMAGE)
+
+exit $?
