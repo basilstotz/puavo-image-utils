@@ -106,6 +106,8 @@ $ puavo-img-install YOURNEIMAGE.img
 
 In a first step we (only) add packages (from a Debian repository) and  add local packages. This is done by modifying the content of `datatadir/lists.d` and `datadir/debs.d`. (Leave the other dirs in `datadir`alone, unless you know what you do.)
 
+###### Prepare Your Own Datadir 
+
 First copy the example datadir to your imagedir
 
 ```
@@ -118,6 +120,7 @@ Then have to tell `puavo-ing-tool` the location of our modified `datadir`
 ```
 $ puavo-img-tool --datadir ./datadir
 ```
+##### Modify the Datadir
 
 We want to remove the `example.list` and  install some the gnome apps
 ```
@@ -136,6 +139,7 @@ $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
 - You can put a many debian packages as you like.
 - Be shure the are actually working on a debian system.
 
+##### Optionally Adapt Image Name
 
 If you like, you can change the name of the image
 
@@ -144,6 +148,8 @@ $ puavo-img-tool --osname puavo --class extra
 ```
 
 so the name of the image will be someting like `puavo-os-extra-buster-XXXX-XX-XX-XXXXX-amd64.img`.
+
+###### Build the Image
 
 Now, you can build your first own image with 
 ```
