@@ -75,7 +75,7 @@ This is work in (eternal) progress ...
 
 #### Install the puavo-img-utils Package
 
-```
+```bash
 $ wget https://github.com/basilstotz/puavo-image-utils/releases/download/v0.1-beta.35/puavo-image-utils_0.1-35_all.deb
 $ sudo dpkg -i puavo-image-utils_0.1-35_all.deb
 ```
@@ -84,7 +84,7 @@ $ sudo dpkg -i puavo-image-utils_0.1-35_all.deb
 
 #### Compile the Example
 
-```
+```bash
 $ mkdir MYIMAGES && cd MYIMAGES
 $ puavo-img-tool --sourceimage /images/ltsp.img --datadir /opt/puavo-img-utils/example/datadir
 $ puavo-img-tool
@@ -94,11 +94,13 @@ This might take a while. Expect something like half an hour.
 #### Test Your New Image
 
 In order to test your new image, you can open it on a virtualized machine
-```
+
+```bash
 $ puavo-img-live YOURNEIMAGE.img
 ```
 or you can install it on your laptop
-```
+
+```bash
 $ puavo-img-install YOURNEIMAGE.img
 ```
 
@@ -110,20 +112,21 @@ In a first step we (only) add packages from a Debian repository and local packag
 
 First copy the example datadir to your imagedir
 
-```
+```bash
 $ cd MYIMAGES
 $ cp -r /opt/puavo-image-utils/example/datadir ./
 ```
 
 Then have to tell `puavo-ing-tool` the location of our modified `datadir`
 
-```
+```bash
 $ puavo-img-tool --datadir ./datadir
 ```
 ###### Add Debian Standard Packages
 
 We want to remove the `example.list` and  install some the gnome apps
-```
+
+```bash
 $ rm ./datadir/list.d/example.list 
 $ echo "gnome-sound-recorder gnome-maps gnome-calendar gnome-todo gnome-weather geary" > ./datadir/list.d/gnome-basis.list
 ```
@@ -135,7 +138,8 @@ $ echo "gnome-sound-recorder gnome-maps gnome-calendar gnome-todo gnome-weather 
 ###### Add Local Debian Packages
 
 And now we want to install `puavo-image-utils_0.1-XXX_all.deb` in the new image
-```
+
+```bash
 $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
 ```
 - You can put a many debian packages as you like.
@@ -145,7 +149,7 @@ $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
 
 If you like, you can change the name of the image
 
-```
+```bash
 $ puavo-img-tool --osname puavo --class extra
 ```
 
@@ -154,7 +158,8 @@ so the name of the image will be someting like `puavo-os-extra-buster-XXXX-XX-XX
 ###### Build the Image
 
 Now, you can build your first own image with 
-```
+
+```bash
 $ puavo-img-tool
 ```
 
@@ -163,7 +168,7 @@ $ puavo-img-tool
 
 And finally, this command take all the images in in MYIMAGES and builds a mirror, suitable to serve your images over the internet.
 
-```
+```bash
 $ cd MYIMAGES
 $ puavo-img-repo ./
 ```
@@ -266,7 +271,9 @@ Your find the correct names of the series in `IMAGEDIR/meta/`.
 
 ###### Fix the Certificate Problem
 
-PuavoBoxes need a certificate issued by Opinsys in order to download sonething from a image repository. As you (and me) dont have this certificate, we have to apply patch to the image:
+PuavoBoxes need a certificate issued by Opinsys in order to download sonething from a image repository. As you (and me) dont have this certificate, we have to apply patch to the image.
+
+The patch will go `DATADIR/bin.d/`:
 
 
 ```bash
