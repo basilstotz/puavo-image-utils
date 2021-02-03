@@ -120,7 +120,7 @@ Then have to tell `puavo-ing-tool` the location of our modified `datadir`
 ```
 $ puavo-img-tool --datadir ./datadir
 ```
-##### Modify the Datadir
+###### Add Debian Standard Packages
 
 We want to remove the `example.list` and  install some the gnome apps
 ```
@@ -132,6 +132,8 @@ $ echo "gnome-sound-recorder gnome-maps gnome-calendar gnome-todo gnome-weather 
 - You can have any number of list files.
 - All packages **must** be installable from a Debian repository.
 
+###### Add Local Debian Packages
+
 And now we want to install `puavo-image-utils_0.1-XXX_all.deb` in the new image
 ```
 $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
@@ -139,7 +141,7 @@ $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
 - You can put a many debian packages as you like.
 - Be shure the are actually working on a debian system.
 
-##### Optionally Adapt Image Name
+###### Optionally Adapt Image Name
 
 If you like, you can change the name of the image
 
