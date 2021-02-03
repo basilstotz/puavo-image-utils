@@ -1,11 +1,2 @@
 puavo-image-utils_0.1*
-cache
-mnt
-mirror
-.puavo-os
-*.img
-config.*
-tmp.*
-*-os-*-amd64
-*.vdi
-*.log
+
