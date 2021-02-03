@@ -19,7 +19,7 @@ fi
 INSTALLER=$(basename -s .img $IMAGE)-inst.img
 
 if ! test -f $INSTALLER;then
-    puavo-img-installer $IMAGE $INSTALLER
+    puavo-img-disk $IMAGE $INSTALLER
 fi
 
 qemu-system-x86_64  -enable-kvm -m 2G -hda $INSTALLER
