@@ -288,10 +288,13 @@ $ chmod +x ./datadir/bin.d/bootserver-cert-patch.sh
 
 ## Usefull Links
 
-Background knowledge about PuavoOS and PuavoOS-images:
+Background knowledge about PuavoOS images and image repositories:
 
-- More information https://puavo.org and source code https://github.com/puavo-org
 - An introduction to image Puavo image building and patching in general (in german): https://hackmd.io/lliTWflmTiSJ3zmLddRCaA
 - Setup an Puavo image repostory (in german too):  https://hackmd.io/gdqd7gnpTSKORQEyW5y1EA
+
+General Information about Puavo and PuavoOS : 
+
+- More information https://puavo.org and source code https://github.com/puavo-org
 - An general introduction to the Puavo ICT environment for schools (in german): https://hackmd.io/D1U0ywlLSva94FMxy3hGSg 
 - An introduction to PuavoOS, a Debian based OS for schools (in german): https://hackmd.io/519PnTRuSbaK-tCxs5eIrw
