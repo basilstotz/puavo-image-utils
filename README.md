@@ -79,9 +79,10 @@ This is work in (eternal) progress ...
 $ wget https://github.com/basilstotz/puavo-image-utils/releases/download/v0.1-beta.35/puavo-image-utils_0.1-35_all.deb
 $ sudo dpkg -i puavo-image-utils_0.1-35_all.deb
 ```
-(Probably the version noted here is outdated, see 
+(Probably the version noted here is outdated, see https://github.com/basilstotz/puavo-image-utils/releases for the latest release)
 
-Run run the example patch with the image on your Puavo laptop do:
+
+### Compile the Example
 
 ```
 $ mkdir MYIMAGES && cd MYIMAGES
@@ -89,11 +90,19 @@ $ puavo-img-tool --sourceimage /images/ltsp.img --datadir /opt/puavo-img-utils/e
 $ puavo-img-tool
 ```
 
-To run your new image on a virtualized computer do:
+### Try Your New Image
 
 ```
-$ puavo-image-live YOURNEIMAGE.img
+$ puavo-img-live YOURNEIMAGE.img
 ```
+
+```
+$ puavo-img-install YOURNEIMAGE.img
+```
+
+
+### Build a PuavoOS Image Mirror
+
 And finally, this command take all the images in in MYIMAGES and builds a mirror, suitable to serve your images over the internet.
 
 ```
