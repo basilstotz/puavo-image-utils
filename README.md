@@ -36,7 +36,8 @@ Runtime options:
 ```
 #### puavo-img-install
 
-```usage: puavo-img-install  IMAGE.img
+```
+usage: puavo-img-install  IMAGE.img
 
        Installs IMAGE.img on your laptop.
 ```
