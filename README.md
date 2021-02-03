@@ -186,9 +186,8 @@ When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bi
 
 In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir. I does (among other things):
 
-- install the file `puavo-hello-world` in `/usr/sbin/puavo-hello-world`
 - install `gnome-maps` with `apt-get`
-- make a new category `Meine Programme` in the puavo menu, containing all newly installed gui apps. 
+- make a new category `Meine Programme` in the puavo menu, containing the newly installed `gnome-maps`. 
 
 This is the content of `/opt/puavo-image-utils/datadir`:
 
@@ -198,10 +197,6 @@ This is the content of `/opt/puavo-image-utils/datadir`:
 │   └── puavomenu-auto-init.sh
 ├── debs.d
 ├── files.d
-│   └── usr
-│       └── local
-│           └── bin
-│               └── puavo-hello-world
 ├── lists.d
 │   ├── example.list
 ├── parts.d
