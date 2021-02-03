@@ -286,6 +286,14 @@ $ chmod +x ./datadir/bin.d/bootserver-cert-patch.sh
 ```
 **Caution: This might be security issue!**
 
+## Building the Debian Package
+
+```bash
+$ git clone https://github.com/basilstotz/puavo-image-utils.git
+$ make build
+```
+
+
 ## Usefull Links
 
 Background knowledge about PuavoOS images and image repositories:
