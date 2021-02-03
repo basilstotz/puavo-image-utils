@@ -1,4 +1,4 @@
-TARGETS = init build clean package
+TARGETS = build clean prerequisites
 NAME = "puavo-image-utils"
 
 .PHONY: ${TARGETS}
@@ -8,16 +8,15 @@ help:
 	@echo "Targets are:"
 	@echo "   ${TARGETS}" | fmt
 
-init:
-	@./bin/init.sh ${NAME}
-
 clean:
 	@./bin/clean.sh ${NAME}
 
 build:
 	@./bin/build.sh ${NAME}
 
-package:
-	@./bin/package.sh
+prerequisites:
+	@./bin/prerequisites.sh
+
+
 
 
