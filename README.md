@@ -102,7 +102,9 @@ or you can install it on your laptop
 
 ```bash
 $ puavo-img-install YOURNEIMAGE.img
-```
+``` 
+Using `puavo-img-live` has (still) an issue: The desktop language is only in finish language.
+
 
 #### Compile Your own Image
 
