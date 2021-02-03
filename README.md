@@ -273,9 +273,9 @@ Your find all the correct names of the series in `MIRRORDIR/meta/*.json`.
 
 ###### Fix the Certificate Problem
 
-PuavoBoxes need a certificate issued by Opinsys in order to download sonething from a image repository. As you (and me) dont have this certificate, we have to apply patch to the image.
+PuavoBoxes need a certificate issued by Opinsys in order to download something from a image repository. As you (and me) dont have this certificate, we have to apply a patch to the image.
 
-The patch will go `DATADIR/bin.d/`:
+The patch can be easyly applied using `puavo-img-tool` and it will go `DATADIR/bin.d/`:
 
 
 ```bash
