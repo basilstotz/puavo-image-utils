@@ -1,8 +1,8 @@
 # puavo-image-utils
 
-
 This is collection of very simple and minimalistic tool  to modify/inspect/serve PuavoOS images easyly.
 
+## Overview
  
  #### puavo-img-tool
 
@@ -73,7 +73,7 @@ This is work in (eternal) progress ...
 
 ## Quick Start
 
-### Install puavo-img-utils
+#### Install puavo-img-utils
 
 ```
 $ wget https://github.com/basilstotz/puavo-image-utils/releases/download/v0.1-beta.35/puavo-image-utils_0.1-35_all.deb
@@ -82,7 +82,7 @@ $ sudo dpkg -i puavo-image-utils_0.1-35_all.deb
 (Probably the version noted here is outdated, see https://github.com/basilstotz/puavo-image-utils/releases for the latest release)
 
 
-### Compile the Example
+#### Compile the Example
 
 ```
 $ mkdir MYIMAGES && cd MYIMAGES
@@ -90,7 +90,7 @@ $ puavo-img-tool --sourceimage /images/ltsp.img --datadir /opt/puavo-img-utils/e
 $ puavo-img-tool
 ```
 
-### Try Your New Image
+#### Try Your New Image
 
 ```
 $ puavo-img-live YOURNEIMAGE.img
@@ -100,8 +100,23 @@ $ puavo-img-live YOURNEIMAGE.img
 $ puavo-img-install YOURNEIMAGE.img
 ```
 
+#### Compile Your own Image
 
-### Build a PuavoOS Image Mirror
+```
+$ cd MYIMAGES
+$ cp -r /opt/puavo-image-utils/example/datadir ./
+```
+
+```
+$ puavo-img-tool --datadir ./datadir
+```
+
+```
+$ puavo-img-tool
+```
+
+
+#### Build a Mirror
 
 And finally, this command take all the images in in MYIMAGES and builds a mirror, suitable to serve your images over the internet.
 
@@ -116,22 +131,7 @@ You just can add or remove images. Run `puavo-img-repo` again, and your mirror w
 ## A Closer Look at **puavo-img-tool**
 
 
-
-### Basic Interactive Usage
-
-```
-sudo puavo-img-tool puavo-os-extra-buster-2021-01-25-220739-amd64.img
-```
-This command opens an interactive shell session on *puavo-os-extra-buster-2021-01-25-220739-amd64.img* with full read/write access. 
-
-When you exit the chroot with a zero exit code a new image build including the possible modifications you made in the chroot. The puavo-on-imsge name will something like *puavo-os-extra-buster-2021-XX-XX-XXXXXX-amd64.img*.
-
-- The time field in of the output name will reflect the build date and time.
-- Exiting with non zero exit code skips the image generation.
-
-
-
-### Advanced Automated Usage
+### Automated Usage
 
 When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bin.d**, **files.d**, **lists.d**, **debs.d**, **parts.d** they are automatacilly handeld by the builtin chroot script. 
 
