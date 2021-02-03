@@ -267,7 +267,7 @@ Add the following to the PuavoBoxes `puavo-conf` setup, in order to cache your r
       ]
 }
 ```
-Your find the correct names of the series in `IMAGEDIR/meta/`.
+Your find all the correct names of the series in `MIRRORDIR/meta/*.json`.
 
 ###### Fix the Certificate Problem
 
