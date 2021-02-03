@@ -75,7 +75,7 @@ This is work in (eternal) progress ...
 
 #### Install the puavo-img-utils Package
 
-```
+```bash
 $ wget https://github.com/basilstotz/puavo-image-utils/releases/download/v0.1-beta.35/puavo-image-utils_0.1-35_all.deb
 $ sudo dpkg -i puavo-image-utils_0.1-35_all.deb
 ```
@@ -84,7 +84,7 @@ $ sudo dpkg -i puavo-image-utils_0.1-35_all.deb
 
 #### Compile the Example
 
-```
+```bash
 $ mkdir MYIMAGES && cd MYIMAGES
 $ puavo-img-tool --sourceimage /images/ltsp.img --datadir /opt/puavo-img-utils/example/datadir
 $ puavo-img-tool
@@ -94,36 +94,41 @@ This might take a while. Expect something like half an hour.
 #### Test Your New Image
 
 In order to test your new image, you can open it on a virtualized machine
-```
+
+```bash
 $ puavo-img-live YOURNEIMAGE.img
 ```
 or you can install it on your laptop
-```
+
+```bash
 $ puavo-img-install YOURNEIMAGE.img
-```
+``` 
+Using `puavo-img-live` has (still) an issue: The desktop language is only in finish language.
+
 
 #### Compile Your own Image
 
-In a first step we (only) add packages (from a Debian repository) and  add local packages. This is done by modifying the content of `datatadir/lists.d` and `datadir/debs.d`. (Leave the other dirs in `datadir`alone, unless you know what you do.)
+In a first step we (only) add packages from a Debian repository and local packages. This is done by modifying the content of `datatadir/lists.d` and `datadir/debs.d`. (Leave the other dirs in `datadir`alone, unless you know what you do.)
 
 ###### Prepare Your Own Datadir 
 
 First copy the example datadir to your imagedir
 
-```
+```bash
 $ cd MYIMAGES
 $ cp -r /opt/puavo-image-utils/example/datadir ./
 ```
 
 Then have to tell `puavo-ing-tool` the location of our modified `datadir`
 
-```
+```bash
 $ puavo-img-tool --datadir ./datadir
 ```
 ###### Add Debian Standard Packages
 
 We want to remove the `example.list` and  install some the gnome apps
-```
+
+```bash
 $ rm ./datadir/list.d/example.list 
 $ echo "gnome-sound-recorder gnome-maps gnome-calendar gnome-todo gnome-weather geary" > ./datadir/list.d/gnome-basis.list
 ```
@@ -135,7 +140,8 @@ $ echo "gnome-sound-recorder gnome-maps gnome-calendar gnome-todo gnome-weather 
 ###### Add Local Debian Packages
 
 And now we want to install `puavo-image-utils_0.1-XXX_all.deb` in the new image
-```
+
+```bash
 $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
 ```
 - You can put a many debian packages as you like.
@@ -145,7 +151,7 @@ $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
 
 If you like, you can change the name of the image
 
-```
+```bash
 $ puavo-img-tool --osname puavo --class extra
 ```
 
@@ -154,7 +160,8 @@ so the name of the image will be someting like `puavo-os-extra-buster-XXXX-XX-XX
 ###### Build the Image
 
 Now, you can build your first own image with 
-```
+
+```bash
 $ puavo-img-tool
 ```
 
@@ -163,7 +170,7 @@ $ puavo-img-tool
 
 And finally, this command take all the images in in MYIMAGES and builds a mirror, suitable to serve your images over the internet.
 
-```
+```bash
 $ cd MYIMAGES
 $ puavo-img-repo ./
 ```
@@ -171,8 +178,7 @@ You just can add or remove images. Run `puavo-img-repo` again, and your mirror w
 
 
 
-## A Closer Look at **puavo-img-tool**
-
+## puavo-img-tool
 
 ### How it works
 
@@ -180,21 +186,21 @@ When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bi
 
 0. Mounts SOURCE.img as a wrteable chroot
 1. Copies the content of DATADIR to the chroot
-2. Runs all executeables in **pre.d/\*.sh** , just before entering the chroot, in alphabetical order.
+2. Runs all executeables in DATADIR/**pre.d/\*.sh** , just before entering the chroot.
 3. Enters chroot
-4.    Runs all executeables in **bin.d/\*.sh** in alphabetical order. 
-5.    Installs the file tree in **files.d/\*** to the root directory **/**
-6.    Installs (with apt) all debs, which are contained in whitespace separated list files in **lists.d/\*.list**
-7.    Installs all local debs in **debs.d/\*.deb**. All dependencies are resolved at the end.
-8.    Executes all parts (or snippets) in **parts.d/\<partname\>/install.sh**.  
+4.    Runs all executeables in DATADIR/**bin.d/\*.sh**. 
+5.    Installs the file tree in DATADIR/**files.d/\*** to the root directory **/**
+6.    Installs (with apt) all debs, which are contained in whitespace separated list files in DATADIR/**lists.d/\*.list**
+7.    Installs all local debs in DATADIR/**debs.d/\*.deb**. All dependencies are (hopefully) resolved at the end.
+8.    Executes all parts (or snippets) in DATADIR/**parts.d/\PARTNAME/install.sh**.  
 8. Exits chroot
-9. Builds new PuavoOS image from the modified chroot.
+9. Builds new image from the modified chroot.
 
 #### Example Datadir
 
-In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir. I does (among other things):
+In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir. I does:
 
-- install `gnome-maps` with `apt-get`
+- install `gnome-maps`
 - make a new category `Meine Programme` in the puavo menu, containing the newly installed `gnome-maps`. 
 
 This is the content of `/opt/puavo-image-utils/datadir`:
@@ -236,13 +242,67 @@ In the directory **/opt/puavo-image-utils/example/more-parts** you find some exa
 
 Note that these examples are just dirty hacks (,which work for me).
 
+## Using Your Own Puavo Image Repository
+
+#### Expose Mirror to the Internet
+
+To serve your mirror in the internet any hosted web service with enough space (~300 GBytes) will be fine.  Just move ( with `rscnc` or friends) your mirror to the root of your web space, in order to be accessible directly at `https://your.domain.tld/` .
+
+#### Make Clients to Your Use Your Repository
+
+Just add the following to the clients   `puavo-conf` setup:
+
+```json
+{
+  "puavo.image.servers":  "your.domain.tld"
+}
+```
+#### Make PuavoBoxes to Cache Your Repository
+
+###### Announce your Repository
+
+Add the following to the PuavoBoxes `puavo-conf` setup, in order to cache your repository localy: 
+
+```json
+{
+  "puavo.image.series.urls": [
+       "https://your.domain.tld/meta/osname-os-oneclass-buster-amd64.json",
+       "https://your.domain.tld/meta/osname-os-anotherclass-buster-amd64.json"
+      ]
+}
+```
+Your find all the correct names of the series in `MIRRORDIR/meta/*.json`.
+
+###### Fix the Certificate Problem
+
+PuavoBoxes need a certificate issued by Opinsys in order to download something from a image repository. As you (and me) dont have this certificate, we have to apply a patch to the image.
+
+The patch can be easyly applied using `puavo-img-tool` and it will go `DATADIR/bin.d/`:
+
+
+```bash
+$ echo "sed -i /usr/sbin/puavo-bootserver-sync-images -e's/VERIFY_PEER/VERIFY_NONE/g'" > ./datadir/bin.d/bootserver-cert-patch.sh
+$ chmod +x ./datadir/bin.d/bootserver-cert-patch.sh
+```
+**Caution: This might be security issue!**
+
+## Building the Debian Package
+
+```bash
+$ git clone https://github.com/basilstotz/puavo-image-utils.git
+$ make build
+```
+
 
 ## Usefull Links
 
-Background knowledge about PuavoOS and PuavoOS-images:
+Background knowledge about PuavoOS images and image repositories:
 
-- More information https://puavo.org and source code https://github.com/puavo-org
 - An introduction to image Puavo image building and patching in general (in german): https://hackmd.io/lliTWflmTiSJ3zmLddRCaA
 - Setup an Puavo image repostory (in german too):  https://hackmd.io/gdqd7gnpTSKORQEyW5y1EA
+
+General Information about Puavo and PuavoOS : 
+
+- More information https://puavo.org and source code https://github.com/puavo-org
 - An general introduction to the Puavo ICT environment for schools (in german): https://hackmd.io/D1U0ywlLSva94FMxy3hGSg 
 - An introduction to PuavoOS, a Debian based OS for schools (in german): https://hackmd.io/519PnTRuSbaK-tCxs5eIrw
