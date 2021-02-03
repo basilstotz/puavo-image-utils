@@ -73,7 +73,7 @@ This is work in (eternal) progress ...
 
 ## Quick Start
 
-#### Install puavo-img-utils
+#### Install the puavo-img-utils Package
 
 ```
 $ wget https://github.com/basilstotz/puavo-image-utils/releases/download/v0.1-beta.35/puavo-image-utils_0.1-35_all.deb
@@ -89,21 +89,22 @@ $ mkdir MYIMAGES && cd MYIMAGES
 $ puavo-img-tool --sourceimage /images/ltsp.img --datadir /opt/puavo-img-utils/example/datadir
 $ puavo-img-tool
 ```
+This might take a while. Expect something like half an hour.
 
 #### Test Your New Image
 
-In order to test your new image, you can open it on virtaluized machine
+In order to test your new image, you can open it on a virtualized machine
 ```
 $ puavo-img-live YOURNEIMAGE.img
 ```
-or you can instaal it on your laptop
+or you can install it on your laptop
 ```
 $ puavo-img-install YOURNEIMAGE.img
 ```
 
 #### Compile Your own Image
 
-In a first step we (only) add some packages (from a Debian repository) and a local package. This is done by modifying the content of `datatadir/lists.d` and `datadir/debs.d`. (Leave the other dirs in `datadir`alone, unless you know what you do.)
+In a first step we (only) add packages (from a Debian repository) and  add local packages. This is done by modifying the content of `datatadir/lists.d` and `datadir/debs.d`. (Leave the other dirs in `datadir`alone, unless you know what you do.)
 
 First copy the example datadir to your imagedir
 
@@ -112,6 +113,11 @@ $ cd MYIMAGES
 $ cp -r /opt/puavo-image-utils/example/datadir ./
 ```
 
+Then have to tell `puavo-ing-tool` the location of our modified `datadir`
+
+```
+$ puavo-img-tool --datadir ./datadir
+```
 
 We want to remove the `example.list` and  install some the gnome apps
 ```
@@ -130,11 +136,7 @@ $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
 - You can put a many debian packages as you like.
 - Be shure the are actually working on a debian system.
 
-We have to tell `puavo-ing-tool` the location of our modified `datadir`
 
-```
-$ puavo-img-tool --datadir ./datadir
-```
 If you like, you can change the name of the image
 
 ```
