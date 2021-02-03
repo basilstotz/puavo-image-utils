@@ -237,6 +237,41 @@ Note that these examples are just dirty hacks (,which work for me).
 
 ## Running Your Own Puavo Image Repository
 
+To serve your mirror in the internet any hosted web service with enough space (~300 GBytes) will be fine.  Just move ( with `rscnc` or friends) your mirror to the root of your web space, in order to be accessible directly at `https://your.domain.tld/` .
+
+#### Make Clients to Your Use Your Repository
+
+Just add the following to the clients   `puavo-conf` setup:
+
+```json
+{
+  "puavo.image.servers":  "your.domain.tld"
+}
+```
+#### Make PuavoBoxes to Cache Your Repository
+
+###### Announce your Repository
+
+Add the following to the PuavoBoxes `puavo-conf` setup, in order to cache your repository localy: 
+
+```json
+{
+  "puavo.image.series.urls": [
+       "https://your.domain.tld/meta/osname-os-oneclass-buster-amd64.json",
+       "https://your.domain.tld/meta/osname-os-anotherclass-buster-amd64.json"
+      ]
+}
+```
+Your find the correct names of the series in `IMAGEDIR/meta/`.
+
+###### Fix the Certificate Problem
+
+PuavoBoxes need a certificate issued by Opinsys in order to download sonething from a image repository. As you (and me) dont have this certificate, we have to apply patch to the image.
+
+```
+$ echo "" > ./datadir/bin.d/cert-patch.sh
+$ chmod +x ./datadir/bin.d/cert-patch.sh
+```
 
 ## Usefull Links
 
