@@ -122,7 +122,7 @@ $ echo "gnome-sound-recorder gnome-maps gnome-calendar gnome-todo gnome-weather 
 - It contains a whitespace separated list von installable Debian packages.
 - You can have any number of list files.
 - All packages **must** be installable from a Debian repository.
- 
+
 And now we want to install `puavo-image-utils_0.1-XXX_all.deb` in the new image
 ```
 $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
@@ -130,10 +130,20 @@ $ cp puavo-image-utils_0.1-XXX_all.deb  ./datadir/debs.d/.
 - You can put a many debian packages as you like.
 - Be shure the are actually working on a debian system.
 
-And now we have to tell `puavo-ing-tool` the location of our modified `datadir`
+We have to tell `puavo-ing-tool` the location of our modified `datadir`
 
+```
+$ puavo-img-tool --datadir ./datadir
+```
+If you like, you can change the name of the image
 
-Now, you can build your fist own image with 
+```
+$ puavo-img-tool --osname puavo --class extra
+```
+
+so the name of the image will be someting like `puavo-os-extra-buster-XXXX-XX-XX-XXXXX-amd64.img`.
+
+Now, you can build your first own image with 
 ```
 $ puavo-img-tool
 ```
