@@ -171,8 +171,7 @@ You just can add or remove images. Run `puavo-img-repo` again, and your mirror w
 
 
 
-## A Closer Look at **puavo-img-tool**
-
+## puavo-img-tool
 
 ### How it works
 
@@ -192,9 +191,9 @@ When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bi
 
 #### Example Datadir
 
-In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir. I does (among other things):
+In **/opt/puavo-image-utils/example/datadir** you'll find a working example datadir. I does:
 
-- install `gnome-maps` with `apt-get`
+- install `gnome-maps`
 - make a new category `Meine Programme` in the puavo menu, containing the newly installed `gnome-maps`. 
 
 This is the content of `/opt/puavo-image-utils/datadir`:
@@ -235,6 +234,8 @@ In the directory **/opt/puavo-image-utils/example/more-parts** you find some exa
 - **syncthing** is a continuous  peer-to-peer file synchronization program  https://syncthing.net/
 
 Note that these examples are just dirty hacks (,which work for me).
+
+## Running Your Own Puavo Image Repository
 
 
 ## Usefull Links
