@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=LehrerOffice
+Comment=
+Exec=/opt/lehreroffice/LehrerOffice
+Terminal=false
+Type=Application
+Icon=lehreroffice.png
+Categories=Application;Education
+
