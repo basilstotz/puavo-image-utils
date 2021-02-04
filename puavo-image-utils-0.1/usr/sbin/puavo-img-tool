@@ -430,12 +430,14 @@ rsync -ra  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
 CACHE_PARTS="./cache/parts.d"
 DATA_PARTS="$DATAPATH/parts.d"
 CHROOT_PARTS="$CHROOT/install/parts.d"
+
 if test -d $DATA_PARTS;then
     if test -n "$(ls $DATA_PARTS)";then
 
         for P in $(ls $DATA_PARTS);do
 	    if test -f $CACHE_PARTS/$P.copyback;then
 		echo "copyback $P from chroot"
+		rm -r $CACHE_PARTS/$P
 		cp -r $CHROOT_PARTS/$P $CACHE_PARTS/.
 		rm $CACHE_PARTS/$P.copyback
 	    fi
