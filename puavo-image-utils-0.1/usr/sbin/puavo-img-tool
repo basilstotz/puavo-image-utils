@@ -35,8 +35,8 @@ print_params(){
 on_exit(){
     puavo-img-mount --umount $SOURCE
 
-    test -f $IMAGE.img && chown    --reference .. $IMAGE.img
-    test -f $IMAGE-inst.img && chown    --reference .. $IMAGE-inst.img
+    test -f $IMAGE.img && chown --reference ..  $IMAGE.img
+    test -f $IMAGE-inst.img && chown --reference ..  $IMAGE-inst.img
     
     chown -R --reference .. cache
     chown -R --reference .. config
@@ -206,6 +206,8 @@ SOURCE=$SOURCE_O
 DATAPATH=$DATA_O
 CHROOT=$(basename -s .img $SOURCE)
 
+trap on_exit EXIT
+
 sudo puavo-img-mount $SOURCE
 
 ###################################################################################
@@ -241,6 +243,12 @@ fi
 #          the image is mounted now. we copy all needed data to chroot            #
 ###################################################################################
 
+
+echo "**************************************************************"
+echo "*                     copy to chroot                         *"
+echo "**************************************************************"
+
+
 #copy datadir
 test -d $CHROOT/install/ || mkdir -p $CHROOT/install/
 
@@ -268,10 +276,10 @@ if test -d $DATA_PARTS;then
 		C_MD5SUM=""
 	    fi
 	    if test "$MD5SUM" = "$C_MD5SUM";then
-		echo "info: copy $P from chache"
+		echo "         $P"
 		cp -r $CACHE_PARTS/$P $CHROOT_PARTS
 	    else
-		echo "info: copy $P from datadir"
+		echo "changed: $P"
 		cp -r $DATA_PARTS/$P $CHROOT_PARTS
 		cp -r $CACHE_PARTS/$P.md5sum $CHROOT_PARTS/$P/myself.md5sum
 		touch $CACHE_PARTS/$P.copyback
@@ -284,6 +292,8 @@ fi
 #copy cached apt to chroot
 cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
 
+echo "ok"
+
 ###################################################################################
 #                 data is ready now. do pre-chroot-hocks                          #
 ###################################################################################
@@ -293,7 +303,7 @@ cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
 if test -d $DATAPATH/pre.d;then
     if test -n "$(ls $DATAPATH/pre.d|grep .sh)";then
         echo "**************************************************************"
-        echo "                      pre-chroot                             *"
+        echo "*                     pre-chroot                             *"
         echo "**************************************************************"
         for B in $(ls $DATAPATH/pre.d);do
 	    if test -x $DATAPATH/pre.d/$B;then
@@ -403,6 +413,7 @@ if test -d /install/parts.d;then
   	         if test $? = 1;then ERROR=1;fi
             fi
         done
+        echo "*dependencies*"                                                  1>&2
 	apt-get -f install
 	if test $? = 1;then ERROR=1;fi
     fi
@@ -449,7 +460,7 @@ if test -d $DATA_PARTS;then
 
         for P in $(ls $DATA_PARTS);do
 	    if test -f $CACHE_PARTS/$P.copyback;then
-		echo "info: copyback $P from chroot"
+		echo "copyback: $P"
 		test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
 		cp -r $CHROOT_PARTS/$P $CACHE_PARTS/.
 		rm $CACHE_PARTS/$P.copyback
