@@ -11,11 +11,11 @@ test -d ./cache/parts.d || mkdir ./cache/parts.d
 test -d ./config || mkdir -p ./config
 test -d ./log || mkdir ./log
 
-if test -f ./config/config.class;then CLASS_O=$(cat ./config/config.class);else CLASS_O="";fi
-if test -f ./config/config.dist;then DIST_O=$(cat ./config/config.dist);else DIST_O="";fi
-if test -f ./config/config.osname;then OSNAME_O=$(cat ./config/config.osname);else OSNAME_O="";fi
-if test -f ./config/config.source;then SOURCE_O=$(cat ./config/config.source);else SOURCE_O="";fi
-if test -f ./config/config.datadir;then DATA_O=$(cat ./config/config.datadir);else DATA_O="";fi
+if test -f ./config/tool.class;then CLASS_O=$(cat ./config/tool.class);else CLASS_O="";fi
+if test -f ./config/tool.dist;then DIST_O=$(cat ./config/tool.dist);else DIST_O="";fi
+if test -f ./config/tool.osname;then OSNAME_O=$(cat ./config/tool.osname);else OSNAME_O="";fi
+if test -f ./config/tool.source;then SOURCE_O=$(cat ./config/tool.source);else SOURCE_O="";fi
+if test -f ./config/tool.datadir;then DATA_O=$(cat ./config/tool.datadir);else DATA_O="";fi
 					  
 INTER_O="1"
 FORCE_O="1"
@@ -79,28 +79,28 @@ while [ $# -gt 0 ]; do
 	    shift
 	    SOURCE_O=$1
 	    CONFIG_O=0
-	    echo $1 > ./config/config.source
+	    echo $1 > ./config/tool.source
 	    shift
 	    ;;
 	-c|--class)
 	    shift
 	    CLASS_O=$1
 	    CONFIG_O=0
-	    echo $1 > ./config/config.class
+	    echo $1 > ./config/tool.class
 	    shift
 	    ;;
 	-o|--osname)
 	    shift
 	    OSNAME_O=$1
 	    CONFIG_O=0
-	    echo $1 > ./config/config.osname
+	    echo $1 > ./config/tool.osname
 	    shift
 	    ;;
 	-d|--datadir)
 	    shift
 	    DATA_O=$1
 	    CONFIG_O=0
-	    echo $1 > ./config/config.datadir
+	    echo $1 > ./config/tool.datadir
 	    shift
 	    ;;
 
