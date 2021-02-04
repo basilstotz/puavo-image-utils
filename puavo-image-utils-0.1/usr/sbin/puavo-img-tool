@@ -248,29 +248,31 @@ cp -r  $DATAPATH/lists.d $CHROOT/install/
 cp -r  $DATAPATH/debs.d $CHROOT/install/
 
 # copy parts.d/*
-CACHEDIR="./cache/parts.d"
-DATADIR="$DATAPATH/parts.d"
+CACHE_PARTS="./cache/parts.d"
+DATA_PARTS="$DATAPATH/parts.d"
+CHROOT_PARTS="$CHROOT/install/parts.d"
 
-test -d $CHROOT/install/parts.d || mkdir -p $CHROOT/install/parts.d
-if test -d $DATADIR;then
-    if test -n "$(ls $DATADIR)";then
+test -d $CHROOT_PARTS || mkdir -p $CHROOT_PARTS
 
-        for P in $(ls $DATADIR);do
-	    MD5SUM=$(tar -cf - $DATADIR/$P|md5sum|cut -d\  -f1)
-	    echo $MD5SUM > $CACHEDIR/$P.md5sum
-            if test -f $CACHEDIR/$P/md5sum;then
-            	C_MD5SUM=$(cat $CACHEDIR/$P/md5sum)
+if test -d $DATA_PARTS;then
+    if test -n "$(ls $DATA_PARTS)";then
+
+        for P in $(ls $DATA_PARTS);do
+	    MD5SUM=$(tar -cf - $DATA_PARTS/$P|md5sum|cut -d\  -f1)
+	    echo $MD5SUM > $CACHE_PARTS/$P.md5sum
+            if test -f $CACHE_PARTS/$P/md5sum;then
+            	C_MD5SUM=$(cat $CACHE_PARTS/$P/md5sum)
 	    else
 		C_MD5SUM=""
 	    fi
 	    if test "$MD5SUM" = "C_MD5SUM";then
 		echo "copy $P from chache"
-		cp -r $CACHEDIR/$P $CHROOT/install/parts.d/
+		cp -r $CACHE_PARTS/$P $CHROOT_PARTS
 	    else
 		echo "copy $P from date"
-		cp -r $DATADIR/$P $CHROOT/install/parts.d/
-		cp -r $CACHEDIR/$P.md5sum $CHROOT/install/parts.d/$P/md5sum
-		touch $CACHEDIR/$P.empty
+		cp -r $DATA_PARTS/$P $CHROOT_PARTS
+		cp -r $CACHE_PARTS/$P.md5sum $CHROOT_PARTS/$P/md5sum
+		touch $CACHE_PARTS/$P.copyback
 	    fi
         done
 	
@@ -425,16 +427,17 @@ RET=$?
 rsync -ra  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
 
 # cpy parts back
-CACHEDIR="./cache/parts.d"
-DATADIR="$DATAPATH/parts.d"
-if test -d $DATADIR;then
-    if test -n "$(ls $DATADIR)";then
+CACHE_PARTS="./cache/parts.d"
+DATA_PARTS="$DATAPATH/parts.d"
+CHROOT_PARTS="$CHROOT/install/parts.d"
+if test -d $DATA_PARTS;then
+    if test -n "$(ls $DATA_PARTS)";then
 
-        for P in $(ls $DATADIR);do
-	    if test -f $CACHEDIR/$P.empty;then
+        for P in $(ls $DATA_PARTS);do
+	    if test -f $CACHE_PARTS/$P.copyback;then
 		echo "copyback $P from chroot"
-		cp -r $CHROOT/install/parts.d/$P $CACHEDIR/.
-		rm $CACHEDIR/$P.empty
+		cp -r $CHROOT_PARTS/$P $CACHE_PARTS/.
+		rm $CACHE_PARTS/$P.copyback
 	    fi
         done
 
