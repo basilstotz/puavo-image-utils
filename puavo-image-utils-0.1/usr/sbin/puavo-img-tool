@@ -268,21 +268,23 @@ if test -d $DATA_PARTS;then
     if test -n "$(ls $DATA_PARTS)";then
 
         for P in $(ls $DATA_PARTS);do
-	    MD5SUM=$(tar -cf - $DATA_PARTS/$P|md5sum|cut -d\  -f1)
-	    echo $MD5SUM > $CACHE_PARTS/$P.md5sum
-            if test -f $CACHE_PARTS/$P/myself.md5sum;then
-            	C_MD5SUM=$(cat $CACHE_PARTS/$P/myself.md5sum)
-	    else
-		C_MD5SUM=""
-	    fi
-	    if test "$MD5SUM" = "$C_MD5SUM";then
-		echo "         $P"
-		cp -r $CACHE_PARTS/$P $CHROOT_PARTS
-	    else
-		echo "changed: $P"
-		cp -r $DATA_PARTS/$P $CHROOT_PARTS
-		cp -r $CACHE_PARTS/$P.md5sum $CHROOT_PARTS/$P/myself.md5sum
-		touch $CACHE_PARTS/$P.copyback
+	    if test -x $DATA_PARTS/$P/install.sh;then
+	        MD5SUM=$(tar -cf - $DATA_PARTS/$P|md5sum|cut -d\  -f1)
+	        echo $MD5SUM > $CACHE_PARTS/$P.md5sum
+                if test -f $CACHE_PARTS/$P/myself.md5sum;then
+            	    C_MD5SUM=$(cat $CACHE_PARTS/$P/myself.md5sum)
+	        else
+		    C_MD5SUM=""
+	        fi
+	        if test "$MD5SUM" = "$C_MD5SUM";then
+		    echo "         $P"
+		    cp -r $CACHE_PARTS/$P $CHROOT_PARTS
+	        else
+		    echo "changed: $P"
+		    cp -r $DATA_PARTS/$P $CHROOT_PARTS
+		    cp -r $CACHE_PARTS/$P.md5sum $CHROOT_PARTS/$P/myself.md5sum
+		    touch $CACHE_PARTS/$P.copyback
+	        fi
 	    fi
         done
 	
@@ -459,14 +461,16 @@ if test -d $DATA_PARTS;then
     if test -n "$(ls $DATA_PARTS)";then
 
         for P in $(ls $DATA_PARTS);do
-	    if test -f $CACHE_PARTS/$P.copyback;then
-		echo "copyback: $P"
-		test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
-		cp -r $CHROOT_PARTS/$P $CACHE_PARTS/.
-		rm $CACHE_PARTS/$P.copyback
+	    if test -x $DATA_PARTS/$P/install.sh;then
+	         if test -f $CACHE_PARTS/$P.copyback;then
+		     echo "copyback: $P"
+		     test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
+		     cp -r $CHROOT_PARTS/$P $CACHE_PARTS/.
+		     rm $CACHE_PARTS/$P.copyback
+	         fi
 	    fi
         done
-
+       
     fi
 fi
 
