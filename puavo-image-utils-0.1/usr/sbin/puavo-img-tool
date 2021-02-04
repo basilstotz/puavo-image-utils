@@ -448,7 +448,7 @@ if test -d $DATA_PARTS;then
         for P in $(ls $DATA_PARTS);do
 	    if test -f $CACHE_PARTS/$P.copyback;then
 		echo "copyback $P from chroot"
-		rm -r $CACHE_PARTS/$P
+		test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
 		cp -r $CHROOT_PARTS/$P $CACHE_PARTS/.
 		rm $CACHE_PARTS/$P.copyback
 	    fi
