@@ -237,7 +237,7 @@ else
 fi
 
 ###################################################################################
-#                 the image is mounted now. we prepare chroot                     #
+#          the image is mounted now. we copy all needed data to chroot            #
 ###################################################################################
 
 #copy datadir
@@ -278,6 +278,14 @@ if test -d $DATA_PARTS;then
 	
     fi
 fi
+
+#copy cached apt
+cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
+
+###################################################################################
+#                 data is ready now. do pre-chroot-hocks                          #
+###################################################################################
+
 
 #call pre-chroot-hooks
 if test -d $DATAPATH/pre.d;then
@@ -412,8 +420,6 @@ chmod +x $CHROOT/usr/local/bin/puavo-chroot-apply
 #             the chroot is set up. chroot starts now                             #
 ###################################################################################
 
-#copy cached apt
-cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
 
 #chroot
 if test $INTER_O = 1;then
@@ -423,10 +429,15 @@ else
 fi
 RET=$?
 
+
+###################################################################################
+#                               copyback cached data and apt                      #
+###################################################################################
+
 #copy apt cache back
 rsync -ra  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
 
-# cpy parts back
+#copy back parts.d
 CACHE_PARTS="./cache/parts.d"
 DATA_PARTS="$DATAPATH/parts.d"
 CHROOT_PARTS="$CHROOT/install/parts.d"
