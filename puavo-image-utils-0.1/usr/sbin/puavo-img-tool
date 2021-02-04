@@ -141,7 +141,8 @@ while [ $# -gt 0 ]; do
 done
 
 if test $CONFIG_O = 0;then
-    echo "info: new config set. exiting ..."
+    echo "Stored params are now:"
+    print_params
     exit 0
 fi
 
