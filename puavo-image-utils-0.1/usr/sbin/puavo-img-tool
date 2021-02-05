@@ -5,6 +5,8 @@ if ! test $(id --user) = 0;then
     exec sudo $0 $@
 fi
 
+
+
 test -d ./cache/apt || mkdir -p ./cache/apt
 test -d ./cache/parts.d || mkdir ./cache/parts.d
 
@@ -16,14 +18,18 @@ if test -f ./config/tool.dist;then DIST_O=$(cat ./config/tool.dist);else DIST_O=
 if test -f ./config/tool.osname;then OSNAME_O=$(cat ./config/tool.osname);else OSNAME_O="";fi
 if test -f ./config/tool.source;then SOURCE_O=$(cat ./config/tool.source);else SOURCE_O="";fi
 if test -f ./config/tool.datadir;then DATA_O=$(cat ./config/tool.datadir);else DATA_O="";fi
-					  
+					 
 INTER_O="1"
 FORCE_O="1"
 YES_O="1"
 QEMU_O="1"
-NO_O="1"
+NOIMAGE_O="1"
+PREBUILD_O="1"
 
 CONFIG_O="1"
+
+# not nice!
+DIST_O="buster"
 
 print_params(){
     echo "      source: $SOURCE_O"
@@ -70,6 +76,7 @@ while [ $# -gt 0 ]; do
 	    echo "    -n, --noimage              do not build image even without errors"
  	    echo "    -y, --yes                  do not ask at start"
  	    echo "    -q, --qemu                 do also make a qemu image"
+ 	    echo "    -p, --prebuild             make a prebuild image"
 	    echo
 	    exit 0
 	    ;;
@@ -124,7 +131,11 @@ while [ $# -gt 0 ]; do
 	    ;;
 	-n|--noimage)
 	    shift
-	    NO_O="0"
+	    NOIMAGE_O="0"
+	    ;;
+	-p|--prebuild)
+	    shift
+	    PREBUILD_O="0"
 	    ;;
 	--)
 	    shift
@@ -198,6 +209,32 @@ else
     echo
 fi
 
+
+###################################################################################
+#                     special for pre building                                    #
+###################################################################################
+
+# prepare for prebuild
+PREBUILD_MD5SUM=$(tar -cf - $DATA_O | md5sum | cut -d\  -f1)
+PREBUILD_IMAGE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
+
+# exit if all is done yet
+if test $PREBUILD_O = 0;then
+    if test -f ./prebuild/$PREBUILD_IMAGE.img;then
+	if test -f ./prebuild/$PREBUILD_IMAGE.md5sum;then
+	    P_MD5SUM=$(cat ./prebuild/$PREBUILD_IMAGE.md5sum)
+	else
+	    P_MD5SUM=""
+	fi
+	if test $P_MD5SUM = $PREBUILD_MD5SUM;then
+	    echo "info: image is up to date. exiting ..."
+            exit 0
+        fi
+    fi
+    echo "info: building prebuilt image: $PREBUILD_IMAGE.img"
+fi
+
+
 ###################################################################################
 #                     ready now. mount the source image                           #
 ###################################################################################
@@ -207,6 +244,7 @@ DATAPATH=$DATA_O
 CHROOT=$(basename -s .img $SOURCE)
 
 trap on_exit EXIT
+trap on_exit INT
 
 sudo puavo-img-mount $SOURCE
 
@@ -459,29 +497,54 @@ CHROOT_PARTS="$CHROOT/install/parts.d"
 
 if test -d $DATA_PARTS;then
     if test -n "$(ls $DATA_PARTS)";then
-
         for P in $(ls $DATA_PARTS);do
+
 	    if test -x $DATA_PARTS/$P/install.sh;then
-	         if test -f $CACHE_PARTS/$P.copyback;then
+
+		# work is done here
+		touch $CACHE_PARTS/$P.keep
+	        if test -f $CACHE_PARTS/$P.copyback;then
 		     echo "copyback: $P"
 		     test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
 		     cp -r $CHROOT_PARTS/$P $CACHE_PARTS/.
 		     rm $CACHE_PARTS/$P.copyback
 	         fi
+	    else
+		#remove dir without exe install.sh
+		echo "info: \"$P\" has no install.sh"
+                #test -f $CACHE_PARTS/$P.md5sum && rm $CACHE_PARTS/$P.md5sum 
+		#test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
 	    fi
+
         done
-       
     fi
 fi
+
+#remove orphaned chaches
+#if test -d $DATA_PARTS;then
+#    if test -n "$(ls $DATA_PARTS)";then
+#        for P in $(ls $DATA_PARTS);do
+#
+#	    if test -f $CACHE_PARTS/$P.keep; then
+#		rm $CACHE_PARTS/$P.keep
+#	    else
+#                test -f $CACHE_PARTS/$P.md5sum && rm $CACHE_PARTS/$P.md5sum
+#		test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
+#	    fi
+#	    	    
+#        done
+#    fi
+#fi
 
 ###################################################################################
 #                                we start making the image                        #
 ###################################################################################
 
 IMAGE=""
-#echo "debug $NO_O $RET $FORCE_O" 
 
-if test $NO_O = 1; then 
+echo "debug $NOIMAGE_O $RET $FORCE_O" 
+
+if test $NOIMAGE_O = 1; then 
   if test $RET = 0 -o $FORCE_O = 0;then
 	
      echo
@@ -497,6 +560,7 @@ if test $NO_O = 1; then
      VERSION=$(date +%Y-%m-%d-%H%M%S)
      IMAGE="${OSNAME}-os-${CLASS}-${DIST}-${VERSION}-amd64"
 
+          
 #    save source image names
      if ! test $CHROOT/etc/puavo-image/base_name;then
 	 cp $CHROOT/etc/puavo-image/name $CHROOT/etc/puavo-image/base_name
@@ -518,6 +582,12 @@ if test $NO_O = 1; then
 #    make compressed image
      puavo-dir-clone --dont-update-name --type squashfs $CHROOT ${IMAGE}.img
 
+     if test $PREBUILD_O = 0;then
+	 test -d ./prebuild || mkdir -p ./prebuild
+	 mv $IMAGE.img ./prebuild/$PREBUILD_IMAGE.img
+	 echo $PREBULD_MD5SUM > ./prebuild/$PREBUILD_IMAGE.md5sum
+     fi
+     
 #    maybe make qemu image too
      if test $QEMU_O = 0;then
 	  echo "building qemu image"
