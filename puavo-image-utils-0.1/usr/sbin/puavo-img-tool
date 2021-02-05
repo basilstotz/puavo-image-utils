@@ -44,9 +44,11 @@ on_exit(){
     test -f $IMAGE.img && chown --reference ..  $IMAGE.img
     test -f $IMAGE-inst.img && chown --reference ..  $IMAGE-inst.img
     
-    chown -R --reference .. cache
-    chown -R --reference .. config
-    chown -R --reference .. log
+    test -d chache   &&  chown --recursive --reference ..  cache
+    test -d config   &&  chown --recursive --reference ..  config
+    test -d log      &&  chown --recursive --reference ..  log
+    test -d prebuild &&  chown --recursive --reference ..  prebuild
+
 }
 
 
@@ -162,6 +164,19 @@ if [ $# -eq 1 ]; then
     INTER_O=0
 fi
 
+#check datadir
+if test -n "$DATA_O";then
+    if ! test -d $DATA_O;then
+        echo "error: datadir not found"
+        exit 1
+    fi
+else
+    echo "error: datadir not set"
+    exit 1
+fi
+
+
+
 #check source image
 if test -z "$SOURCE_O";then
     echo "error: source param not set"
@@ -180,16 +195,42 @@ else
     fi	
 fi
 
-#check datadir
-if test -n "$DATA_O";then
-    if ! test -d $DATA_O;then
-        echo "error: datadir not found"
-        exit 1
-    fi
+# get name from image
+
+#test -d $MOUNT || mkdir -p $MOUNT
+
+mount -o loop $SOURCE_O /mnt ;echo $?
+
+if test -e /mnt/etc/puavo-image/name;then
+    NAME=$(cat /mnt/etc/puavo-image/name)
 else
-    echo "error: datadir not set"
+    echo "error: $CHROOT does not seem to be a puavo-os image"
+    umount /mnt
     exit 1
 fi
+id
+#echo $MOUNT
+umount /mnt
+
+
+#calc parameters
+OSNAME_I=$(echo $NAME|cut -d- -f1)
+CLASS_I=$(echo $NAME|cut -d- -f3)
+DIST=$(echo $NAME|cut -d- -f4)
+
+if test -n "$OSNAME_O";then
+    OSNAME=$OSNAME_O
+else
+    OSNAME=$OSNAME_I
+fi
+
+if test -n "$CLASS_O";then
+    CLASS=$CLASS_O
+else
+    CLASS=$CLASS_I
+fi
+
+##################################################################3
 
 #echo "debug: INTER_O = $INTER_O YES_O = $YES_O" 
 # ask at start
@@ -224,8 +265,9 @@ if test $PREBUILD_O = 0;then
 	if test -f ./prebuild/$PREBUILD_IMAGE.md5sum;then
 	    P_MD5SUM=$(cat ./prebuild/$PREBUILD_IMAGE.md5sum)
 	else
-	    P_MD5SUM=""
+	    P_MD5SUM="sdfsadfköökljsdkflsadjklfasjdlfjsadlkf"
 	fi
+echo " | $PREBUILD_MD5SUM | $P_MD5SUM | $PREBUILD_IMAGE | "
 	if test $P_MD5SUM = $PREBUILD_MD5SUM;then
 	    echo "info: image is up to date. exiting ..."
             exit 0
@@ -234,11 +276,11 @@ if test $PREBUILD_O = 0;then
     echo "info: building prebuilt image: $PREBUILD_IMAGE.img"
 fi
 
-
+##################################################################################
 ###################################################################################
 #                     ready now. mount the source image                           #
 ###################################################################################
-
+###################################################################################
 SOURCE=$SOURCE_O
 DATAPATH=$DATA_O
 CHROOT=$(basename -s .img $SOURCE)
@@ -247,35 +289,6 @@ trap on_exit EXIT
 trap on_exit INT
 
 sudo puavo-img-mount $SOURCE
-
-###################################################################################
-#                   extract osname,class,dist from image                          #
-###################################################################################
-
-if test -e $CHROOT/etc/puavo-image/name;then
-    NAME=$(cat $CHROOT/etc/puavo-image/name)
-else
-    echo "error: $CHROOT does not seem to be a puavo-os image"
-    on_exit
-    exit 1
-fi
-
-#calc parameters
-OSNAME_I=$(echo $NAME|cut -d- -f1)
-CLASS_I=$(echo $NAME|cut -d- -f3)
-DIST=$(echo $NAME|cut -d- -f4)
-
-if test -n "$OSNAME_O";then
-    OSNAME=$OSNAME_O
-else
-    OSNAME=$OSNAME_I
-fi
-
-if test -n "$CLASS_O";then
-    CLASS=$CLASS_O
-else
-    CLASS=$CLASS_I
-fi
 
 ###################################################################################
 #          the image is mounted now. we copy all needed data to chroot            #
@@ -537,7 +550,9 @@ fi
 #fi
 
 ###################################################################################
+###################################################################################
 #                                we start making the image                        #
+###################################################################################
 ###################################################################################
 
 IMAGE=""
@@ -585,7 +600,7 @@ if test $NOIMAGE_O = 1; then
      if test $PREBUILD_O = 0;then
 	 test -d ./prebuild || mkdir -p ./prebuild
 	 mv $IMAGE.img ./prebuild/$PREBUILD_IMAGE.img
-	 echo $PREBULD_MD5SUM > ./prebuild/$PREBUILD_IMAGE.md5sum
+	 echo $PREBUILD_MD5SUM > ./prebuild/$PREBUILD_IMAGE.md5sum
      fi
      
 #    maybe make qemu image too
