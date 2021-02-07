@@ -256,7 +256,7 @@ fi
 ###################################################################################
 
 # prepare for prebuild
-PREBUILD_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
+PREBUILD_MD5SUM=$(tar -cf - $DATA_O | md5sum | cut -d\  -f1)
 PREBUILD_IMAGE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
 
 # exit if all is done yet
@@ -288,13 +288,68 @@ CHROOT=$(basename -s .img $SOURCE)
 trap on_exit EXIT
 trap on_exit INT
 
-sudo generic-img-mount $SOURCE
+sudo puavo-img-mount $SOURCE
 
 ###################################################################################
 #          the image is mounted now. we copy all needed data to chroot            #
 ###################################################################################
 
 
+echo "**************************************************************"
+echo "*                     copy to chroot                         *"
+echo "**************************************************************"
+
+
+#copy datadir
+test -d $CHROOT/install/ || mkdir -p $CHROOT/install/
+
+cp -r  $DATAPATH/bin.d $CHROOT/install/
+cp -r  $DATAPATH/files.d $CHROOT/install/
+cp -r  $DATAPATH/lists.d $CHROOT/install/
+cp -r  $DATAPATH/debs.d $CHROOT/install/
+
+# copy parts.d/*
+CACHE_PARTS="./cache/parts.d"
+DATA_PARTS="$DATAPATH/parts.d"
+CHROOT_PARTS="$CHROOT/install/parts.d"
+
+test -d $CHROOT_PARTS || mkdir -p $CHROOT_PARTS
+
+if test -d $DATA_PARTS;then
+    if test -n "$(ls $DATA_PARTS)";then
+
+        for P in $(ls $DATA_PARTS);do
+	    if test -x $DATA_PARTS/$P/install.sh;then
+	        MD5SUM=$(tar -cf - $DATA_PARTS/$P|md5sum|cut -d\  -f1)
+	        echo $MD5SUM > $CACHE_PARTS/$P.md5sum
+                if test -f $CACHE_PARTS/$P/myself.md5sum;then
+            	    C_MD5SUM=$(cat $CACHE_PARTS/$P/myself.md5sum)
+	        else
+		    C_MD5SUM=""
+	        fi
+	        if test "$MD5SUM" = "$C_MD5SUM";then
+		    echo "         $P"
+		    cp -r $CACHE_PARTS/$P $CHROOT_PARTS
+	        else
+		    echo "changed: $P"
+		    cp -r $DATA_PARTS/$P $CHROOT_PARTS
+		    cp -r $CACHE_PARTS/$P.md5sum $CHROOT_PARTS/$P/myself.md5sum
+		    touch $CACHE_PARTS/$P.copyback
+	        fi
+	    fi
+        done
+	
+    fi
+fi
+
+#copy cached apt to chroot
+cp -r cache/apt/* $CHROOT/var/cache/apt/archives/.
+
+echo "ok"
+
+###################################################################################
+#                 data is ready now. do pre-chroot-hocks                          #
+###################################################################################
 
 
 #call pre-chroot-hooks
@@ -313,15 +368,186 @@ if test -d $DATAPATH/pre.d;then
     fi
 fi
 
+#copy chroot binary to chroot
+cat << 'EOF'  > $CHROOT/usr/local/bin/puavo-chroot-apply
+#!/bin/sh
 
-echo "***************************************************************"
-echo "*                    copy to chroot                           *"
-echo "***************************************************************"
-generic-dir-copy $CHROOT $DATAPATH ./cache
-generic-dir-patch $CHROOT  > ./log/last-build.log 
+echo "**************************************************************" 1>&2
+echo "*                                                            *" 1>&2
+echo "*                     Hello Chroot                           *" 1>&2
+echo "*                                                            *" 1>&2
+echo "**************************************************************" 1>&2
+UPDATED=1
+ERROR=0
+
+#bin
+if test -d /install/bin.d;then
+    if test -n "$(ls /install/bin.d|grep .sh)";then
+        echo "**************************************************************" 1>&2
+        echo "                          bin                                *" 1>&2
+        echo "**************************************************************" 1>&2
+        for B in $(ls /install/bin.d);do
+	    if test -x /install/bin.d/$B;then
+                echo $B                                                       1>&2
+		/install/bin.d/$B
+		if test $? = 1;then ERROR=1;fi
+	    fi 
+        done
+    fi
+fi
+
+#files
+if test -d /install/files.d;then
+    if test -n "$(ls /install/files.d/)";then
+	echo "**************************************************************" 1>&2
+        echo "                         files                               *" 1>&2
+        echo "**************************************************************" 1>&2
+        cp -r /install/files.d/* /
+        echo "ok"                                                             1>&2
+	if test $? = 1;then ERROR=1;fi
+        echo "done"
+    fi
+fi
+
+
+#lists
+if test -d /install/lists.d;then
+    LISTS="$(ls /install/lists.d|grep .list|grep -v off|xargs)"
+    if test -n "$LISTS";then
+        echo "**************************************************************" 1>&2
+        echo "                         lists                               *" 1>&2
+        echo "**************************************************************" 1>&2
+        echo "$LISTS :"							      1>&2
+        apt-get update
+	if test $? = 1;then ERROR=1;fi
+	UPDATED=0
+        PAKS=$(cat /install/lists.d/*list|xargs)
+        echo $PAKS | fmt                                                      1>&2
+        apt-get -y install $PAKS
+	if test $? = 1;then ERROR=1;fi
+    fi
+    echo "done"
+fi
+
+#debs
+if test -d /install/debs.d;then
+    if test -n "$(ls /install/debs.d|grep .deb)";then
+        echo "**************************************************************" 1>&2
+        echo "                         debs                                *" 1>&2
+        echo "**************************************************************" 1>&2
+        for D in $(ls /install/debs.d/*.deb);do
+             echo $(basename $D)                                              1>&2
+             dpkg -i $D
+             #if test $? = 1;then ERROR=1;fi
+        done
+        if test $UPDATED = 1;then
+	    apt-get update
+    	    if test $? = 1;then ERROR=1;fi
+	    UPDATED=0
+	fi
+	apt-get -y -f install
+	if test $? = 1;then ERROR=1;fi
+    fi
+fi
+
+#parts
+if test -d /install/parts.d;then
+    if test -n "$(ls /install/parts.d/)";then
+        echo "**************************************************************" 1>&2
+        echo "                         parts                               *" 1>&2
+        echo "**************************************************************" 1>&2
+	if test $UPDATED = 1;then
+	    apt-get update
+	fi
+        for P in $(ls /install/parts.d/);do
+            if test -x /install/parts.d/$P/install.sh;then
+                 echo $P                                                       1>&2
+                 /install/parts.d/$P/install.sh
+  	         if test $? = 1;then ERROR=1;fi
+            fi
+        done
+        echo "*dependencies*"                                                  1>&2
+	apt-get -f install
+	if test $? = 1;then ERROR=1;fi
+    fi
+fi
+
+echo "**************************************************************" 1>&2
+echo "*                                                            *" 1>&2
+echo "*                     Goodbye Chroot                         *" 1>&2
+echo "*                                                            *" 1>&2
+echo "**************************************************************" 1>&2
+echo "Status is $ERROR"
+exit $ERROR
+EOF
+chmod +x $CHROOT/usr/local/bin/puavo-chroot-apply
+
+###################################################################################
+#             the chroot is set up. chroot starts now                             #
+###################################################################################
+
+
+#chroot
+if test $INTER_O = 1;then
+    echo "/usr/local/bin/puavo-chroot-apply" | puavo-dir-chroot $CHROOT > ./log/last-build.log 
+else
+    puavo-dir-chroot $CHROOT
+fi
 RET=$?
-generic-dir-back
 
+
+###################################################################################
+#                               copyback cached data and apt                      #
+###################################################################################
+
+#copy apt cache back
+rsync -ra  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
+
+#copy back parts.d
+CACHE_PARTS="./cache/parts.d"
+DATA_PARTS="$DATAPATH/parts.d"
+CHROOT_PARTS="$CHROOT/install/parts.d"
+
+if test -d $DATA_PARTS;then
+    if test -n "$(ls $DATA_PARTS)";then
+        for P in $(ls $DATA_PARTS);do
+
+	    if test -x $DATA_PARTS/$P/install.sh;then
+
+		# work is done here
+		touch $CACHE_PARTS/$P.keep
+	        if test -f $CACHE_PARTS/$P.copyback;then
+		     echo "copyback: $P"
+		     test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
+		     cp -r $CHROOT_PARTS/$P $CACHE_PARTS/.
+		     rm $CACHE_PARTS/$P.copyback
+	         fi
+	    else
+		#remove dir without exe install.sh
+		echo "info: \"$P\" has no install.sh"
+                #test -f $CACHE_PARTS/$P.md5sum && rm $CACHE_PARTS/$P.md5sum 
+		#test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
+	    fi
+
+        done
+    fi
+fi
+
+#remove orphaned chaches
+#if test -d $DATA_PARTS;then
+#    if test -n "$(ls $DATA_PARTS)";then
+#        for P in $(ls $DATA_PARTS);do
+#
+#	    if test -f $CACHE_PARTS/$P.keep; then
+#		rm $CACHE_PARTS/$P.keep
+#	    else
+#                test -f $CACHE_PARTS/$P.md5sum && rm $CACHE_PARTS/$P.md5sum
+#		test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
+#	    fi
+#	    	    
+#        done
+#    fi
+#fi
 
 ###################################################################################
 ###################################################################################
@@ -345,13 +571,11 @@ if test $NOIMAGE_O = 1; then
      rm -r $CHROOT/install
      rm -r $CHROOT/var/cache/apt/archives/*
 
-#    $CHROOT $IMAGE
-
-     #    compose new image name
+#    compose new image name
      VERSION=$(date +%Y-%m-%d-%H%M%S)
      IMAGE="${OSNAME}-os-${CLASS}-${DIST}-${VERSION}-amd64"
 
-     
+          
 #    save source image names
      if ! test $CHROOT/etc/puavo-image/base_name;then
 	 cp $CHROOT/etc/puavo-image/name $CHROOT/etc/puavo-image/base_name
@@ -373,7 +597,6 @@ if test $NOIMAGE_O = 1; then
 #    make compressed image
      puavo-dir-clone --dont-update-name --type squashfs $CHROOT ${IMAGE}.img
 
-     
      if test $PREBUILD_O = 0;then
 	 test -d ./prebuild || mkdir -p ./prebuild
 	 mv $IMAGE.img ./prebuild/$PREBUILD_IMAGE.img

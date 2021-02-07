@@ -1,0 +1,68 @@
+#!/bin/sh
+
+
+if test $# -ne 3;then
+    echo "usage: generic-dir-copy [-a|--apt] CHROOT DATA CACHE"
+    exit 1
+fi
+
+CHROOT=$1
+DATAPATH=$2
+CACHE=$3
+
+cat <<EOF >/tmp/generic-dir-copy.params
+CHROOT=$1
+DATAPATH=$2
+CACHE=$3
+EOF
+
+chown --recursive --reference $CACHE $CACHE/*
+
+#copy datadir
+test -d $CHROOT/install/ || mkdir -p $CHROOT/install/
+
+cp -r  $DATAPATH/bin.d $CHROOT/install/
+cp -r  $DATAPATH/files.d $CHROOT/install/
+cp -r  $DATAPATH/lists.d $CHROOT/install/
+cp -r  $DATAPATH/debs.d $CHROOT/install/
+
+# copy parts.d/*
+CACHE_PARTS="$CACHE/parts.d"
+DATA_PARTS="$DATAPATH/parts.d"
+CHROOT_PARTS="$CHROOT/install/parts.d"
+
+test -d $CHROOT_PARTS || mkdir -p $CHROOT_PARTS
+
+if test -d $DATA_PARTS;then
+    if test -n "$(ls $DATA_PARTS)";then
+
+        for P in $(ls $DATA_PARTS);do
+	    if test -x $DATA_PARTS/$P/install.sh;then
+	        MD5SUM=$(tar -cf - $DATA_PARTS/$P|md5sum|cut -d\  -f1)
+	        echo $MD5SUM > $CACHE_PARTS/$P.md5sum
+                if test -f $CACHE_PARTS/$P/myself.md5sum;then
+            	    C_MD5SUM=$(cat $CACHE_PARTS/$P/myself.md5sum)
+	        else
+		    C_MD5SUM=""
+	        fi
+		# poor man's merge!
+		test -d $CHROOT_PARTS/$P && rm -r $CHROOT_PARTS/$P
+	        if test "$MD5SUM" = "$C_MD5SUM";then
+		    echo "         $P"
+		    cp -r $CACHE_PARTS/$P $CHROOT_PARTS
+	        else
+		    echo "changed: $P"
+		    cp -r $DATA_PARTS/$P $CHROOT_PARTS
+		    cp -r $CACHE_PARTS/$P.md5sum $CHROOT_PARTS/$P/myself.md5sum
+		    touch $CACHE_PARTS/$P.copyback
+	        fi
+	    fi
+        done
+	
+    fi
+fi
+
+#copy cached apt to chroot
+rsync -ra  --size-only $CACHE/apt/ $CHROOT/var/cache/apt/archives/.
+
+echo "ok"

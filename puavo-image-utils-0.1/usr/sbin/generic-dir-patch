@@ -1,0 +1,135 @@
+#!/bin/sh
+
+
+CHROOT=$1
+
+if test -n "$CHROOT";then
+    test -d $CHROOT || exit 1
+else
+    echo "usage puavo-dir-patch (CHROOT)DIR"
+    exit 1
+fi
+
+#copy chroot binary to chroot
+cat << 'EOF'  > $CHROOT/usr/local/bin/puavo-chroot-apply
+#!/bin/sh
+
+echo "**************************************************************" 1>&2
+echo "*                                                            *" 1>&2
+echo "*                     Hello Chroot                           *" 1>&2
+echo "*                                                            *" 1>&2
+echo "**************************************************************" 1>&2
+UPDATED=1
+ERROR=0
+
+#bin
+if test -d /install/bin.d;then
+    if test -n "$(ls /install/bin.d|grep .sh)";then
+        echo "**************************************************************" 1>&2
+        echo "                          bin                                *" 1>&2
+        echo "**************************************************************" 1>&2
+        for B in $(ls /install/bin.d);do
+	    if test -x /install/bin.d/$B;then
+                echo $B                                                       1>&2
+		/install/bin.d/$B
+		if test $? = 1;then ERROR=1;fi
+	    fi 
+        done
+    fi
+fi
+
+#files
+if test -d /install/files.d;then
+    if test -n "$(ls /install/files.d/)";then
+	echo "**************************************************************" 1>&2
+        echo "                         files                               *" 1>&2
+        echo "**************************************************************" 1>&2
+        cp -r /install/files.d/* /
+        echo "ok"                                                             1>&2
+	if test $? = 1;then ERROR=1;fi
+        echo "done"
+    fi
+fi
+
+
+#lists
+if test -d /install/lists.d;then
+    LISTS="$(ls /install/lists.d|grep .list|grep -v off|xargs)"
+    if test -n "$LISTS";then
+        echo "**************************************************************" 1>&2
+        echo "                         lists                               *" 1>&2
+        echo "**************************************************************" 1>&2
+        echo "$LISTS :"							      1>&2
+        apt-get update
+	if test $? = 1;then ERROR=1;fi
+	UPDATED=0
+        PAKS=$(cat /install/lists.d/*list|xargs)
+        echo $PAKS | fmt                                                      1>&2
+        apt-get -y install $PAKS
+	if test $? = 1;then ERROR=1;fi
+    fi
+    echo "done"
+fi
+
+#debs
+if test -d /install/debs.d;then
+    if test -n "$(ls /install/debs.d|grep .deb)";then
+        echo "**************************************************************" 1>&2
+        echo "                         debs                                *" 1>&2
+        echo "**************************************************************" 1>&2
+        for D in $(ls /install/debs.d/*.deb);do
+             echo $(basename $D)                                              1>&2
+             dpkg -i $D
+             #if test $? = 1;then ERROR=1;fi
+        done
+        if test $UPDATED = 1;then
+	    apt-get update
+    	    if test $? = 1;then ERROR=1;fi
+	    UPDATED=0
+	fi
+	apt-get -y -f install
+	if test $? = 1;then ERROR=1;fi
+    fi
+fi
+
+#parts
+if test -d /install/parts.d;then
+    if test -n "$(ls /install/parts.d/)";then
+        echo "**************************************************************" 1>&2
+        echo "                         parts                               *" 1>&2
+        echo "**************************************************************" 1>&2
+	if test $UPDATED = 1;then
+	    apt-get update
+	fi
+        for P in $(ls /install/parts.d/);do
+            if test -x /install/parts.d/$P/install.sh;then
+                 echo $P                                                       1>&2
+                 /install/parts.d/$P/install.sh
+  	         if test $? = 1;then ERROR=1;fi
+            fi
+        done
+        echo "*dependencies*"                                                  1>&2
+	apt-get -f install
+	if test $? = 1;then ERROR=1;fi
+    fi
+fi
+
+echo "**************************************************************" 1>&2
+echo "*                                                            *" 1>&2
+echo "*                     Goodbye Chroot                         *" 1>&2
+echo "*                                                            *" 1>&2
+echo "**************************************************************" 1>&2
+echo "Status is $ERROR"
+exit $ERROR
+EOF
+chmod +x $CHROOT/usr/local/bin/puavo-chroot-apply
+
+if test $CHROOT = "/";then
+    /usr/local/bin/puavo-chroot-apply
+else
+    echo "/usr/local/bin/puavo-chroot-apply" | puavo-dir-chroot $CHROOT  
+fi
+
+exit $?
+
+	

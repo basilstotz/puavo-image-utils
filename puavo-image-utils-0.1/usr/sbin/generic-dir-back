@@ -1,0 +1,70 @@
+#!/bin/sh
+
+#generic-dir-copyback $CHROOT $DATAPATH $CACHE
+
+if test $# -ne 0;then
+    echo "usage: generic-dir-back"
+    exit 1
+fi
+
+if test -f /tmp/generic-dir-copy.params;then
+    .  /tmp/generic-dir-copy.params
+    rm /tmp/generic-dir-copy.params
+else
+    exit 0
+fi
+
+#copy apt cache back
+rsync -rav  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
+
+#copy back parts.d
+CACHE_PARTS="$CACHE/parts.d"
+DATA_PARTS="$DATAPATH/parts.d"
+CHROOT_PARTS="$CHROOT/install/parts.d"
+
+if test -d $DATA_PARTS;then
+    if test -n "$(ls $DATA_PARTS)";then
+        for P in $(ls $DATA_PARTS);do
+
+	    if test -x $DATA_PARTS/$P/install.sh;then
+
+		# work is done here
+		touch $CACHE_PARTS/$P.keep
+	        if test -f $CACHE_PARTS/$P.copyback;then
+		     echo "copyback: $P"
+		     test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
+		     cp -r $CHROOT_PARTS/$P $CACHE_PARTS/.
+		     rm $CACHE_PARTS/$P.copyback
+	         fi
+	    else
+		#remove dir without exe install.sh
+		echo "info: \"$P\" has no install.sh"
+                #test -f $CACHE_PARTS/$P.md5sum && rm $CACHE_PARTS/$P.md5sum 
+		#test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
+	    fi
+
+        done
+    fi
+fi
+
+#list orphaned chaches
+if test -d $DATA_PARTS;then
+    if test -n "$(ls $DATA_PARTS)";then
+        for P in $(ls $DATA_PARTS);do
+
+	    if test -f $CACHE_PARTS/$P.keep; then
+		rm $CACHE_PARTS/$P.keep
+	    else
+                echo "info: \"$P\" is an orphan"
+#               #test -f $CACHE_PARTS/$P.md5sum && rm $CACHE_PARTS/$P.md5sum
+#		#test -d $CACHE_PARTS/$P && rm -r $CACHE_PARTS/$P
+	    fi
+	    	    
+        done
+    fi
+fi
+
+
+exit 0
+
+	
