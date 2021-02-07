@@ -255,25 +255,25 @@ fi
 ###################################################################################
 
 # prepare for prebuild
-PREBUILD_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
 PREBUILD_IMAGE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
 
 
 # exit if all is done yet
 if test $PREBUILD_O = 0;then
+    echo -n "info: calculating fingerprint for prebuild..."
+    PREBUILD_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
     if test -f ./prebuild/$PREBUILD_IMAGE.img;then
 	if test -f ./prebuild/$PREBUILD_IMAGE.md5sum;then
 	    P_MD5SUM=$(cat ./prebuild/$PREBUILD_IMAGE.md5sum)
 	else
 	    P_MD5SUM="sdfsadfköökljsdkflsadjklfasjdlfjsadlkf"
 	fi
-echo " | $PREBUILD_MD5SUM | $P_MD5SUM | $PREBUILD_IMAGE | "
-	if test $P_MD5SUM = $PREBUILD_MD5SUM;then
+        echo "ok"
+        if test $P_MD5SUM = $PREBUILD_MD5SUM;then
 	    echo "info: image is up to date. exiting ..."
             exit 0
         fi
     fi
-    echo "info: building prebuilt image: $PREBUILD_IMAGE.img"
 fi
 
 ##################################################################################
