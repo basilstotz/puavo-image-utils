@@ -32,6 +32,8 @@ Runtime options:
     -n, --noimage              do not build image even without errors
     -y, --yes                  do not ask at start
     -q, --qemu                 do also make a qemu image
+    -p, --prebuild             make a prebuild image
+
 
 ```
 #### puavo-img-install
@@ -195,6 +197,35 @@ When the datadir contains (at least one of) folder(s) whit names **pre.d**, **bi
 8.    Executes all parts (or snippets) in DATADIR/**parts.d/\PARTNAME/install.sh**.  
 8. Exits chroot
 9. Builds new image from the modified chroot.
+
+#### Prebuild Images
+
+The option `--prebuild` renames the target image, in a predictable way, as `osname-os-class-dist-amd64.img`. Additionally it stores a "fingerprint of the build". 
+
+When an image schould be built, and the target image with the same fingerprint allready exists, the build will skipped. 
+
+This is nice with Makefiles:
+
+```make
+.PHONY: build
+build: config prebuild
+        @puavo-img-tool --source prebuild/puavo-os-extra-buster-amd64.img > /dev/null
+        @puavo-img-tool --datadir datadir-build > /dev/null
+        @puavo-img-tool --yes 
+
+.PHONY: prebuild
+prebuild: config
+        @puavo-img-tool --source source/opinsys-os-opinsys-buster-2021-01-27-071357-amd64.img > /dev/null 
+        @puavo-img-tool --datadir datadir-prebuild > /dev/null
+        @puavo-img-tool --yes --prebuild 
+
+.PHONY: config
+config:
+        @puavo-img-tool --osname puavo --class extra > /dev/null
+```
+
+
+
 
 #### Example Datadir
 
