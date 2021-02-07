@@ -290,7 +290,11 @@ CHROOT=$(basename -s .img $SOURCE)
 trap on_exit EXIT
 trap on_exit INT
 
+echo "SOURCE $SOURCE |"
+
 sudo generic-img-mount $SOURCE
+
+echo $?
 
 ###################################################################################
 #          the image is mounted now. we copy all needed data to chroot            #
