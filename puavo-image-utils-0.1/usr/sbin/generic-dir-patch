@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 CHROOT=$1
 
 if test -n "$CHROOT";then
@@ -11,6 +10,12 @@ else
 fi
 
 #copy chroot binary to chroot
+
+
+
+
+
+
 cat << 'EOF'  > $CHROOT/usr/local/bin/puavo-chroot-apply
 #!/bin/sh
 
@@ -22,6 +27,18 @@ echo "**************************************************************" 1>&2
 UPDATED=1
 ERROR=0
 
+CHECKLIST=""
+
+check(){
+    if test $? = 0;then
+        echo "  ok"
+    else
+        CHECKLIST="$CHECKLIST $1"
+	echo "  error!"
+	ERROR=1
+    fi
+}
+
 #bin
 if test -d /install/bin.d;then
     if test -n "$(ls /install/bin.d|grep .sh)";then
@@ -30,9 +47,9 @@ if test -d /install/bin.d;then
         echo "**************************************************************" 1>&2
         for B in $(ls /install/bin.d);do
 	    if test -x /install/bin.d/$B;then
-                echo $B                                                       1>&2
+                echo -n $B                                                    1>&2
 		/install/bin.d/$B
-		if test $? = 1;then ERROR=1;fi
+		check  $B                                                       1>&2
 	    fi 
         done
     fi
@@ -46,8 +63,6 @@ if test -d /install/files.d;then
         echo "**************************************************************" 1>&2
         cp -r /install/files.d/* /
         echo "ok"                                                             1>&2
-	if test $? = 1;then ERROR=1;fi
-        echo "done"
     fi
 fi
 
@@ -61,14 +76,16 @@ if test -d /install/lists.d;then
         echo "**************************************************************" 1>&2
         echo "$LISTS :"							      1>&2
         apt-get update
-	if test $? = 1;then ERROR=1;fi
 	UPDATED=0
-        PAKS=$(cat /install/lists.d/*list|xargs)
+        PAKS=""
+        for L in $LISTS;do
+            PAKS="$PAKS $(cat /install/lists.d/$L|xargs) "
+        done
         echo $PAKS | fmt                                                      1>&2
         apt-get -y install $PAKS
-	if test $? = 1;then ERROR=1;fi
+	check  "lists"                                                        1>&2
     fi
-    echo "done"
+
 fi
 
 #debs
@@ -80,15 +97,15 @@ if test -d /install/debs.d;then
         for D in $(ls /install/debs.d/*.deb);do
              echo $(basename $D)                                              1>&2
              dpkg -i $D
-             #if test $? = 1;then ERROR=1;fi
+             #check
         done
         if test $UPDATED = 1;then
 	    apt-get update
-    	    if test $? = 1;then ERROR=1;fi
 	    UPDATED=0
 	fi
+        echo -n "*debs  dependencies*"                                         1>&2
 	apt-get -y -f install
-	if test $? = 1;then ERROR=1;fi
+	check "*debs dependencies*"                                            1>&2
     fi
 fi
 
@@ -103,14 +120,14 @@ if test -d /install/parts.d;then
 	fi
         for P in $(ls /install/parts.d/);do
             if test -x /install/parts.d/$P/install.sh;then
-                 echo $P                                                       1>&2
+                 echo -n $P                                                   1>&2
                  /install/parts.d/$P/install.sh
-  	         if test $? = 1;then ERROR=1;fi
+  	         check $P                                                     1>&2
             fi
         done
-        echo "*dependencies*"                                                  1>&2
-	apt-get -f install
-	if test $? = 1;then ERROR=1;fi
+        echo -n "*parts dependencies*"                                           1>&2
+	apt-get -y -f install
+	check "*parts dependencies*"                                          1>&2
     fi
 fi
 
@@ -119,7 +136,13 @@ echo "*                                                            *" 1>&2
 echo "*                     Goodbye Chroot                         *" 1>&2
 echo "*                                                            *" 1>&2
 echo "**************************************************************" 1>&2
-echo "Status is $ERROR"
+echo "Status is $ERROR"                                               1>&2
+echo                                                                  1>&2
+echo "errors in checklist: $CHECKLIST"                                1>&2
+echo                                                                  1>&2
+echo "**************************************************************" 1>&2
+echo "**************************************************************" 1>&2
+
 exit $ERROR
 EOF
 chmod +x $CHROOT/usr/local/bin/puavo-chroot-apply

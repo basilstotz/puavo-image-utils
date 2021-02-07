@@ -48,7 +48,6 @@ on_exit(){
     test -d config   &&  chown --recursive --reference ..  config
     test -d log      &&  chown --recursive --reference ..  log
     test -d prebuild &&  chown --recursive --reference ..  prebuild
-
 }
 
 
@@ -259,6 +258,7 @@ fi
 PREBUILD_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
 PREBUILD_IMAGE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
 
+
 # exit if all is done yet
 if test $PREBUILD_O = 0;then
     if test -f ./prebuild/$PREBUILD_IMAGE.img;then
@@ -281,6 +281,8 @@ fi
 #                     ready now. mount the source image                           #
 ###################################################################################
 ###################################################################################
+echo "SOURCE_O $SOURCE_O DATA_O $DATA_O |"
+
 SOURCE=$SOURCE_O
 DATAPATH=$DATA_O
 CHROOT=$(basename -s .img $SOURCE)
@@ -313,7 +315,7 @@ if test -d $DATAPATH/pre.d;then
     fi
 fi
 
-
+echo "CHROOT $CHROOT DATAPATH $DATAPATH |"
 echo "***************************************************************"
 echo "*                    copy to chroot                           *"
 echo "***************************************************************"
@@ -373,17 +375,11 @@ if test $NOIMAGE_O = 1; then
 #    make compressed image
      puavo-dir-clone --dont-update-name --type squashfs $CHROOT ${IMAGE}.img
 
-     
-     if test $PREBUILD_O = 0;then
-	 test -d ./prebuild || mkdir -p ./prebuild
-	 mv $IMAGE.img ./prebuild/$PREBUILD_IMAGE.img
-	 echo $PREBUILD_MD5SUM > ./prebuild/$PREBUILD_IMAGE.md5sum
-     fi
-     
+          
 #    maybe make qemu image too
      if test $QEMU_O = 0;then
 	  echo "building qemu image"
-          puavo-img-installer $IMAGE.img  > ./log/last-build.log 
+          puavo-img-installer $IMAGE.img  > ./log/last-build.log
      fi
 
   else
@@ -391,23 +387,33 @@ if test $NOIMAGE_O = 1; then
     echo "**************************************************************"
     echo "*   error: an error occured in chrooot. not bulding image    *"
     echo "**************************************************************"
+    RET=1
   fi
 else
     echo
     echo "**************************************************************"
     echo "*      info: switch --noimage set. not bulding image         *"
     echo "**************************************************************"
+    RET=1
 fi    
 ###################################################################################
 #          image is (maybe) build. clean up                                        #
 ###################################################################################
 
-if test -f ./log/last-build.log -a -n "$IMAGE";then
-    mv ./log/last-build.log ./log/$IMAGE.log
+if test -n "$IMAGE";then
+    if test $PREBUILD_O = 0;then
+	 test -d ./prebuild || mkdir -p ./prebuild
+	 mv $IMAGE.img ./prebuild/$PREBUILD_IMAGE.img
+	 echo $PREBUILD_MD5SUM > ./prebuild/$PREBUILD_IMAGE.md5sum
+	 test -f ./log/last-build.log && mv ./log/last-build.log ./log/$PREBUILD_IMAGE.log 
+    else
+         test -f ./log/last-build.log && mv ./log/last-build.log ./log/$IMAGE.log
+    fi
 fi
+
 
 on_exit
 
-exit $?
+exit $RET
 
 	

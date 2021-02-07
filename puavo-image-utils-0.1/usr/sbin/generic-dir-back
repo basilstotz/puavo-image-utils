@@ -22,6 +22,8 @@ CACHE_PARTS="$CACHE/parts.d"
 DATA_PARTS="$DATAPATH/parts.d"
 CHROOT_PARTS="$CHROOT/install/parts.d"
 
+echo "CACHE $CACHE_PARTS DATA $DATA_PARTS CHROOT $CHROOT_PARTS !"
+
 if test -d $DATA_PARTS;then
     if test -n "$(ls $DATA_PARTS)";then
         for P in $(ls $DATA_PARTS);do

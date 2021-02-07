@@ -21,10 +21,10 @@ chown --recursive --reference $CACHE $CACHE/*
 #copy datadir
 test -d $CHROOT/install/ || mkdir -p $CHROOT/install/
 
-cp -r  $DATAPATH/bin.d $CHROOT/install/
-cp -r  $DATAPATH/files.d $CHROOT/install/
-cp -r  $DATAPATH/lists.d $CHROOT/install/
-cp -r  $DATAPATH/debs.d $CHROOT/install/
+test -d $DATAPATH/bin.d && cp -r  $DATAPATH/bin.d $CHROOT/install/
+test $DATAPATH/files.d && cp -r  $DATAPATH/files.d $CHROOT/install/
+test $DATAPATH/lists.d && cp -r  $DATAPATH/lists.d $CHROOT/install/
+test $DATAPATH/deps.d && cp -r  $DATAPATH/debs.d $CHROOT/install/
 
 # copy parts.d/*
 CACHE_PARTS="$CACHE/parts.d"
