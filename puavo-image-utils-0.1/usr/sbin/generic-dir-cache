@@ -3,7 +3,7 @@
 #generic-dir-copyback $CHROOT $DATAPATH $CACHE
 
 if test $# -ne 0;then
-    echo "usage: generic-dir-back"
+    echo "usage: generic-dir-cache"
     exit 1
 fi
 
@@ -14,6 +14,8 @@ else
     exit 0
 fi
 
+
+
 #copy apt cache back
 rsync -rav  --delete --size-only  $CHROOT/var/cache/apt/archives/ cache/apt/
 
@@ -22,7 +24,7 @@ CACHE_PARTS="$CACHE/parts.d"
 DATA_PARTS="$DATAPATH/parts.d"
 CHROOT_PARTS="$CHROOT/install/parts.d"
 
-echo "CACHE $CACHE_PARTS DATA $DATA_PARTS CHROOT $CHROOT_PARTS !"
+#echo "CACHE $CACHE_PARTS DATA $DATA_PARTS CHROOT $CHROOT_PARTS !"
 
 if test -d $DATA_PARTS;then
     if test -n "$(ls $DATA_PARTS)";then

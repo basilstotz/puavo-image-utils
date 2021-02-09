@@ -6,6 +6,8 @@ if test $# -ne 3;then
     exit 1
 fi
 
+echo "info: copy data to chroot"
+
 CHROOT=$1
 DATAPATH=$2
 CACHE=$3
@@ -24,7 +26,7 @@ test -d $CHROOT/install/ || mkdir -p $CHROOT/install/
 test -d $DATAPATH/bin.d && cp -r  $DATAPATH/bin.d $CHROOT/install/
 test -d $DATAPATH/files.d && cp -r  $DATAPATH/files.d $CHROOT/install/
 test -d $DATAPATH/lists.d && cp -r  $DATAPATH/lists.d $CHROOT/install/
-test -d $DATAPATH/deps.d && cp -r  $DATAPATH/debs.d $CHROOT/install/
+test -d $DATAPATH/debs.d && cp -r  $DATAPATH/debs.d $CHROOT/install/
 
 # copy parts.d/*
 CACHE_PARTS="$CACHE/parts.d"

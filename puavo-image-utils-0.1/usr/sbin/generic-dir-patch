@@ -136,16 +136,28 @@ echo "*                                                            *" 1>&2
 echo "*                     Goodbye Chroot                         *" 1>&2
 echo "*                                                            *" 1>&2
 echo "**************************************************************" 1>&2
-echo "Status is $ERROR"                                               1>&2
 echo                                                                  1>&2
-echo "errors in checklist: $CHECKLIST"                                1>&2
+
+if test $ERROR = 0;then
+    echo "info: chroot ends successfully"                             1>&2
+else
+    echo "error(s) occurred in:"                                      1>&2
+    echo $CHECKLIST|fmt                                               1>&2
+fi
 echo                                                                  1>&2
-echo "**************************************************************" 1>&2
-echo "**************************************************************" 1>&2
+
+#echo                                                                  1>&2
+#echo "**************************************************************" 1>&2
+#echo "**************************************************************" 1>&2
 
 exit $ERROR
 EOF
 chmod +x $CHROOT/usr/local/bin/puavo-chroot-apply
+
+
+echo "*********************************************333
+cat /usr/local/bin/puavo-chroot-apply
+echo "*********************************************333
 
 if test $CHROOT = "/";then
     /usr/local/bin/puavo-chroot-apply

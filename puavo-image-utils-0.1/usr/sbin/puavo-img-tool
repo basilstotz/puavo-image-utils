@@ -39,7 +39,7 @@ print_params(){
 }
 
 on_exit(){
-    puavo-img-mount --umount $SOURCE
+    generic-img-mount --umount $SOURCE
 
     test -f $IMAGE.img && chown --reference ..  $IMAGE.img
     test -f $IMAGE-inst.img && chown --reference ..  $IMAGE-inst.img
@@ -198,7 +198,7 @@ fi
 
 #test -d $MOUNT || mkdir -p $MOUNT
 
-mount -o loop $SOURCE_O /mnt ;echo $?
+mount -r -o loop $SOURCE_O /mnt
 
 if test -e /mnt/etc/puavo-image/name;then
     NAME=$(cat /mnt/etc/puavo-image/name)
@@ -207,8 +207,7 @@ else
     umount /mnt
     exit 1
 fi
-id
-#echo $MOUNT
+
 umount /mnt
 
 
@@ -244,9 +243,8 @@ if test $INTER_O = 1 -a $YES_O = 1;then
         exit 0
     fi
 else
-    echo "building image with:"
+    echo "info: building image with"
     print_params
-    echo
 fi
 
 
@@ -254,34 +252,55 @@ fi
 #                     special for pre building                                    #
 ###################################################################################
 
-# prepare for prebuild
-PREBUILD_IMAGE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
 
+echo -n "info: calculating fingerprint for build..."
+NEW_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
+NEW_SERIE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
+NEW_SOURCE=$(basename -s .img $SOURCE_O)
+echo "ok"
 
-# exit if all is done yet
 if test $PREBUILD_O = 0;then
-    echo -n "info: calculating fingerprint for prebuild..."
-    PREBUILD_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
-    if test -f ./prebuild/$PREBUILD_IMAGE.img;then
-	if test -f ./prebuild/$PREBUILD_IMAGE.md5sum;then
-	    P_MD5SUM=$(cat ./prebuild/$PREBUILD_IMAGE.md5sum)
-	else
-	    P_MD5SUM="sdfsadfköökljsdkflsadjklfasjdlfjsadlkf"
-	fi
-        echo "ok"
-        if test $P_MD5SUM = $PREBUILD_MD5SUM;then
-	    echo "info: image is up to date. exiting ..."
-            exit 0
-        fi
-    fi
+    PFAD="./prebuild"
+else
+    PFAD="."
 fi
+
+#get old fingerprint
+OLD_FINGERPRINT="sdfsadfköökljsdkflsadjklfasjdlfjsadlkf"
+echo $PFAD/$NEW_SERIE.fingerprint
+if test -f $PFAD/$NEW_SERIE.fingerprint;then
+    OLD_IMAGE=$(cat $PFAD/$NEW_SERIE.fingerprint|cut -d= -f3)
+    echo oldimage $PFAD/$OLD_IMAGE.img
+    if test -f $PFAD/$OLD_IMAGE.img;then
+	echo yes
+        OLD_FINGERPRINT=$(cat $PFAD/$NEW_SERIE.fingerprint|cut -d= -f1,2)
+    else
+	echo no
+	echo "rm $PFAD/$IMAGE_SERIE.fingerprint"
+    fi    
+else
+    echo "nono"
+fi
+
+
+echo "debug: ${NEW_SOURCE}=${NEW_MD5SUM} ${OLD_FINGERPRINT}"
+
+# test if 
+if test "${NEW_SOURCE}=${NEW_MD5SUM}" = "${OLD_FINGERPRINT}";then
+    echo "info: latest image is up to date. exiting ..."
+    exit 0
+fi
+
+#exit
+
 
 ##################################################################################
 ###################################################################################
 #                     ready now. mount the source image                           #
 ###################################################################################
 ###################################################################################
-echo "SOURCE_O $SOURCE_O DATA_O $DATA_O |"
+
+#echo "SOURCE_O $SOURCE_O DATA_O $DATA_O |"
 
 SOURCE=$SOURCE_O
 DATAPATH=$DATA_O
@@ -290,18 +309,14 @@ CHROOT=$(basename -s .img $SOURCE)
 trap on_exit EXIT
 trap on_exit INT
 
-echo "SOURCE $SOURCE |"
+#echo "SOURCE $SOURCE |"
 
 sudo generic-img-mount $SOURCE
 
-echo $?
-
-###################################################################################
-#          the image is mounted now. we copy all needed data to chroot            #
-###################################################################################
-
-
-
+if test $? -ne 0;then
+    echo "could not mount \"$SOURCE\""
+    exit 1
+fi
 
 #call pre-chroot-hooks
 if test -d $DATAPATH/pre.d;then
@@ -319,14 +334,13 @@ if test -d $DATAPATH/pre.d;then
     fi
 fi
 
-echo "CHROOT $CHROOT DATAPATH $DATAPATH |"
-echo "***************************************************************"
-echo "*                    copy to chroot                           *"
-echo "***************************************************************"
+
+#echo "debug $(which generic-dir-patch) |"
+ 
 generic-dir-copy $CHROOT $DATAPATH ./cache
 generic-dir-patch $CHROOT  > ./log/last-build.log 
 RET=$?
-generic-dir-back
+generic-dir-cache
 
 
 ###################################################################################
@@ -335,9 +349,9 @@ generic-dir-back
 ###################################################################################
 ###################################################################################
 
-IMAGE=""
+RET_IMG=1
 
-echo "debug $NOIMAGE_O $RET $FORCE_O" 
+#echo "debug $NOIMAGE_O $RET $FORCE_O" 
 
 if test $NOIMAGE_O = 1; then 
   if test $RET = 0 -o $FORCE_O = 0;then
@@ -371,14 +385,14 @@ if test $NOIMAGE_O = 1; then
      
 #    store names in image
      echo "${IMAGE}.img" > $CHROOT/etc/puavo-image/name
-     echo "$( cat $CHROOT/etc/puavo-image/release ) (${VERSION})" > $CHROOT/etc/puavo-image/release
+     echo "$( cat $CHROOT/etc/puavo-image/base_release ) (${VERSION})" > $CHROOT/etc/puavo-image/release
      echo "$CLASS" > $CHROOT/etc/puavo-image/class
 
      echo $IMAGE.img
      
 #    make compressed image
      puavo-dir-clone --dont-update-name --type squashfs $CHROOT ${IMAGE}.img
-
+     RET_IMG=$?
           
 #    maybe make qemu image too
      if test $QEMU_O = 0;then
@@ -404,15 +418,28 @@ fi
 #          image is (maybe) build. clean up                                        #
 ###################################################################################
 
-if test -n "$IMAGE";then
+
+#NEW_SERIE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
+#NEW_SOURCE=$(basename -s .img $SOURCE_O)
+#NEW_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
+
+
+
+
+if test $RET_IMG = 0;then
+    
     if test $PREBUILD_O = 0;then
-	 test -d ./prebuild || mkdir -p ./prebuild
-	 mv $IMAGE.img ./prebuild/$PREBUILD_IMAGE.img
-	 echo $PREBUILD_MD5SUM > ./prebuild/$PREBUILD_IMAGE.md5sum
-	 test -f ./log/last-build.log && mv ./log/last-build.log ./log/$PREBUILD_IMAGE.log 
+	 PFAD="./prebuild"
+	 test -d $PFAD || mkdir -p $PFAD
+	 mv $IMAGE.img $PFAD/$NEW_SERIE.img
+         test -f ./log/last-build.log && mv ./log/last-build.log ./log/$NEW_SERIE.log 
+         echo "${NEW_SOURCE}=${NEW_MD5SUM}=${NEW_SERIE}" > $PFAD/$NEW_SERIE.fingerprint
     else
-         test -f ./log/last-build.log && mv ./log/last-build.log ./log/$IMAGE.log
+         PFAD="."
+         test -f ./log/last-build.log && mv ./log/last-build.log ./log/$IMAGE.log 
+         echo "${NEW_SOURCE}=${NEW_MD5SUM}=${IMAGE}" > $PFAD/$NEW_SERIE.fingerprint
     fi
+
 fi
 
 
