@@ -230,6 +230,12 @@ fi
 
 ##################################################################3
 
+echo "***************************************************************"
+echo "*                      new build                               *"
+echo "***************************************************************"
+
+
+
 #echo "debug: INTER_O = $INTER_O YES_O = $YES_O" 
 # ask at start
 if test $INTER_O = 1 -a $YES_O = 1;then
@@ -373,13 +379,13 @@ if test $NOIMAGE_O = 1; then
 
      
 #    save source image names
-     if ! test $CHROOT/etc/puavo-image/base_name;then
+     if ! test -f $CHROOT/etc/puavo-image/base_name;then
 	 cp $CHROOT/etc/puavo-image/name $CHROOT/etc/puavo-image/base_name
      fi
-     if ! test $CHROOT/etc/puavo-image/base_release;then
+     if ! test -f $CHROOT/etc/puavo-image/base_release;then
 	 cp $CHROOT/etc/puavo-image/release $CHROOT/etc/puavo-image/base_release
      fi
-     if ! test $CHROOT/etc/puavo-image/base_class;then
+     if ! test -f $CHROOT/etc/puavo-image/base_class;then
 	 cp $CHROOT/etc/puavo-image/class $CHROOT/etc/puavo-image/base_class
      fi
      
