@@ -211,6 +211,11 @@ else
     exit 1
 fi
 
+BUILD_FNGERPRINT="sdfsdfsadfasdfads"
+if test -e /mnt/etc/puavo-image/build.fingerprint;then
+    BUILD_FINGERPRINT=$(cat /mnt/etc/puavo-image/build.fingerprint|cut -d= -f1,2)
+fi
+
 umount /mnt
 
 
@@ -276,28 +281,30 @@ NEW_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
 NEW_SOURCE=$(basename -s .img $SOURCE_O)
 echo "ok"
 
+#    wird ersetzt: OLD_FINGERPRINT --> BUILD_FINGERPRINT=$(cat /mnt/etc/puavo-image/build.fingerprint|cut -d= -f1,2)
 
 #get old fingerprint
-OLD_FINGERPRINT="sdfsadfköökljsdkflsadjklfasjdlfjsadlkf"
-if test -f $PFAD/$NEW_SERIE.fingerprint;then
-    OLD_IMAGE=$(cat $PFAD/$NEW_SERIE.fingerprint|cut -d= -f3)
-    if test -f $PFAD/$OLD_IMAGE.img;then
-#	echo yes
-        OLD_FINGERPRINT=$(cat $PFAD/$NEW_SERIE.fingerprint|cut -d= -f1,2)
-    else
-#	echo no
-	echo "info: rm $PFAD/$IMAGE_SERIE.fingerprint"
-    fi    
-#else
-#    echo "nono"
-fi
+#OLD_FINGERPRINT="sdfsadfköökljsdkflsadjklfasjdlfjsadlkf"
+#if test -f $PFAD/$NEW_SERIE.fingerprint;then
+#    OLD_IMAGE=$(cat $PFAD/$NEW_SERIE.fingerprint|cut -d= -f3)
+#    if test -f $PFAD/$OLD_IMAGE.img;then
+##	echo yes
+#        OLD_FINGERPRINT=$(cat $PFAD/$NEW_SERIE.fingerprint|cut -d= -f1,2)
+#    else
+##	echo no
+#	echo "info: rm $PFAD/$IMAGE_SERIE.fingerprint"
+#    fi    
+##else
+##    echo "nono"
+#fi
 
 
 #echo "debug: ${NEW_SOURCE}=${NEW_MD5SUM} ${OLD_FINGERPRINT}"
 
-# test if 
-if test "${NEW_SOURCE}=${NEW_MD5SUM}" = "${OLD_FINGERPRINT}";then
-    echo "info: latest image is up to date. exiting ..."
+ 
+if test "${NEW_SOURCE}=${NEW_MD5SUM}" = "${BUILD_FINGERPRINT}";then
+    echo "info: image is up to date. nothing to do!"
+    echo ""
     exit 0
 fi
 
@@ -362,6 +369,8 @@ if test $NOIMAGE_O = 1; then
      VERSION=$(date +%Y-%m-%d-%H%M%S)
      IMAGE="${OSNAME}-os-${CLASS}-${DIST}-${VERSION}-amd64"
 
+     # store build fingerprint (and own name) in image
+     echo "${NEW_SOURCE}=${NEW_MD5SUM}=${IMAGE}" > /etc/puavo-image/build.fingerprint
      
 #    save source image names
      if ! test -f $CHROOT/etc/puavo-image/base_name;then
@@ -423,14 +432,16 @@ if test $RET_IMG = 0;then
 	 PFAD="./prebuild"
 	 test -d $PFAD || mkdir -p $PFAD
 	 find $PFAD -name "${OSNAME_O}-os-${CLASS_O}-${DIST_O}-*-amd64.img" -exec rm \{\} \;
-	 find $PFAD -name "${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64.img" -exec rm \{\} \;
 	 mv $IMAGE.img $PFAD/$IMAGE.img
-	 ln $PFAD/$IMAGE.img $PFAD/$NEW_SERIE.img
     else
          PFAD="."
     fi
-    test -f ./log/last-build.log && mv ./log/last-build.log ./log/$IMAGE.log 
-    echo "${NEW_SOURCE}=${NEW_MD5SUM}=${IMAGE}" > $PFAD/$NEW_SERIE.fingerprint
+    find $PFAD -maxdepth 1 -name "${NEW_SERIE}.img" -exec rm \{\} \;
+    ln $PFAD/$IMAGE.img $PFAD/$NEW_SERIE.img
+    test -f ./log/last-build.log && mv ./log/last-build.log ./log/$IMAGE.log
+
+    #kommt weg!
+    #echo "${NEW_SOURCE}=${NEW_MD5SUM}=${IMAGE}" > $PFAD/$NEW_SERIE.fingerprint
 
 fi
 
