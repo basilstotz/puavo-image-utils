@@ -276,7 +276,6 @@ fi
 
 echo -n "info: calculating fingerprint for build..."
 NEW_SERIE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
-
 NEW_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
 NEW_SOURCE=$(basename -s .img $SOURCE_O)
 echo "ok"
@@ -306,6 +305,9 @@ if test "${NEW_SOURCE}=${NEW_MD5SUM}" = "${BUILD_FINGERPRINT}";then
     echo "info: image is up to date. nothing to do!"
     echo ""
     exit 0
+else
+    echo "info: fingerprint does not match. build new image"
+    echo ""
 fi
 
 #exit
@@ -429,12 +431,13 @@ fi
 if test $RET_IMG = 0;then
     
     if test $PREBUILD_O = 0;then
-	 PFAD="./prebuild"
-	 test -d $PFAD || mkdir -p $PFAD
-	 find $PFAD -name "${OSNAME_O}-os-${CLASS_O}-${DIST_O}-*-amd64.img" -exec rm \{\} \;
-	 mv $IMAGE.img $PFAD/$IMAGE.img
+	PFAD="./prebuild"
+	
+	test -d $PFAD || mkdir -p $PFAD
+	find $PFAD -name "${OSNAME_O}-os-${CLASS_O}-${DIST_O}-*-amd64.img" -exec rm \{\} \;
+	mv $IMAGE.img $PFAD/$IMAGE.img
     else
-         PFAD="."
+        PFAD="."
     fi
     find $PFAD -maxdepth 1 -name "${NEW_SERIE}.img" -exec rm \{\} \;
     ln $PFAD/$IMAGE.img $PFAD/$NEW_SERIE.img
