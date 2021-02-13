@@ -32,10 +32,10 @@ CONFIG_O="1"
 DIST_O="buster"
 
 print_params(){
-    echo "      source: $SOURCE_O"
-    echo "     datadir: $DATA_O"
-    echo "      osname: $OSNAME_O"
-    echo "       class: $CLASS_O"
+    echo "       source:  $SOURCE_O"
+    echo "       datadir: $DATA_O"
+    echo "       osname:  $OSNAME_O"
+    echo "       class:   $CLASS_O"
 }
 
 on_exit(){
@@ -174,8 +174,6 @@ else
     exit 1
 fi
 
-
-
 #check source image
 if test -z "$SOURCE_O";then
     echo "error: source param not set"
@@ -188,7 +186,12 @@ if test -h $SOURCE_O;then
 	exit 1
     fi
 else
-    if ! test -e $SOURCE_O;then
+
+#    echo $(pwd)
+#echo $(ls -lh $(pwd)/$SOURCE_O)
+#echo $(ls $(pwd)/prebuild)
+
+if ! test -f $SOURCE_O;then
 	echo "error: source file not found"
 	exit 1
     fi	
@@ -258,38 +261,39 @@ fi
 #                     special for pre building                                    #
 ###################################################################################
 
-
-echo -n "info: calculating fingerprint for build..."
-NEW_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
-NEW_SERIE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
-NEW_SOURCE=$(basename -s .img $SOURCE_O)
-echo "ok"
-
 if test $PREBUILD_O = 0;then
+    echo "info: prebuilding \"./prebuild/${OSNAME_O}-os-${CLASS_O}-${DIST_O}-XXXX-XX-XX-XXXXXX-amd64.img\""
     PFAD="./prebuild"
 else
+    echo "info: building \"./${OSNAME_O}-os-${CLASS_O}-${DIST_O}-XXXX-XX-XX-XXXXXX-amd64.img\""
     PFAD="."
 fi
 
+echo -n "info: calculating fingerprint for build..."
+NEW_SERIE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
+
+NEW_MD5SUM=$(tar -cf - $DATA_O/* | md5sum | cut -d\  -f1)
+NEW_SOURCE=$(basename -s .img $SOURCE_O)
+echo "ok"
+
+
 #get old fingerprint
 OLD_FINGERPRINT="sdfsadfköökljsdkflsadjklfasjdlfjsadlkf"
-echo $PFAD/$NEW_SERIE.fingerprint
 if test -f $PFAD/$NEW_SERIE.fingerprint;then
     OLD_IMAGE=$(cat $PFAD/$NEW_SERIE.fingerprint|cut -d= -f3)
-    echo oldimage $PFAD/$OLD_IMAGE.img
     if test -f $PFAD/$OLD_IMAGE.img;then
-	echo yes
+#	echo yes
         OLD_FINGERPRINT=$(cat $PFAD/$NEW_SERIE.fingerprint|cut -d= -f1,2)
     else
-	echo no
-	echo "rm $PFAD/$IMAGE_SERIE.fingerprint"
+#	echo no
+	echo "info: rm $PFAD/$IMAGE_SERIE.fingerprint"
     fi    
-else
-    echo "nono"
+#else
+#    echo "nono"
 fi
 
 
-echo "debug: ${NEW_SOURCE}=${NEW_MD5SUM} ${OLD_FINGERPRINT}"
+#echo "debug: ${NEW_SOURCE}=${NEW_MD5SUM} ${OLD_FINGERPRINT}"
 
 # test if 
 if test "${NEW_SOURCE}=${NEW_MD5SUM}" = "${OLD_FINGERPRINT}";then
@@ -315,33 +319,14 @@ CHROOT=$(basename -s .img $SOURCE)
 trap on_exit EXIT
 trap on_exit INT
 
-#echo "SOURCE $SOURCE |"
 
 sudo generic-img-mount $SOURCE
-
 if test $? -ne 0;then
     echo "could not mount \"$SOURCE\""
     exit 1
 fi
 
-#call pre-chroot-hooks
-if test -d $DATAPATH/pre.d;then
-    if test -n "$(ls $DATAPATH/pre.d|grep .sh)";then
-        echo "**************************************************************"
-        echo "*                     pre-chroot                             *"
-        echo "**************************************************************"
-        for B in $(ls $DATAPATH/pre.d);do
-	    if test -x $DATAPATH/pre.d/$B;then
-                echo "$B"
-		$DATAPATH/pre.d/$B $CHROOT $(pwd)
-		#if test $? = 1;then ERROR=1;fi
-	    fi 
-        done
-    fi
-fi
-
-
-#echo "debug $(which generic-dir-patch) |"
+generic-dir-prechroot $CHROOT $DATAPATH
  
 generic-dir-copy $CHROOT $DATAPATH ./cache
 generic-dir-patch $CHROOT  > ./log/last-build.log 
@@ -437,14 +422,15 @@ if test $RET_IMG = 0;then
     if test $PREBUILD_O = 0;then
 	 PFAD="./prebuild"
 	 test -d $PFAD || mkdir -p $PFAD
-	 mv $IMAGE.img $PFAD/$NEW_SERIE.img
-         test -f ./log/last-build.log && mv ./log/last-build.log ./log/$NEW_SERIE.log 
-         echo "${NEW_SOURCE}=${NEW_MD5SUM}=${NEW_SERIE}" > $PFAD/$NEW_SERIE.fingerprint
+	 find $PFAD -name "${OSNAME_O}-os-${CLASS_O}-${DIST_O}-*-amd64.img" -exec rm \{\} \;
+	 find $PFAD -name "${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64.img" -exec rm \{\} \;
+	 mv $IMAGE.img $PFAD/$IMAGE.img
+	 ln $PFAD/$IMAGE.img $PFAD/$NEW_SERIE.img
     else
          PFAD="."
-         test -f ./log/last-build.log && mv ./log/last-build.log ./log/$IMAGE.log 
-         echo "${NEW_SOURCE}=${NEW_MD5SUM}=${IMAGE}" > $PFAD/$NEW_SERIE.fingerprint
     fi
+    test -f ./log/last-build.log && mv ./log/last-build.log ./log/$IMAGE.log 
+    echo "${NEW_SOURCE}=${NEW_MD5SUM}=${IMAGE}" > $PFAD/$NEW_SERIE.fingerprint
 
 fi
 

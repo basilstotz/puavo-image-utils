@@ -1,0 +1,25 @@
+#!/bin/sh
+
+test $# -eq 2 || exit 1
+
+CHROOT=$1
+DATAPATH=$2
+
+ERROR=0
+
+if test -d $DATAPATH/pre.d;then
+    if test -n "$(ls $DATAPATH/pre.d|grep .sh)";then
+        echo "**************************************************************"
+        echo "*                     pre-chroot                             *"
+        echo "**************************************************************"
+        for B in $(ls $DATAPATH/pre.d);do
+            if test -x $DATAPATH/pre.d/$B;then
+                echo "$B"
+                $DATAPATH/pre.d/$B $CHROOT $(pwd)
+                if test $? = 1;then ERROR=1;fi                                                                                                                          
+            fi
+        done
+    fi
+fi
+exit $ERROR
+
