@@ -4,7 +4,7 @@ This is collection of very simple and minimalistic tool  to modify/inspect/serve
 
 ## Overview
  
- #### puavo-img-tool
+#### puavo-img-tool
 
 ```
 Usage: puavo-img-tool [config_opts]      (configure)

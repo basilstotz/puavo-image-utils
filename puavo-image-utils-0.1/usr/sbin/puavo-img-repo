@@ -29,7 +29,7 @@ if test -e $IMAGE_DIR/images.json;then
     return 0
 fi
 SERIES=""
-for I in $(find $IMAGE_DIR -maxdepth 1 -name '*-os-*-amd64\.img'); do
+for I in $(find $IMAGE_DIR -maxdepth 1 -name '*-os-*-20*-amd64\.img'); do
     OSNAME=$(basename ${I}|cut -d- -f1)
     CLASS=$(basename {$I}|cut -d- -f3)
     DIST=$(basename ${I}|cut -d- -f4)
@@ -50,7 +50,8 @@ for S in $(echo ${SERIES});do
     fi    
     echo "  \"${S}-amd64\": [" 
     FIRST_I="0"
-    for I in $(find $IMAGE_DIR  -maxdepth 1 -name "${S}-*-amd64\.img");do
+    SEARCH="${S}-20*-amd64\.img"
+    for I in $(find $IMAGE_DIR  -maxdepth 1 -name "$SEARCH");do
         if test $FIRST_I = 0 ;then
   	    FIRST_I=1
         else
@@ -64,6 +65,9 @@ done
 echo
 echo "}" 
 }
+
+#list_images
+#exit
 
 # make images.json
 test -d $IMAGE_DIR/.puavo-os || mkdir -p $IMAGE_DIR/.puavo-os
