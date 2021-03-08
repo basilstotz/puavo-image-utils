@@ -1,0 +1,110 @@
+#!/bin/sh
+
+POSTINST_O=""
+PRERM_O=""
+DEBNAME_O=""
+VERSION_O=""
+DOINSTALL_O="1"
+
+
+usage(){
+	    echo "Usage: $(basename $0) [options] SRCDIR [DSTDIR]"
+	    echo
+	    echo "       Makes a debian package form a file tree." 
+	    echo "       DSTDIR defaults to \".\"." 
+	    echo
+	    echo "Options:"
+ 	    echo "    -d, --doinstall            do install the package"
+	    echo "    -v, --version VERSION      set version to VERSION (def. to timestamp)"
+ 	    echo "    -n, --debname DEBNAME      set debname to DEBNAME"
+
+#	    echo "    -i, --postinst FRAGMENT    run FRAGMENT in postinst"
+#	    echo "    -r, --prerm FRAGMENT       run FRAGMENT in prerm"
+ 	    echo "    -h, --help                 show this help"
+	    echo
+}
+
+while [ $# -gt 0 ]; do
+    case $1 in
+	-h|--help)
+	    shift
+	    usage
+	    exit 0
+	    ;;
+	-d|--doinstall)
+	    shift
+	    DOINSTALL_O=0
+	    ;;
+#	-i|--postinst)
+#	    shift
+#	    POSTINST_O=$1
+#	    shift
+#	    ;;
+#	-r|--prerm)
+#	    shift
+#	    PRERM_O=$1
+#	    shift
+#	    ;;
+	-n|--debname)
+	    shift
+	    DEBNAME_O=$1
+	    shift
+	    ;;
+	-v|--version)
+	    shift
+	    VERSION_O=$1
+	    shift
+	    ;;
+	--)
+	    shift
+	    break
+	    ;;
+	-*)
+	    echo "error: invalid argument '$1'"
+	    usage
+	    exit 1
+	    ;;
+	*)
+	    break
+	    ;;
+    esac
+done
+
+#SRC
+if test -z "$1";then
+    usage
+    exit 1
+fi
+#DST
+DEST="."
+test -n "$2" && DEST=$2
+#NAME
+TREE=$(realpath $1)
+if test -n "$DEBNAME_O"; then
+    NAME=$DEBNAME_O
+else
+    NAME=$(basename $TREE)
+fi
+#VERSION
+if test -n "$VERSION_O"; then
+    VERSION=$VERSION_O
+else
+    VERSION=$(date +%s)
+fi
+
+#echo "OUTPUT: ${NAME}_${VERSION}_amd64.deb"
+
+test -d $NAME/DEBIAN || mkdir -p $NAME/DEBIAN
+cat <<EOF > $NAME/DEBIAN/control
+Source: $NAME
+Section: unknown
+Priority: extra
+Maintainer: Basil Stotz <stotz@amxa.ch>
+Package: $NAME
+Version: $VERSION 
+Architecture: amd64
+Depends: debconf
+Description: $NAME
+ $NAME version $VERSION
+EOF
+dpkg-deb -b $NAME $DEST

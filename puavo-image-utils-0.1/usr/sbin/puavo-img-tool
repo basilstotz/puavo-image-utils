@@ -357,7 +357,7 @@ if test $NOIMAGE_O = 1; then
   if test $RET = 0 -o $FORCE_O = 0;then
 	
      echo
-     echo "info: building new image \"$IMAGE.img\""
+     echo "info: compressing image \"$IMAGE.img\""
 #    clean chroot
      rm -r $CHROOT/install
      rm -r $CHROOT/var/cache/apt/archives/*

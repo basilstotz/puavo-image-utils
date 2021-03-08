@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if test -z "$1" -o "$1" = "-h" -o "$1" = "--help";then
-    echo "usage: puavo-img-install  IMAGE.img"
+    echo "usage: sudo puavo-img-install  IMAGE.img"
     echo
     echo "       Installs IMAGE.img on your laptop."
     exit 0
@@ -14,6 +14,6 @@ if ! test -f $IMAGE;then
     exit 1
 fi
 
-puavo-install-and-update-ltspimages -f $IMAGE $(basename $IMAGE)
+echo "" | puavo-install-and-update-ltspimages --quiet --install-from-file $IMAGE $(basename $IMAGE)
 
 exit $?
