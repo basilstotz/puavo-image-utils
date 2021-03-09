@@ -1,4 +1,4 @@
-puavo-image-utils (0.1-40) UNRELEASED; urgency=medium
+puavo-image-utils (0.1-40.1) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * initial 
@@ -41,8 +41,9 @@ puavo-image-utils (0.1-40) UNRELEASED; urgency=medium
   * *
   * use realpath 
   * *
+  * first beta
 
- -- Basil Stotz <stotz.basil@opinsys-j1xxvjWm>  Tue, 02 Feb 2021 20:23:06 +0100
+ -- Basil Stotz <stotz.basil@opinsys-WvbtnHB7>  Tue, 09 Mar 2021 09:07:26 +0100
 
 puavo-image-utils (0.1-1) unstable; urgency=medium
 
