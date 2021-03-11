@@ -1,11 +1,47 @@
 #!/bin/sh
 
-if test -z "$1" -o "$1" = "-h" -o "$1" = "--help";then
-    echo "usage: sudo puavo-img-install  IMAGE.img"
-    echo
-    echo "       Installs IMAGE.img on your laptop."
-    exit 0
+
+if ! test $(id --user) = 0;then
+    exec sudo $0 $@
 fi
+
+
+REBOOT=1
+
+print_help(){
+	    echo "Usage: $(basename $0) [options] IMAGE.img"
+	    echo
+            echo "       Installs IMAGE.img on your laptop."
+	    echo
+	    echo "Options:"
+	    echo "    -r, --reboot                 reboot when done"
+	    echo "    -h, --help                   show this message"	    
+	    echo
+}    
+
+while [ $# -gt 0 ]; do
+    case $1 in
+	-h|--help)
+	    shift
+	    print_help
+	    exit 0
+	    ;;
+	-r|--reboot)
+	    shift
+	    REBOOT=0
+	    ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            usage_error "invalid argument '$1'"
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
 
 
 IMAGE="$1"
@@ -15,5 +51,7 @@ if ! test -f $IMAGE;then
 fi
 
 echo "" | puavo-install-and-update-ltspimages --quiet --install-from-file $IMAGE $(basename $IMAGE)
+
+test $REBOOT = 0 && reboot 
 
 exit $?
