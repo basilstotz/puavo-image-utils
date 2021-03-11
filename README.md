@@ -39,9 +39,13 @@ Runtime options:
 #### puavo-img-install
 
 ```
-usage: puavo-img-install  IMAGE.img
+puavo-img-install [options] IMAGE.img
 
        Installs IMAGE.img on your laptop.
+       
+Options:
+    -r, --reboot                 reboot when done
+    -h, --help                   show this message
 ```
 
 
