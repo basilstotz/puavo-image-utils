@@ -29,6 +29,11 @@ ERROR=0
 
 CHECKLIST=""
 
+
+echo " " > /etc/puavo-image/debs.list
+echo " " > /etc/puavo-image/parts.list
+
+
 check(){
     if test $? = 0;then
         echo "  ok"
@@ -96,6 +101,9 @@ if test -d /install/debs.d;then
         echo "**************************************************************" 1>&2
         for D in $(ls /install/debs.d/*.deb);do
              echo $(basename $D)                                              1>&2
+
+             echo "$D " >> /etc/puavo-image/debs.list
+
              dpkg -i $D
              #check
         done
@@ -121,6 +129,10 @@ if test -d /install/parts.d;then
         for P in $(ls /install/parts.d/);do
             if test -x /install/parts.d/$P/install.sh;then
                  echo -n $P                                                   1>&2
+
+                 echo "$P " >> /etc/puavo-image/parts.list
+
+
                  /install/parts.d/$P/install.sh
   	         check $P                                                     1>&2
             fi
