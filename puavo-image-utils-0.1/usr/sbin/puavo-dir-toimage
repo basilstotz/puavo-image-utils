@@ -1,11 +1,13 @@
 #!/bin/sh
 
-P=$(pwd)
+#OSNAME="puavo-os"
+#CLASS="extra"
+#DIST="buster"
 
-OSNAME="puavo-os"
-CLASS="extra"
-DIST="buster"
-
+CURRENT_IMAGE=$(cat /etc/puavo-image/name)
+OSNAME=$(echo $CURRENT_IMAGE|cut -d- -f1-2)
+CLASS=$(echo $CURRENT_IMAGE|cut -d- -f3)
+DIST=$(echo $CURRENT_IMAGE|cut -d- -f4)
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -16,9 +18,9 @@ while [ $# -gt 0 ]; do
 	    echo "Make a PuavoOS image from a chroot directory."
 	    echo
 	    echo "Options:"
+	    echo "    -o, --osname          set image osname (default: $OSNAME"
 	    echo "    -c, --class           set image class (default: $CLASS)"
 	    echo "    -d, --dist            set image dist (default: $DIST)"
-	    echo "    -o, --osname          set image osname (default: $OSNAME"
 	    echo
 	    exit 0
 	    ;;
@@ -63,22 +65,39 @@ if ! test -d $CHROOT;then
 #    exit 1
 fi
 
-#compose new image name
-VERSION=$(date +%Y-%m-%d-%H%M%S)
-IMAGE="${OSNAME}-${CLASS}-${DIST}-${VERSION}-amd64"
+exit
 
-#save names in image
+# clean chroot
+test -d $CHROOT/install && rm -r $CHROOT/install
+test -d $CHROOT/var/cache/apt/archives/ && rm -r $CHROOT/var/cache/apt/archives/
+mkdir $CHROOT/var/cache/apt/archives/
+
+
+# update some vlaues in /etc/puavo-image
+if ! test -f $CHROOT/etc/puavo-image/base_name;then
+   cp $CHROOT/etc/puavo-image/name $CHROOT/etc/puavo-image/base_name
+fi
+if ! test -f $CHROOT/etc/puavo-image/base_release;then
+   cp $CHROOT/etc/puavo-image/release $CHROOT/etc/puavo-image/base_release
+fi
+if ! test -f $CHROOT/etc/puavo-image/base_class;then
+   cp $CHROOT/etc/puavo-image/class $CHROOT/etc/puavo-image/base_class
+fi
+echo "${IMAGE}.img" > $CHROOT/etc/puavo-image/name
+echo "$( cat $CHROOT/etc/puavo-image/base_release ) (${VERSION})" > $CHROOT/etc/puavo-image/release
+echo "$CLASS" > $CHROOT/etc/puavo-image/class
 echo "${IMAGE}.img" > $CHROOT/etc/puavo-image/name
 echo "$( cat $CHROOT/etc/puavo-image/release ) (${VERSION})">$CHROOT/etc/puavo-image/release
 echo "$CLASS" > $CHROOT/etc/puavo-image/class
 
-echo
-pwd
-ls
-cd ..
+
+#compose new image name
+VERSION=$(date +%Y-%m-%d-%H%M%S)
+IMAGE="${OSNAME}-${CLASS}-${DIST}-${VERSION}-amd64"
+
 
 #make compressed image
-echo $P/bin/puavo-dir-clone --dont-update-name --type squashfs ./images/$CHROOT ./images/${IMAGE}.img
+puavo-dir-clone --dont-update-name --type squashfs $CHROOT ${IMAGE}.img
 
 exit $?
 

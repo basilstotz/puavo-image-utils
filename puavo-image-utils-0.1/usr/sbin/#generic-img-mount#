@@ -44,9 +44,7 @@ while [ $# -gt 0 ]; do
             break
             ;;
     esac
-done
-
-if [ $# -ne 1 ]; then
+doneif [ $# -ne 1 ]; then
     print_help
     exit 1
 fi

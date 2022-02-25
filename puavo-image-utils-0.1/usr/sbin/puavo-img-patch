@@ -1,0 +1,149 @@
+#!/bin/sh
+
+
+if ! test $(id --user) = 0;then
+    exec sudo $0 $@
+fi
+
+on_exit(){
+    generic-img-mount --umount $SOURCE
+    test -f $IMAGE.img && chown --reference ..  $IMAGE.img
+}
+
+
+CURRENT_IMAGE=$(cat /etc/puavo-image/name)
+OSNAME=$(echo $CURRENT_IMAGE|cut -d- -f1-2)
+CLASS=$(echo $CURRENT_IMAGE|cut -d- -f3)
+DIST=$(echo $CURRENT_IMAGE|cut -d- -f4)
+
+
+while [ $# -gt 0 ]; do
+    case $1 in
+	-h|--help)
+	    shift
+	    echo "Usage: $(basename $0) [options] datadir source_image"
+	    echo
+	    echo "Patch a PuavoOS image and compress a new image." 
+	    echo
+ 	    echo "    -o, --osname ($OSNAME)"
+	    echo "    -c, --class ($CLASS)"
+	    echo "    -d, --dist ($DIST)"
+ 	    echo "    -h, --help"
+	    echo
+	    exit 0
+	    ;;
+
+	#config 
+	-o|--osname)
+	    shift
+	    OSNAME=$1
+	    shift
+	    ;;
+	-c|--class)
+	    shift
+	    CLASS=$1
+	    shift
+	    ;;
+	-d|--dist)
+	    shift
+	    DIST=$1
+	    shift
+	    ;;
+	--)
+	    shift
+	    break
+	    ;;
+	-*)
+	    echo "error: invalid argument '$1'"
+	    exit 1
+	    ;;
+	*)
+	    break
+	    ;;
+    esac
+done
+
+# some paramter checks
+if [ $# -ne 2 ]; then
+    echo  "invalid number of arguments ($#), expected 2"
+    exit 1
+fi
+
+
+DATA=$1
+if ! test -d $DATA; then
+        echo "error: datadir not found"
+        exit 1
+fi
+
+SOURCE=$2
+if ! test -f $SOURCE; then
+	echo "error: source file not found"
+	exit 1
+fi	
+
+
+##################################################################################
+###################################################################################
+#                     ready now. mount the source image                           #
+###################################################################################
+###################################################################################
+
+trap on_exit EXIT
+trap on_exit INT
+
+
+generic-img-mount $SOURCE
+if test $? -ne 0;then
+    echo "could not mount \"$SOURCE\""
+    exit 1
+fi
+CHROOT=(basename -s .img $SOURCE)
+
+mkdir -p $CHROOT/install
+cp -r $DATADIR/* $CHROOT/install/
+
+generic-dir-patch $CHROOT  > ./log/last-build.log
+if test $? -ne 0;then
+    echo "could not patch \"$SOURCE\""
+    exit 1
+fi
+
+
+
+
+###################################################################################
+###################################################################################
+#                                we start compressing the image                        #
+###################################################################################
+###################################################################################
+echo
+echo "info: compressing image \"$IMAGE.img\""
+#    clean chroot
+rm -r $CHROOT/install
+rm -r $CHROOT/var/cache/apt/archives/*
+     
+#    save source image names
+if ! test -f $CHROOT/etc/puavo-image/base_name;then
+   cp $CHROOT/etc/puavo-image/name $CHROOT/etc/puavo-image/base_name
+fi
+if ! test -f $CHROOT/etc/puavo-image/base_release;then
+   cp $CHROOT/etc/puavo-image/release $CHROOT/etc/puavo-image/base_release
+fi
+if ! test -f $CHROOT/etc/puavo-image/base_class;then
+   cp $CHROOT/etc/puavo-image/class $CHROOT/etc/puavo-image/base_class
+fi
+     
+#    store names in image
+echo "${IMAGE}.img" > $CHROOT/etc/puavo-image/name
+echo "$( cat $CHROOT/etc/puavo-image/base_release ) (${VERSION})" > $CHROOT/etc/puavo-image/release
+echo "$CLASS" > $CHROOT/etc/puavo-image/class
+
+#    make compressed image
+mksquashfs -noappend -no-recovery $CHROOT ${IMAGE}.img
+
+on_exit
+
+exit $RET
+
+	
