@@ -1,4 +1,4 @@
-puavo-image-utils (0.1-40.2) UNRELEASED; urgency=medium
+puavo-image-utils (0.1-43) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * initial 
@@ -43,8 +43,13 @@ puavo-image-utils (0.1-40.2) UNRELEASED; urgency=medium
   * *
   * first beta
   * add option "--reboot" in puavo-img-install
+  * new build
 
- -- Basil Stotz <stotz.basil@opinsys-Oxe0XMaJ>  Thu, 11 Mar 2021 09:42:51 +0100
+  * remove unused and wrong DIST_O
+  * remove examples in opt 
+  * fix install
+
+ -- Basil Stotz <stotz.basil@opinsys-q0AXi4JA>  Sat, 04 Jun 2022 10:34:08 +0200
 
 puavo-image-utils (0.1-1) unstable; urgency=medium
 

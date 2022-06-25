@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Sozi
-Comment=A zooming presentation editor and player
-Exec=sozi --no-sandbox %f
-Icon=sozi.png
-Terminal=false
-Type=Application
-MimeType=image/svg+xml
-StartupNotify=false
