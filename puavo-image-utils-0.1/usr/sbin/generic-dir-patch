@@ -167,9 +167,9 @@ EOF
 chmod +x $CHROOT/usr/local/bin/puavo-chroot-apply
 
 
-echo "*********************************************333
+echo "*********************************************333"
 cat /usr/local/bin/puavo-chroot-apply
-echo "*********************************************333
+echo "*********************************************333"
 
 if test $CHROOT = "/";then
     /usr/local/bin/puavo-chroot-apply

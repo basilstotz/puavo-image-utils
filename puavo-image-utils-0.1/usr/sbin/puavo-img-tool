@@ -14,7 +14,7 @@ test -d ./config || mkdir -p ./config
 test -d ./log || mkdir ./log
 
 if test -f ./config/tool.class;then CLASS_O=$(cat ./config/tool.class);else CLASS_O="";fi
-if test -f ./config/tool.dist;then DIST_O=$(cat ./config/tool.dist);else DIST_O="";fi
+#if test -f ./config/tool.dist;then DIST_O=$(cat ./config/tool.dist);else DIST_O="";fi
 if test -f ./config/tool.osname;then OSNAME_O=$(cat ./config/tool.osname);else OSNAME_O="";fi
 if test -f ./config/tool.source;then SOURCE_O=$(cat ./config/tool.source);else SOURCE_O="";fi
 if test -f ./config/tool.datadir;then DATA_O=$(cat ./config/tool.datadir);else DATA_O="";fi
@@ -29,7 +29,7 @@ PREBUILD_O="1"
 CONFIG_O="1"
 
 # not nice!
-DIST_O="buster"
+#DIST_O="buster"
 
 print_params(){
     echo "       source:  $SOURCE_O"
@@ -213,6 +213,9 @@ OSNAME_I=$(echo $SOURCE_NAME|cut -d- -f1)
 CLASS_I=$(echo $SOURCE_NAME|cut -d- -f3)
 DIST=$(echo $SOURCE_NAME|cut -d- -f4)
 
+#basil
+#DIST_O=$DIST
+
 if test -n "$OSNAME_O";then
     OSNAME=$OSNAME_O
 else
@@ -261,7 +264,7 @@ fi
 #define new images params
 VERSION=$(date +%Y-%m-%d-%H%M%S)
 NEW_IMAGE="${OSNAME}-os-${CLASS}-${DIST}-${VERSION}-amd64"
-NEW_SERIE="${OSNAME_O}-os-${CLASS_O}-${DIST_O}-amd64"
+NEW_SERIE="${OSNAME_O}-os-${CLASS_O}-${DIST}-amd64"
 NEW_SOURCE=$SOURCE_NAME
 
 if test $PREBUILD_O = 0;then

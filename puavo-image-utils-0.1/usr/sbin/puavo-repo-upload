@@ -1,5 +1,0 @@
-#!/bin/sh
-
-
-rsync -avr ./mirror/ $1
-
