@@ -1,4 +1,4 @@
-puavo-image-utils (0.1-43) UNRELEASED; urgency=medium
+puavo-image-utils (0.1-44) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * initial 
@@ -48,8 +48,10 @@ puavo-image-utils (0.1-43) UNRELEASED; urgency=medium
   * remove unused and wrong DIST_O
   * remove examples in opt 
   * fix install
+  * add puavo-pkg-tool puavo-image-extend puavo-image-repository
+  * clean /opt/puavo-os-extra in puavo-image-extend
 
- -- Basil Stotz <stotz.basil@opinsys-q0AXi4JA>  Sat, 04 Jun 2022 10:34:08 +0200
+ -- Basil Stotz <stotz.basil@opinsys-nqmBgSFL>  Sun, 26 Jun 2022 20:05:47 +0200
 
 puavo-image-utils (0.1-1) unstable; urgency=medium
 

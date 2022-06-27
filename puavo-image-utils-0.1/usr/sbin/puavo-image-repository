@@ -1,0 +1,224 @@
+#!/bin/bash
+
+#default values
+REPOSITORY="https://cdn.amxa.ch"
+PUAVO_OS="/puavo-os"
+NO_FILES=false
+
+
+help(){
+    echo "Usage: $(basename "$0")  IMAGE_DIR [MIRROR_DIR]"
+    echo
+    echo "       Maintains an image repository of all images from IMAGE_DIR"
+    echo "       in MIRROR_DIR (def: IMAGE_DIR/mirror)"
+    echo 
+    echo "Options:"
+    echo "    -r, --repository  URL   set repository's URL (def: $REPOSITORY)"
+    echo "    -p, --puavo-os DIR           set puavo-os to DIR (def: $PUAVO_OS)"
+    echo "    -n, --no-config              does not generate config, just make rdiffs"
+    echo "    -h, --help                   show this message"
+    echo
+
+}
+
+
+
+lister(){
+
+    DIST="$1"
+    
+    echo "{" 
+    FIRST_S="0"
+    for S in ${SERIES};do
+
+      if test -z "$DIST" || echo "$S"|grep -q "$DIST"; then
+	if test $FIRST_S = 0 ;then
+	    FIRST_S=1
+	else
+	    echo "," 
+	fi    
+	echo "  \"${S}-amd64\": [" 
+	FIRST_I="0"
+	SEARCH="${S}-20*-amd64\\.img"
+	for I in $(find "$IMAGE_DIR"  -maxdepth 1 -name "$SEARCH");do
+	    if test $FIRST_I = 0 ;then
+		FIRST_I=1
+	    else
+		echo "," 
+	    fi
+	    echo -n "    \"$(basename ${I})\""
+	done
+	echo
+	echo -n " ]" 
+      fi
+    done
+    echo
+    echo "}"
+
+}
+
+
+list_images(){
+
+        
+    SERIES=""
+    DISTRIBS=""
+    for I in $(find "$IMAGE_DIR" -maxdepth 1 -name '*-os-*-20*-amd64\.img'); do
+	OSNAME=$(basename "${I}"|cut -d- -f1)
+	CLASS=$(basename "${I}"|cut -d- -f3)
+	DIST=$(basename "${I}"|cut -d- -f4)
+
+	D="$DIST"
+	if ! echo "$DISTRIBS"|grep -q "${D}";then
+	    DISTRIBS="${DISTRIBS} ${D}"
+	fi
+	S="$OSNAME-os-$CLASS-$DIST"
+	if ! echo "$SERIES"|grep -q "${S}";then
+	    SERIES="${SERIES} ${S}"
+	fi
+    done
+
+    #echo $DISTRIBS -- $SERIES
+
+    if $NEW; then
+	rm  $PUAVO_OS/config/images/*
+	#mkdir -p $PUAVO_OS/config/images/
+	for D in $DISTRIBS; do
+	   echo -n "$D "
+	   lister "$D" > "$PUAVO_OS/config/images/$D.json"
+	done
+	echo ""
+    else
+	#mkdir -p $PUAVO_OS
+	lister "" > $PUAVO_OS/images.json
+    fi
+
+}
+
+
+make_rdiffs_alt(){
+
+    IMAGE_DIR=$1
+    REPOSITORY=$2
+    MIRROR_DIR=$3
+
+    # call make
+    mkdir -p "$MIRROR_DIR/.checksums"
+    mkdir -p "$MIRROR_DIR/.signatures"
+    mkdir -p "$MIRROR_DIR/meta"
+    mkdir -p "$MIRROR_DIR/rdiffs"
+
+    cd "${IMAGE_DIR}/.puavo-os" || exit
+    #needs absolute paths!!!!!!!!!!!!
+    sudo $PUAVO_OS/.aux/make-rdiffs \
+        image_dir="${IMAGE_DIR}" \
+	images_urlbase="${REPOSITORY}" \
+	mirror_dir="${MIRROR_DIR}" \
+	mode="production" 
+
+}
+
+
+
+
+make_rdiffs(){
+
+cat <<EOF > $PUAVO_OS/defaults.mk
+   image_dir               := $1
+   images_urlbase          := $2
+   mirror_dir              := $3
+   debootstrap_suite       := $4
+EOF
+
+    ort=$(pwd)
+    cd $PUAVO_OS  || exit
+
+    sudo make rdiffs
+
+    cd "$ort" || exit
+}
+
+
+
+main(){
+     
+    NO_FILES=false
+    while [ $# -gt 0 ]; do
+	case $1 in
+            -h|--help)
+		shift
+		help
+		exit 0
+		;;
+            -r|--repository)
+		shift
+		REPOSITORY=$1
+		shift
+		;;
+            -p|--puavo-os)
+		shift
+		PUAVO_OS=$1
+		shift
+		;;
+            -n|--no-files)
+		shift
+		NO_FILES=true
+		;;
+            --)
+		shift
+		break
+		;;
+            -*)
+		usage_error "invalid argument '$1'"
+		;;
+            *)
+		break
+		;;
+	esac
+    done
+
+    if ! test -d "$PUAVO_OS";then
+	echo "error: puavo-os installation not found"
+	exit 1
+    fi
+
+
+    IMAGE_DIR="$1"
+    if ! test -d "$IMAGE_DIR";then
+	echo "error: IMAGEDIR \"$IMAGE_DIR\" not found"
+	exit 1
+    fi
+    IMAGE_DIR=$(realpath "$IMAGE_DIR")
+
+    if test -z "$2";then
+	mkdir -p "$IMAGE_DIR/mirror"
+	MIRROR_DIR="$IMAGE_DIR/mirror"
+    else
+	MIRROR_DIR=$(realpath "$2")
+    fi
+
+    NEW=false
+    test -d $PUAVO_OS/config/images && NEW=true
+
+    # ok, here we go
+    if ! $NO_FILES; then list_images; fi
+    
+    if $NEW; then
+	for DIST in $PUAVO_OS/config/images/*; do
+	    D=$(basename -s .json $DIST)
+	    # echo make_rdiffs "$IMAGE_DIR" "$REPOSITORY" "$MIRROR_DIR" "$D"
+	    make_rdiffs "$IMAGE_DIR" "$REPOSITORY" "$MIRROR_DIR" "$D"
+	done
+    else
+	make_rdiffs "$IMAGE_DIR" "$REPOSITORY" "$MIRROR_DIR" ""
+    fi
+    
+    # fix permissions
+    sudo chown --recursive --reference "${IMAGE_DIR}"  "${MIRROR_DIR}"
+}
+
+main "$@"
+
+exit
+
+

@@ -1,0 +1,470 @@
+#!/bin/sh
+
+
+content_ssh="amxach@www.amxa.ch:public_html/debian/tars"
+content_www="https://www.amxa.ch/debian/tars"
+
+images_ssh="images.amxa.ch:/opt/ltsp/images"
+images_www="https://images.amxa.ch"
+
+gnupg="~/.gnupg/"
+
+
+##############################################################################################
+#############             helper functions (no uploads!) #####################################
+##############################################################################################
+
+init(){
+    #pwd
+    #echo $basename
+    if test -d $basename; then
+	echo "error: $basename already exists."
+	exit 1
+    else
+	mkdir -p $basename
+ 	echo $basename > $basename/description
+ 	echo $basename > $basename/legend
+ 	echo "GPLv3" > $basename/license
+	echo "$url" >  $basename/upstream_pack_url
+	touch $basename/upstream_pack_sha384sum
+
+        cat <<EOF | base64 -d > $basename/$basename.png
+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
+EOF
+	
+cat <<'EOF' > $basename/rules 
+#!/bin/sh
+
+set -eu
+
+command=$1
+shift
+
+case "$command" in
+  configure)
+    upstream_dir=$1
+
+    ln -fns "$upstream_dir/%%basename%%" /opt/%%basename%%
+    ln -fns "$upstream_dir/%%basename%%/%%basename%%.png" /usr/share/pixmaps/%%basename%%.png
+    cat <<EOFF > /usr/share/applications/%%basename%%.desktop
+[Desktop Entry]
+Name=%%basename%%
+Comment=%%basename%%
+Exec=/usr/local/bin/%%basename%%
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/%%basename%%.png
+Categories=Application
+Keywords=System;Utility
+Comment=%%basename%%
+X-AppImage-Integrate=false
+EOFF
+    
+   cat <<EOFFF > /usr/local/bin/%%basename%%
+#!/bin/sh
+#https://github.com/TheAssassin/AppImageLauncher/issues/450 
+# set X-AppImage-Integrate=false in .desktop
+#https://github.com/TheAssassin/AppImageLauncher/issues/441
+export APPIMAGELAUNCHER_DISABLE=true
+/opt/%%basename%%/%%basename%%.AppImage
+EOFFF
+   chmod +x /usr/local/bin/%%basename%%
+    ;;
+  unconfigure)
+    rm -f /opt/%%basename%% \
+          /usr/share/applications/%%basename%%.desktop \
+          /usr/share/icons/%%basename%%.png \
+	  /usr/local/bin/%%basename%%
+    ;;
+  unpack)
+    upstream_pack=$1
+    upstream_dir=$2
+
+    mkdir -p "$upstream_dir/%%basename%%"
+    cp -p "$upstream_pack" "${upstream_dir}/%%basename%%/%%basename%%.AppImage"
+    chmod 755 "${upstream_dir}/%%basename%%/%%basename%%.AppImage"
+    cp -p %%basename%%.png "$upstream_dir/%%basename%%"
+    ;;
+  *)
+    ;;
+esac
+EOF
+    sed -i $basename/rules -e "s/%%basename%%/$basename/g"
+    chmod +x $basename/rules
+    fi
+    
+}
+
+
+
+content(){
+   echo "              Name: $(basename $1)"
+   echo "      Desccription: $(cat $1/description)"
+   echo "            Legend: $(cat $1/legend)"
+   echo "          Licencse: $(cat $1/license|head -n1)"
+   if test -f $1/upstream_pack_url; then
+       echo "      Upstream Url: $(cat $1/upstream_pack_url)"
+   else
+       echo "      Upstream Url: --------------"
+   fi
+   if test -f $1/upstream_pack_sha384sum; then
+      echo "Upstream Sha384sum: $(cat $1/upstream_pack_sha384sum)"
+   else
+      echo "Upstream Sha384sum: ---------------"
+   fi
+   
+       
+
+}
+
+
+version(){
+    name=$(cat $1/.puavo-pkg-version | head -n1 | cut -d\  -f2)
+    tmp=$(basename $1)
+    if  test "$name" = "$tmp";then
+       echo "           version: ok"
+    else
+       passed=false
+       echo "*******************************************************************************"
+       echo "           Version"
+       echo "*******************************************************************************"
+       cat $tmp/.puavo-pkg-version
+       echo "*******************************************************************************"
+    fi
+}
+
+rules(){
+    if shellcheck $1/rules >/dev/null;then
+	echo "             rules: ok"
+    else
+    passed=false
+    echo "*******************************************************************************"
+    echo "            Rules Error" 
+    echo "*******************************************************************************"
+    shellcheck $1/rules
+    echo "*******************************************************************************"
+    fi
+}
+
+
+upstream(){
+
+    url_u=$(cat $1/upstream_pack_url)
+    upstream_name=$(basename $url_u)
+
+    sha=$(cat $1/upstream_pack_sha384sum)
+
+    test -f $upstream_name && rm $upstream_name
+    if wget -O $upstream_name $url_u 2>/dev/null >/dev/null; then
+	upstream_shasum=$(sha384sum $upstream_name|cut -d\  -f1)
+	if test $sha = $upstream_shasum;then
+	    echo "          upstream: ok"
+	else
+	    if test "$2" = "shasum";then
+		echo "$upstream_shasum" > $1/upstream_pack_sha384sum
+		echo "          upstream: checksum fixed"
+	    else
+		passed=false
+	        echo "          upstream: checksum error"
+	    fi
+	fi
+    else
+	passed=false
+	echo "          upstream: no dowload"
+    fi
+}
+
+distfiles(){
+
+    url_u=$(cat $1/upstream_pack_url)
+    namen=$(basename $url_u)
+    url_d="$images_www/distfiles/$namen"    
+
+    sha=$(cat $1/upstream_pack_sha384sum)
+
+    if wget -O $namen $url_d 2>/dev/null >/dev/null; then
+	shasum=$(sha384sum $namen|cut -d\  -f1)
+	if test $sha = $shasum;then
+	    echo "         distfiles: ok"
+	else
+	    passed=false
+	    echo "         distfiles: checksum error"
+	fi
+    else
+	passed=false
+	echo "         distfiles: no dowload"
+    fi
+    test -f $name && rm $name
+
+}
+
+compare(){
+
+    if test -n "$2"; then
+       equal="same"
+       test "$(cat $1/upstream_pack_url)" = "$(cat $2/upstream_pack_url)" || equal="different"
+       test "$(cat $1/upstream_pack_sha384sum)" = "$(cat $2/upstream_pack_sha384sum)" || equal="different"
+       test "$(cat $1/rules)" = "$(cat $2/rules)" || equal="different"
+       if echo "$2"|grep -q checker; then
+	   echo  "  installer.tar.gz: $equal "
+       else
+	   echo  "         installer: $equal"
+       fi
+    fi
+}
+
+
+puavoconf(){
+    if puavo-conf| grep -q puavo.pkg.$basename; then
+	ans=$(puavo-conf puavo.pkg.$basename)
+	echo "        puavo-conf: $ans"
+    else
+	echo "        puavo-conf: -------"
+    fi
+}
+
+
+installed(){
+    if puavo-pkg list|grep -q $basename;then
+	echo "         installed: yes"
+    else
+	echo "         installed: no"
+    fi
+}
+
+show(){
+echo
+content $1
+echo
+version $1
+rules $1
+upstream $1
+distfiles $1
+echo
+compare "$1" "$2" 
+echo
+puavoconf $1
+installed $1
+}
+
+
+
+if test -z "$1" -o "$1" = "--help"; then
+    echo "usage: $(basename $0) installer|installer.tar.gz [opts]"
+    echo " opts: show           display properties and ckecks"
+#    echo "       shasum         fixes shasum form upstream"
+#    echo "       distfile       copies upstram to distfiles"
+    echo "       update         fix shasum from upstream and upload uptream to distfiles"
+    echo 
+    echo "       content        compresses and uplaods the content to upstream"
+    echo "       repo           update repo and upload to image server"
+    exit 1
+fi
+
+############################################################################################
+##########################                 main                   ##########################
+############################################################################################
+
+#global vars
+upstream_shasum=""
+upstream_name=""
+passed=true
+first=""
+second=""
+basename=$(basename -s .tar.gz $1)
+
+test -d "/tmp/checker/" && rm -r "/tmp/checker/"
+
+if test -f $1/rules;then
+    first=$basename
+    if test -f $basename.tar.gz;then
+   	mkdir -p /tmp/checker
+	if ! tar -x -z -f $basename.tar.gz -C /tmp/checker; then
+	    echo "error: $1 is not a tar.gz file"
+	    exit 1
+	fi
+	second=/tmp/checker/$basename
+    fi
+else
+    if test -f $basename.tar.gz;then
+        mkdir -p /tmp/checker
+	if ! tar -x -z -f $basename.tar.gz -C /tmp/checker; then
+	    echo "error: $1 is not a tar.gz file"
+	    exit 1
+	fi
+	first=/tmp/checker/$basename
+	if test -d $basename; then
+	   second=$basename
+	fi		     
+    else
+	if test "$2" = "init"; then
+	    first=$basename
+	else
+	    echo "error: $1 not found (or it's not a package dir)"
+	    exit 1
+	fi
+    fi
+fi
+
+
+#show was here
+
+command="$2"
+url="$3"
+type="$4"
+
+test -z "$command" && command="show"
+
+
+case $command in
+    show)
+	show "$first" "$second" 
+	;;
+    shasum)
+        if echo $first|grep -q checker;then
+  	   echo "error: fixing shasum only works on directories"
+	   exit 1
+        fi
+        upstream $first shasum	
+	;;
+    distfile)
+	upstream $first
+	if $passed; then
+	    ##########################################
+	    scp $upstream_name $images_ssh/distfiles/.
+	    ##########################################
+	fi	
+	;;
+    update)
+        if echo $first|grep -q checker;then
+     	   echo "error: fixing shasum only works on directories"
+	   exit 1
+        fi
+        upstream $first shasum	
+        if $passed; then
+	    ##########################################
+  	    scp $upstream_name $images_ssh/distfiles/.
+	    ##########################################
+        fi
+	;;
+    content)
+	if test -d ../content/$basename/; then
+	    echo "inside"
+	    pwd=$(pwd)
+	    cd ../content/
+	    tar -c -z -f ../installer/$basename.tgz $basename
+	    ret=$?
+	    cd $pwd
+
+	    pwd
+	    ls
+	    echo $1 $2 $3 $4
+            if  test "$3" = "production";then
+		name=$basename.tgz
+	    else
+		name=$basename-dev.tgz
+		mv $basename.tgz $name
+		echo
+		echo "info: Devel mode. Name is \"$name\". Use \"production\" as 3rd param to take the real name"
+		echo
+	    fi
+	    
+	    if true; then
+		#########################################
+		if scp $name $content_ssh/.; then
+		    #########################################
+		    if  ! test "$3" = "production";then
+   		       shasum=$(sha384sum $name|cut -d\  -f1)
+		       echo $shasum > $basename/upstream_pack_sha384sum
+		    fi
+		    echo "$content_www/$name" > $basename/upstream_pack_url
+	            echo "info: updated upstream_pack_url"	    
+	            echo "info: uploaded $name sucessfully"
+		    make
+	        else
+		    echo "error: could not uplaod $name"
+		    exit 1
+		fi
+	    else
+		echo "error: could not make $name"
+		exit 1
+	    fi
+
+	    
+	else
+	    echo "error: ../content/$basename not found"
+	    exit 1
+	fi	
+	;;
+    repo)
+	if ! test -e ./puavo-pkg-update-repository; then
+	    echo "error: you are in the wrong place"
+	    exit 1
+	fi
+
+	# gnupg="~/.gnupg/"
+        pwd
+	make
+	./puavo-pkg-update-repository . ./repo  ~/.gnupg
+	#################### ok #######################
+	scp -r ./repo/$basename $images_ssh/puavo-pkg/.
+	###############################################
+	
+	#if ! $?;then
+	#    echo "error: could not uplaod package $basename to image server"
+	#    exit 1
+	#fi
+	;;
+    init)
+	init $first "$url" "$type"
+	;;
+    *)
+	echo "error: unkown command"
+	exit 1
+	;;
+esac
+if $passed;then exit 0;else exit 1;fi
+
+
+
+
