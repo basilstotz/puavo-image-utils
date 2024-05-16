@@ -1,4 +1,4 @@
-puavo-image-utils (0.1-44) UNRELEASED; urgency=medium
+puavo-image-utils (0.1-44.2) UNRELEASED; urgency=medium
 
   * Non-maintainer upload.
   * initial 
@@ -50,8 +50,10 @@ puavo-image-utils (0.1-44) UNRELEASED; urgency=medium
   * fix install
   * add puavo-pkg-tool puavo-image-extend puavo-image-repository
   * clean /opt/puavo-os-extra in puavo-image-extend
+  * fix puavo-image-extend (chown -R root:root)
+  * new version of mirror
 
- -- Basil Stotz <stotz.basil@opinsys-nqmBgSFL>  Sun, 26 Jun 2022 20:05:47 +0200
+ -- Basil Stotz <stotz.basil@opinsys-qixRNhtF>  Thu, 16 May 2024 18:38:56 +0200
 
 puavo-image-utils (0.1-1) unstable; urgency=medium
 

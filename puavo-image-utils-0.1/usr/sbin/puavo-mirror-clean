@@ -1,0 +1,39 @@
+#!/bin/sh
+
+if test -n "$1"; then
+    PREFIX="$1"
+else
+    PREFIX="./mirror"
+fi
+
+if ! cd $PREFIX; then
+    echo "error: $PREFIX does not exist"
+    exit 1
+fi
+
+META="$(cat ./meta/*)"
+
+for F in *img; do
+    FF=$(basename $F)
+    if echo "$META" | grep -q $FF; then
+        #echo -n ""
+	UHU=1
+    else
+        #echo "nein $FF"
+        echo "rm $F"
+        rm $F
+    fi
+done  
+
+
+for F in rdiffs/*; do
+    FF=$(basename $F)
+    if echo "$META" | grep -q $FF; then
+        #echo n ""
+	UHU=1
+    else
+        #echo "nein $FF"
+        echo "rm $F"
+        rm $F
+    fi
+done

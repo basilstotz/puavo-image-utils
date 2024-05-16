@@ -2,8 +2,9 @@
 
 #default values
 REPOSITORY="https://cdn.amxa.ch"
-PUAVO_OS="/puavo-os"
-NO_FILES=false
+PUAVO_OS="./puavo-os"
+CONFIG=false
+UPLOAD="amxa.ch:"
 
 
 help(){
@@ -14,8 +15,9 @@ help(){
     echo 
     echo "Options:"
     echo "    -r, --repository  URL   set repository's URL (def: $REPOSITORY)"
+#    echo "    -u, --upload [<URL>]           upload to URL (def: $UPLOAD)"
     echo "    -p, --puavo-os DIR           set puavo-os to DIR (def: $PUAVO_OS)"
-    echo "    -n, --no-config              does not generate config, just make rdiffs"
+    echo "    -c, --config              does also generate config"
     echo "    -h, --help                   show this message"
     echo
 
@@ -37,19 +39,21 @@ lister(){
 	else
 	    echo "," 
 	fi    
-	echo "  \"${S}-amd64\": [" 
+	echo "  \"${S}-amd64\": {"
+	echo "    \"images\": [" 
 	FIRST_I="0"
 	SEARCH="${S}-20*-amd64\\.img"
-	for I in $(find "$IMAGE_DIR"  -maxdepth 1 -name "$SEARCH");do
+	for I in $(find "$IMAGE_DIR" -maxdepth 1 -executable -name "$SEARCH");do
 	    if test $FIRST_I = 0 ;then
 		FIRST_I=1
 	    else
 		echo "," 
 	    fi
-	    echo -n "    \"$(basename ${I})\""
+	    echo -n "      \"$(basename ${I})\""
 	done
 	echo
-	echo -n " ]" 
+	echo  " ]"
+	echo  "}"
       fi
     done
     echo
@@ -63,63 +67,41 @@ list_images(){
         
     SERIES=""
     DISTRIBS=""
+    #search all possible image  nemes
     for I in $(find "$IMAGE_DIR" -maxdepth 1 -name '*-os-*-20*-amd64\.img'); do
-	OSNAME=$(basename "${I}"|cut -d- -f1)
-	CLASS=$(basename "${I}"|cut -d- -f3)
-	DIST=$(basename "${I}"|cut -d- -f4)
+	if test -x $I; then
+	    OSNAME=$(basename "${I}"|cut -d- -f1)
+	    CLASS=$(basename "${I}"|cut -d- -f3)
+	    DIST=$(basename "${I}"|cut -d- -f4)
 
-	D="$DIST"
-	if ! echo "$DISTRIBS"|grep -q "${D}";then
-	    DISTRIBS="${DISTRIBS} ${D}"
-	fi
-	S="$OSNAME-os-$CLASS-$DIST"
-	if ! echo "$SERIES"|grep -q "${S}";then
-	    SERIES="${SERIES} ${S}"
+	    D="$DIST"
+	    if ! echo "$DISTRIBS"|grep -q "${D}";then
+		DISTRIBS="${DISTRIBS} ${D}"
+	    fi
+	    S="$OSNAME-os-$CLASS-$DIST"
+	    if ! echo "$SERIES"|grep -q "${S}";then
+		SERIES="${SERIES} ${S}"
+	    fi
+	else
+	    echo "INFO: Ommit $I"
 	fi
     done
 
     #echo $DISTRIBS -- $SERIES
 
-    if $NEW; then
-	rm  $PUAVO_OS/config/images/*
-	#mkdir -p $PUAVO_OS/config/images/
-	for D in $DISTRIBS; do
-	   echo -n "$D "
-	   lister "$D" > "$PUAVO_OS/config/images/$D.json"
-	done
-	echo ""
-    else
-	#mkdir -p $PUAVO_OS
-	lister "" > $PUAVO_OS/images.json
-    fi
+    rm  $PUAVO_OS/config/images/*
+    #mkdir -p $PUAVO_OS/config/images/
+    for D in $DISTRIBS; do
+       echo "INFO: generating -> $PUAVO_OS/config/images/$D.json "
+       lister "$D" > "$PUAVO_OS/config/images/$D.json"
+    done
 
 }
 
-
-make_rdiffs_alt(){
-
-    IMAGE_DIR=$1
-    REPOSITORY=$2
-    MIRROR_DIR=$3
-
-    # call make
-    mkdir -p "$MIRROR_DIR/.checksums"
-    mkdir -p "$MIRROR_DIR/.signatures"
-    mkdir -p "$MIRROR_DIR/meta"
-    mkdir -p "$MIRROR_DIR/rdiffs"
-
-    cd "${IMAGE_DIR}/.puavo-os" || exit
-    #needs absolute paths!!!!!!!!!!!!
-    sudo $PUAVO_OS/.aux/make-rdiffs \
-        image_dir="${IMAGE_DIR}" \
-	images_urlbase="${REPOSITORY}" \
-	mirror_dir="${MIRROR_DIR}" \
-	mode="production" 
-
+usage_error(){
+    echo $1
+    exit 1
 }
-
-
-
 
 make_rdiffs(){
 
@@ -133,6 +115,8 @@ EOF
     ort=$(pwd)
     cd $PUAVO_OS  || exit
 
+    #echo "INFO: running -> cd $PUAVO_OS;sudo make rdiffs"
+    
     sudo make rdiffs
 
     cd "$ort" || exit
@@ -142,7 +126,8 @@ EOF
 
 main(){
      
-    NO_FILES=false
+    CONFIG=false
+    UPLOAD=false
     while [ $# -gt 0 ]; do
 	case $1 in
             -h|--help)
@@ -150,6 +135,11 @@ main(){
 		help
 		exit 0
 		;;
+#	    -u|--upload)
+#		shift
+#		UPLOAD=true
+#		shift
+#		;;
             -r|--repository)
 		shift
 		REPOSITORY=$1
@@ -160,9 +150,9 @@ main(){
 		PUAVO_OS=$1
 		shift
 		;;
-            -n|--no-files)
+            -c|--config)
 		shift
-		NO_FILES=true
+		CONFIG=true
 		;;
             --)
 		shift
@@ -172,18 +162,24 @@ main(){
 		usage_error "invalid argument '$1'"
 		;;
             *)
+		#usage_error "kenn ich nicht '$1'"
 		break
 		;;
 	esac
     done
-
+    
+    #validate params ...
     if ! test -d "$PUAVO_OS";then
 	echo "error: puavo-os installation not found"
 	exit 1
     fi
 
-
-    IMAGE_DIR="$1"
+    
+    if test -z "$1"; then
+        IMAGE_DIR="."
+    else
+	IMAGE_DIR="$1"
+    fi
     if ! test -d "$IMAGE_DIR";then
 	echo "error: IMAGEDIR \"$IMAGE_DIR\" not found"
 	exit 1
@@ -191,30 +187,43 @@ main(){
     IMAGE_DIR=$(realpath "$IMAGE_DIR")
 
     if test -z "$2";then
-	mkdir -p "$IMAGE_DIR/mirror"
+        mkdir -p "$IMAGE_DIR/mirror"
 	MIRROR_DIR="$IMAGE_DIR/mirror"
     else
 	MIRROR_DIR=$(realpath "$2")
+	if ! test -d $MIRROR_DIR; then
+	    echo "error: mirordir does not esitt"
+	    exit 1
+	fi
     fi
-
-    NEW=false
-    test -d $PUAVO_OS/config/images && NEW=true
 
     # ok, here we go
-    if ! $NO_FILES; then list_images; fi
-    
-    if $NEW; then
-	for DIST in $PUAVO_OS/config/images/*; do
-	    D=$(basename -s .json $DIST)
-	    # echo make_rdiffs "$IMAGE_DIR" "$REPOSITORY" "$MIRROR_DIR" "$D"
-	    make_rdiffs "$IMAGE_DIR" "$REPOSITORY" "$MIRROR_DIR" "$D"
-	done
-    else
-	make_rdiffs "$IMAGE_DIR" "$REPOSITORY" "$MIRROR_DIR" ""
+    if $CONFIG; then
+	#echo "INFO: generating distribution.json"
+	list_images
     fi
+
+    
+    
+    #call  make rdiff  for all  dists
+    for DIST in $PUAVO_OS/config/images/*; do
+	D=$(basename -s .json $DIST)
+	echo "INFO: Processing $D Images"
+	#find "$MIRROR_DIR" -maxdepth 1 -name "*-os-*$D-20*-amd64\.img" -exec rm \{\} \;
+	#echo make_rdiffs "$IMAGE_DIR" "$REPOSITORY" "$MIRROR_DIR" "$D"
+	make_rdiffs "$IMAGE_DIR" "$REPOSITORY" "$MIRROR_DIR" "$D" >/dev/null
+    done
+
     
     # fix permissions
+    #echo "... fix perissions "
     sudo chown --recursive --reference "${IMAGE_DIR}"  "${MIRROR_DIR}"
+
+#    if $UPLOAD; then
+#	echo "INFO: uploading to $UHU!"
+#    fi
+    
+    echo "INFO: all done"
 }
 
 main "$@"

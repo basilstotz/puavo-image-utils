@@ -1,0 +1,28 @@
+#!/bin/sh
+
+
+if test -z "$1"; then
+    echo "usage: $0 <mirror_dir> [www.amxa.ch:public_html/cdn]"
+    exit 1
+fi
+
+if test -z "$2";then
+    URL="amxa.ch:public_html/cdn"
+else
+    URL="$2"
+fi
+
+echo "upload"
+
+
+if test -f $1/CKSUMS; then
+    rsync -av $1/CKSUMS "$URL"
+    rsync -av $1/puavo-os-amxa-*-amd64.img "$URL"
+
+    rsync --delete -avr $1/meta/ "$URL/meta/"
+    rsync --delete -arv $1/rdiffs/ "$URL/rdiffs/"
+    HOST=$(echo $URL|cut -d: -f1)
+    PFAD=$(echo $URL|cut -d: -f2)
+    ssh "$HOST" "$PFAD/puavo-mirror-clean"
+fi
+

@@ -92,7 +92,8 @@ puavo_patch(){
     echo "info: copy patchdir to chroot" 1>&2
     mkdir -p $CHROOT/$PLACE
     cp -r $1/* $CHROOT/$PLACE
-
+    chown -R root:root $CHROOT/$PLACE
+    
     #copy cached apt to chroot
     echo "info: copy apt from cache to chroot"                                           1>&2
     rsync -ra  --size-only ./cache/apt/ $CHROOT/var/cache/apt/archives/.

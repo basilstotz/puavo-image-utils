@@ -1,0 +1,53 @@
+#!/bin/sh
+
+KEEP=false
+PLACE="/opt/amxapatch"
+
+DIR="$1"
+
+if test -z "$DIR"; then
+    echo "usage: $0 /path/to/patch_dir" >&2
+    exit 1
+fi
+
+if ! test -d "$DIR"; then
+    echo "error: $DIR not found" >&2
+    exit 1
+fi
+
+#############################################################################
+
+echo "#!/bin/sh"
+echo ""
+
+# make installdir
+if $KEEP; then
+    echo "PLACE=$PLACE"
+    echo "mkdir -p \$PLACE"
+else    
+    echo "PLACE=\$(mktemp -d)"
+fi
+
+# populate it an run-parts
+echo ""
+echo "cat <<'EOF' | base64 -d | tar -x -z -C \$PLACE"
+cd $DIR
+tar -c -z -f - . | base64
+echo "EOF"
+echo ""
+echo "run-parts --regex=\"^[0-9]{2}-.*$\"  \$PLACE"
+echo "RET=\$?"
+
+# maybe remove it
+if ! $KEEP; then
+    echo ""
+    echo "rm -rf \$PLACE"
+fi
+
+echo ""
+echo "exit \$RET"
+
+
+############################################################################
+
+exit 0

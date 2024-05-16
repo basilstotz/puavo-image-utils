@@ -1,0 +1,284 @@
+#!/bin/sh
+
+
+if ! test $(id --user) = 0;then
+    exec sudo $0 $@
+fi
+
+
+on_exit(){
+    do_umount 
+    test -f $IMAGE && chown --reference ..  $IMAGE
+    test -d ./log/ && chown --recursive --reference ..  ./log/
+    
+}
+
+do_help(){
+    echo "Usage: $(basename $0) [options] patch_dir source_image"
+    echo
+    echo "Patch a  squashfs image and compress a new image."
+    echo
+    echo "Some spezials for PuavoOS:" 
+    echo "    -o, --osname <osname> (default: $OSNAME)"
+    echo "    -c, --class <class> (default: $CLASS)"
+    echo "    -h, --help"
+    echo
+    exit 0
+}
+
+do_umount(){
+    #IMG=$1
+    
+    #MNT=$(basename -s .squashfs $IMG)
+    #MNT=$(basename $IMG)
+    #MNT=$CHROOT
+    #umount
+    if mount|grep -q ./mnt/${CHROOT}.rofs;then
+	 sudo umount ./mnt/${CHROOT}.rofs    
+    fi
+
+    if mount|grep -q ./mnt/${CHROOT}.work;then
+	 sudo umount ${CHROOT}
+    fi
+    #clean
+    if  test -d ${CHROOT}; then rm -r ${CHROOT};fi
+    if  test -d ./mnt/${CHROOT}.work; then rm -r ./mnt/${CHROOT}.work;fi
+    if  test -d ./mnt/${CHROOT}.rwfs; then rm -r ./mnt/${CHROOT}.rwfs;fi
+    if  test -d ./mnt/${CHROOT}.rofs; then rm -r ./mnt/${CHROOT}.rofs;fi
+}
+
+
+do_mount(){
+    IMG=$1
+
+
+    filename=$(basename "$IMG")
+    extension="${filename##*.}"
+    file="${filename%.*}"
+    CHROOT=$file
+
+    echo "CHROOT=$CHROOT"
+    
+    do_umount
+    if ! test -d ${CHROOT}; then mkdir ${CHROOT};fi
+    if ! test -d ./mnt/${CHROOT}.rofs; then mkdir -p ./mnt/${CHROOT}.rofs;fi
+    if ! test -d ./mnt/${CHROOT}.rwfs; then mkdir -p ./mnt/${CHROOT}.rwfs;fi
+    if ! test -d ./mnt/${CHROOT}.work; then mkdir -p ./mnt/${CHROOT}.work;fi
+
+    #mount image
+    sudo mount -r -o loop ${IMG} ./mnt/${CHROOT}.rofs
+    #make it writeable
+    sudo mount -t overlay  overlay -olowerdir=./mnt/${CHROOT}.rofs,upperdir=./mnt/${CHROOT}.rwfs,workdir=./mnt/${CHROOT}.work  ${CHROOT}
+
+    #generic-img-mount $1
+    if test $? -ne 0;then
+       echo "could not mount \"$SOURCE\""
+       exit 1
+    fi
+    
+}
+
+do_chroot(){
+#    mount -o bind /dev $CHROOT/dev
+#    mount -o bind /dev/pts $CHROOT/dev/pts
+#    mount -o bind /proc $CHROOT/proc
+#    mount -o bind /sys $CHROOT/sys
+
+    
+        mount --bind /dev ${CHROOT}/dev
+        mount --bind /proc ${CHROOT}/proc
+        mount --bind /sys ${CHROOT}/sys
+        mount --bind /dev/pts ${CHROOT}/dev/pts
+
+        echo "Backup the overlay/etc/hosts."
+        mv ${CHROOT}/etc/hosts ./hosts.bak
+        echo "Copying /etc/hosts to overlay/etc/hosts."
+        cp /etc/hosts ${CHROOT}/etc/hosts
+
+        echo "Backup the overlay/etc/resolv.conf."
+        mv ${CHROOT}/etc/resolv.conf ./resolv.conf.bak
+        echo "Copying /etc/resolv.conf to the overlay/etc/resolv.conf."
+        cp /etc/resolv.conf ${CHROOT}/etc/resolv.conf
+
+        echo "Starting chroot in the overlay directory."
+        chroot ${CHROOT} /bin/bash
+
+        echo "Exited the chroot so time to clean up."
+        umount -l ${CHROOT}/dev
+        umount -l ${CHROOT}/proc
+        umount -l ${CHROOT}/sys
+
+        echo "Restore original overlay/etc/hosts."
+        mv ./hosts.bak ${CHROOT}/etc/hosts
+        echo "Restore overlay/etc/resolv.conf."
+        mv ./resolv.conf.bak ${CHROOT}/etc/resolv.conf
+        echo "Remove overlay/root/.bash_history."
+        test -f ${CHROOT}/root/.bash_history &&  rm ${CHROOT}/root/.bash_history
+	true
+    
+#    chroot $CHROOT
+
+#    umount  ${CHROOT}/proc
+#    umount  ${CHROOT}/dev/pts
+#    umount  ${CHROOT}/dev
+#    umount  ${CHROOT}/sys
+}
+
+
+do_patch(){
+    PLACE=opt/puavo-os-extra
+
+    #copy data to chroot
+    echo "info: copy patchdir to chroot" 1>&2
+    mkdir -p $CHROOT/$PLACE
+    cp -r $1/* $CHROOT/$PLACE
+
+    #copy cached apt to chroot
+    echo "info: copy apt from cache to chroot"                                           1>&2
+    rsync -ra  --size-only ./cache/apt/ $CHROOT/var/cache/apt/archives/.
+
+    # do chroot
+    echo "info: enter chroot"                                                            1>&2
+    echo "run-parts --regex=\"^[0-9]{2}-.*$\" /$PLACE" | do_chroot $CHROOT
+    echo "info: left chroot"                                                             1>&2
+
+    #if test $? -ne 0;then
+    #   echo "could not patch \"$1\""                                                     1>&2
+    #   #exit 1
+    #fi
+
+    # copyback apt and clean chroot
+    echo "info: update apt cache"                                                        1>&2
+    rsync -rav  --delete --size-only  $CHROOT/var/cache/apt/archives/ ./cache/apt/       1>&2
+    echo "info: remove apt in chroot"                                                    1>&2
+    rm -r $CHROOT/var/cache/apt/archives/*
+
+    rm -r $CHROOT/$PLACE/*
+    cp -r $1/* $CHROOT/$PLACE
+    
+}
+
+do_image_name(){
+    #compose new image name
+    #VERSION=$(date +%Y-%m-%d-%H%M%S)
+    VERSION="patched"
+    if test -f $CHROOT/etc/puavo-image/name; then
+	DIST="$(cat $CHROOT/etc/puavo-image/name | cut -d- -f4)"
+	echo "${OSNAME}-${CLASS}-${DIST}-${VERSION}-amd64.img"
+    else
+	echo "$VERSION-$(basename $SOURCE)"
+    fi
+}
+
+do_image(){
+
+    # some specials only for puavo images: update some values in /etc/puavo-image
+    if test -f $CHROOT/etc/puavo-image/name; then
+	if ! test -f $CHROOT/etc/puavo-image/base_name;then
+	   cp $CHROOT/etc/puavo-image/name $CHROOT/etc/puavo-image/base_name
+	fi
+	if ! test -f $CHROOT/etc/puavo-image/base_release;then
+	   cp $CHROOT/etc/puavo-image/release $CHROOT/etc/puavo-image/base_release
+	fi
+	if ! test -f $CHROOT/etc/puavo-image/base_class;then
+	   cp $CHROOT/etc/puavo-image/class $CHROOT/etc/puavo-image/base_class
+	fi
+
+	echo "${IMAGE}" > $CHROOT/etc/puavo-image/name
+	#echo "$(cat $CHROOT/etc/puavo-image/base_release) (${VERSION})" > $CHROOT/etc/puavo-image/release
+	echo "$CLASS" > $CHROOT/etc/puavo-image/class
+    fi
+    
+    #    make compressed image
+    mksquashfs  $CHROOT ${IMAGE} -noappend -no-recovery
+  
+    if test $? -ne 0;then
+       echo "could not make image"
+       exit 1
+    fi    
+}
+
+###################################################################################
+###################################################################################
+
+OSNAME=""
+CLASS=""
+
+if test -f /etc/puavo-image/name; then
+    CURRENT_IMAGE=$(cat /etc/puavo-image/name)
+    OSNAME=$(echo $CURRENT_IMAGE|cut -d- -f1-2)
+    CLASS=$(echo $CURRENT_IMAGE|cut -d- -f3)
+fi
+
+test "$OSNAME"="opinsys-os" -o "$OSNAME"="" && OSNAME="puavo-os"
+test -z "$CLASS"  && CLASS="standard"
+
+
+while [ $# -gt 0 ]; do
+    case $1 in
+	-h|--help)
+	    shift
+	    do_help
+	    ;;
+	#config 
+	-o|--osname)
+	    shift
+	    OSNAME=$1
+	    shift
+	    ;;
+	-c|--class)
+	    shift
+	    CLASS=$1
+	    shift
+	    ;;
+	--)
+	    shift
+	    break
+	    ;;
+	-*)
+	    echo "error: invalid argument '$1'"
+	    exit 1
+	    ;;
+	*)
+	    break
+	    ;;
+    esac
+done
+
+# some paramter checks
+if [ $# -ne 2 ]; then
+    echo 
+    echo "error: invalid number of arguments ($#), expected 2"
+    do_help
+    exit 1
+fi
+
+
+DATADIR=$1
+SOURCE=$2
+
+if ! test -f $SOURCE; then
+	echo "error: source file not found"
+	exit 1
+fi
+
+mkdir -p ./log/
+mkdir -p ./cache/apt/
+mkdir -p ./mnt
+
+trap on_exit EXIT
+trap on_exit INT
+
+
+
+do_mount  $SOURCE
+
+IMAGE=$(do_image_name)
+
+do_patch  $DATADIR > ./log/$IMAGE.log
+
+do_image $IMAGE
+
+
+
+exit $?
